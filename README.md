@@ -22,11 +22,9 @@
 ---
 
 ## 시연 영상
+https://github.com/user-attachments/assets/9fdc3233-0e97-42b6-979c-363f096d64ae
 
-<video controls width="100%">
-  <source src="https://github.com/user-attachments/assets/95dd289d-0984-4c00-9621-78ddd9936eae" type="video/mp4">
-</video>
-
+---
 ## 💡 개발 배경 및 목적
 
 소셜 미디어와 영상 콘텐츠의 급증으로 누구나 쉽게 영상을 공유할 수 있게 되었지만, 영상 내에 포함된 주소, 얼굴, 전화번호 등의 개인정보 유출 위험성은 날로 커지고 있습니다. 특히 파편화된 정보를 모아 개인을 특정하는 **퍼즐 도싱(Doxxing)** 범죄를 예방하기 위해, 영상의 시각 정보뿐만 아니라 **음성(STT) 정보**까지 완벽하게 스크리닝하고 마스킹하는 완전 자동화 솔루션을 개발하게 되었습니다.
