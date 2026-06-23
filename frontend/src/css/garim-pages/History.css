@@ -1,0 +1,140 @@
+.hist-page { padding: 32px; max-width: 1200px; margin: 0 auto; }
+  .hist-head { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+  .hist-head h1 { font: 500 28px var(--font-sans); margin: 0; flex: 1; }
+  .hist-toolbar { background: #fff; border-radius: 4px; box-shadow: var(--mui-elev-1); padding: 16px 20px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+  .hist-toolbar .search-mini {
+    flex: 1; min-width: 240px; display: flex; align-items: center; gap: 8px;
+    padding: 8px 14px; border: 1px solid var(--mui-border); border-radius: 4px;
+  }
+  .hist-toolbar .search-mini input { flex: 1; border: none; outline: none; font: 400 14px var(--font-sans); }
+  .hist-toolbar .search-mini .material-icons { color: var(--fg-2); }
+  .filter-bar { display: flex; gap: 8px; }
+  .hist-list { background: #fff; border-radius: 4px; box-shadow: var(--mui-elev-1); overflow: hidden; }
+  .hist-row {
+    display: grid; grid-template-columns: 100px 1fr 130px 140px 110px 120px 140px;
+    align-items: center; gap: 16px; padding: 12px 20px; border-bottom: 1px solid var(--mui-divider);
+    transition: background 150ms;
+  }
+  .hist-row:hover { background: rgba(0,0,0,0.02); }
+  .hist-row:last-child { border-bottom: none; }
+  .hist-row.head { background: #fafafa; padding: 12px 20px; font: 500 12px var(--font-sans); color: var(--fg-2); text-transform: uppercase; letter-spacing: 0.5px; }
+  .hist-row .thumb { width: 80px; aspect-ratio: 16/9; border-radius: 4px; overflow: hidden; background: #000; }
+  .hist-row .thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .hist-row .name { font: 500 14px var(--font-sans); margin-bottom: 2px; }
+  .hist-row .sub { font: 400 12px var(--font-sans); color: var(--fg-2); }
+  .hist-row .date { font: 400 13px var(--font-sans); }
+  .hist-row .detected { font: 500 14px var(--font-sans); }
+  .hist-row .detected small { font-weight: 400; color: var(--fg-2); }
+  .hist-row .actions { display: flex; gap: 4px; }
+  .hist-row .actions button { background: transparent; border: none; cursor: pointer; padding: 8px; border-radius: 4px; color: var(--fg-2); }
+  .hist-row .actions button:hover { background: rgba(0,0,0,0.04); color: var(--fg-1); }
+  .hist-row.warn-delete { background: rgba(237,108,2,0.04); }
+  .pagination { display: flex; justify-content: center; align-items: center; gap: 4px; padding: 16px; }
+  .pagination button { padding: 6px 12px; border: 1px solid var(--mui-border); background: #fff; border-radius: 4px; cursor: pointer; font: 400 13px var(--font-sans); color: var(--fg-1); }
+  .pagination button.active { background: #1976d2; color: #fff; border-color: #1976d2; }
+  .empty-hint {
+    background: #fff; border-radius: 4px; box-shadow: var(--mui-elev-1); padding: 48px;
+    text-align: center;
+  }
+
+.hist-row .actions-group { display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
+.hist-row .delete-btn { opacity: 0; transition: opacity 0.2s; color: #d32f2f; background: transparent; border: none; cursor: pointer; padding: 4px; border-radius: 4px; }
+.hist-row .delete-btn:hover { background: rgba(211,47,47,0.1); }
+.hist-row:hover .delete-btn { opacity: 1; }
+
+.btn-download-green { color: #2e7d32 !important; }
+
+/* Dark Mode */
+:root[data-theme="dark"] .hist-toolbar { background: var(--bg-1); }
+:root[data-theme="dark"] .hist-toolbar .search-mini input { background: transparent; color: var(--fg-1); }
+:root[data-theme="dark"] .hist-list { background: var(--bg-1); }
+:root[data-theme="dark"] .hist-row:hover { background: rgba(255, 255, 255, 0.04); }
+:root[data-theme="dark"] .hist-row.head { background: var(--bg-2); }
+:root[data-theme="dark"] .hist-row .actions button:hover { background: rgba(255, 255, 255, 0.08); }
+:root[data-theme="dark"] .hist-row.warn-delete { background: rgba(237, 108, 2, 0.15); }
+:root[data-theme="dark"] .pagination button { background: var(--bg-1); border-color: var(--mui-border); }
+:root[data-theme="dark"] .empty-hint { background: var(--bg-1); }
+:root[data-theme="dark"] .btn-download-green { color: #81c784 !important; }
+
+/* 상단 네비 버튼 그룹 */
+.hist-nav-btns {
+  display: flex;
+  gap: 8px;
+}
+/* 버튼 내 아이콘 크기 */
+.hist-ico-sm {
+  font-size: 18px;
+}
+.hist-ico-md {
+  font-size: 20px;
+}
+/* 툴바 우측(정렬/전체삭제) */
+.hist-toolbar-right {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
+/* 전체 삭제 버튼 강조 */
+.hist-del-all {
+  color: #d32f2f;
+  border-color: #f4c7c7;
+}
+/* 만료 일시 열 좌측 여백 */
+.hist-col-pad {
+  padding-left: 10px;
+}
+/* 목록 비어있음/로딩 메시지 */
+.hist-empty {
+  padding: 48px;
+  text-align: center;
+  color: var(--fg-3);
+}
+/* 썸네일 박스 + 이미지 + 대체 아이콘 */
+.hist-thumb {
+  overflow: hidden;
+  position: relative;
+}
+.hist-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.hist-thumb-ico {
+  font-size: 32px;
+  color: var(--fg-2);
+  position: relative;
+  z-index: 1;
+}
+/* 처리/만료 시간 캡션 */
+.hist-cap-time {
+  font-size: 11px;
+}
+.hist-expire-date {
+  color: var(--fg-2);
+}
+.hist-expire-time {
+  font-size: 11px;
+  color: var(--fg-3);
+}
+/* 상태 칩 셀 */
+.hist-status-cell {
+  justify-self: start;
+}
+.hist-chip-partial {
+  color: #ed6c02;
+  background-color: rgba(237, 108, 2, 0.1);
+}
+/* 액션 버튼 */
+.hist-act-icon-btn {
+  padding: 4px 8px;
+  min-width: 0;
+}
+.hist-act-detail {
+  padding: 4px 8px;
+  font-size: 12px;
+  min-width: 0;
+  white-space: nowrap;
+}

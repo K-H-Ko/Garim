@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>SNS 진단 결과 · Garim</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="garim.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<style>
+  .sr-page { padding: 32px 32px 96px; }
+  .sr-shell { max-width: 1280px; margin: 0 auto; }
+  .sr-impact { display: flex; gap: 32px; align-items: center; margin-bottom: 24px; padding: 28px 32px; background: linear-gradient(135deg, rgba(211,47,47,0.05) 0%, rgba(151,71,255,0.03) 100%); border: 1px solid rgba(211,47,47,0.2); border-radius: 8px; }
+  .sr-impact h1 { font: 300 36px/1.2 var(--font-sans); margin: 0; letter-spacing: -0.25px; }
+  .sr-impact h1 .num { font-weight: 500; color: #d32f2f; }
+  .sr-impact .meta { font: 400 14px var(--font-sans); color: var(--fg-2); margin-top: 4px; }
+  .sr-impact .ig-info { display: flex; align-items: center; gap: 12px; margin-left: auto; padding-left: 24px; border-left: 1px solid rgba(0,0,0,0.12); }
+  .sr-impact .ig-avatar { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); padding: 2px; }
+  .sr-impact .ig-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+  .sr-impact .ig-text strong { font: 500 15px var(--font-sans); display: block; }
+  .sr-impact .ig-text small { font: 400 12px var(--font-sans); color: var(--fg-2); }
+
+  .sr-cats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+  .sr-cat { background: #fff; border: 1px solid var(--mui-border); border-radius: 4px; padding: 16px; display: flex; justify-content: space-between; align-items: center; }
+  .sr-cat .lbl { font: 400 13px var(--font-sans); color: var(--fg-2); }
+  .sr-cat .num { font: 300 28px var(--font-sans); }
+  .sr-cat.err .num { color: #d32f2f; }
+  .sr-cat.warn .num { color: #ed6c02; }
+  .sr-cat.info .num { color: #0288d1; }
+
+  .sr-grid { display: grid; grid-template-columns: 1fr 320px; gap: 24px; align-items: flex-start; }
+  .sr-main { background: #fff; border-radius: 4px; box-shadow: var(--mui-elev-1); }
+  .sr-toolbar { display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--mui-divider); flex-wrap: wrap; }
+  .sr-toolbar .label { font: 400 13px var(--font-sans); color: var(--fg-2); margin-right: 4px; }
+
+  .post-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 20px; }
+  .post-card { background: #fff; border: 1px solid var(--mui-border); border-radius: 4px; overflow: hidden; transition: box-shadow 150ms; cursor: pointer; }
+  .post-card:hover { box-shadow: var(--mui-elev-3); }
+  .post-card .thumb { aspect-ratio: 1; background: #000; position: relative; overflow: hidden; }
+  .post-card .thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .post-card .thumb .risk-badge { position: absolute; top: 8px; left: 8px; }
+  .post-card .thumb .date { position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.6); color: #fff; padding: 2px 8px; border-radius: 4px; font: 400 11px var(--font-sans); }
+  .post-card .body { padding: 12px; }
+  .post-card .body .desc { font: 400 13px/1.4 var(--font-sans); color: var(--fg-2); height: 36px; overflow: hidden; }
+  .post-card .body .tags { display: flex; gap: 4px; flex-wrap: wrap; margin: 8px 0; }
+  .post-card .body button { width: 100%; }
+
+  .side { display: flex; flex-direction: column; gap: 16px; }
+  .side-card { background: #fff; border-radius: 4px; box-shadow: var(--mui-elev-1); padding: 20px; }
+  .side-card h3 { font: 500 12px var(--font-sans); text-transform: uppercase; letter-spacing: 0.5px; color: var(--fg-2); margin: 0 0 12px; }
+  .guide-card { background: rgba(151,71,255,0.04); border: 1px solid rgba(151,71,255,0.2); }
+  .guide-card h3 { color: #9747ff; }
+  .guide-step { display: flex; gap: 12px; margin-bottom: 12px; }
+  .guide-step .n { width: 24px; height: 24px; border-radius: 50%; background: #9747ff; color: #fff; font: 500 13px/24px var(--font-sans); text-align: center; flex-shrink: 0; }
+  .guide-step .t { font: 500 13px var(--font-sans); }
+  .guide-step .s { font: 400 12px/1.5 var(--font-sans); color: var(--fg-2); }
+
+  .v2-placeholder { background: #fff; border: 1px dashed var(--mui-border); border-radius: 4px; padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; }
+  .v2-placeholder .material-icons { color: var(--fg-3); font-size: 32px; }
+  .v2-placeholder .t { font: 500 14px var(--font-sans); }
+  .v2-placeholder .s { font: 400 13px var(--font-sans); color: var(--fg-2); }
+</style>
+</head>
+<body class="page-app" data-screen-label="12 SNS results">
+<div id="header"></div>
+
+<div class="sr-page">
+  <div class="sr-shell">
+
+    <section class="sr-impact">
+      <div>
+        <span class="overline-k" style="color:#d32f2f;font-weight:600;letter-spacing:1.5px;">⚠ SNS 셀프 점검 완료</span>
+        <h1>내 인스타에서 <span class="num">9건</span>의 위험 게시물이 발견됐어요</h1>
+        <div class="meta">최근 60개 게시물 분석 · 1분 18초 소요 · 마지막 스캔 방금 전</div>
+      </div>
+      <div class="ig-info">
+        <div class="ig-avatar"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&q=60" alt=""></div>
+        <div class="ig-text">
+          <strong>@mynn_creator</strong>
+          <small>비즈니스 계정 · 1,247 팔로워</small>
+        </div>
+      </div>
+    </section>
+
+    <div class="sr-cats">
+      <div class="sr-cat err"><div class="lbl">택배 송장·주소</div><div class="num">3</div></div>
+      <div class="sr-cat err"><div class="lbl">차량 번호판</div><div class="num">2</div></div>
+      <div class="sr-cat warn"><div class="lbl">지인 얼굴</div><div class="num">3</div></div>
+      <div class="sr-cat info"><div class="lbl">위치 태그·EXIF</div><div class="num">1</div></div>
+    </div>
+
+    <!-- v2 placeholder -->
+    <div class="v2-placeholder">
+      <span class="material-icons">trending_up</span>
+      <div style="flex:1;">
+        <div class="t">위험도 추이 — 정기 스캔으로 시각화 (v2)</div>
+        <div class="s">자동 스캔이 활성화되면 매주 위험도 추이 그래프를 볼 수 있습니다.</div>
+      </div>
+      <span class="mui-chip">v2 예정</span>
+    </div>
+
+    <div class="sr-grid">
+      <div class="sr-main">
+        <div class="sr-toolbar">
+          <span class="label">정렬:</span>
+          <button class="mui-btn mui-btn--text mui-btn--sm">위험도순 ↓</button>
+          <span class="label" style="margin-left:8px;">필터:</span>
+          <span class="mui-chip mui-chip--primary mui-chip--md">전체 9</span>
+          <span class="mui-chip mui-chip--outlined mui-chip--md">위험 5</span>
+          <span class="mui-chip mui-chip--outlined mui-chip--md">주의 4</span>
+          <div style="flex:1;"></div>
+          <span class="caption-k">9건 / 60개 게시물</span>
+        </div>
+
+        <div class="post-grid">
+          <div class="post-card">
+            <div class="thumb">
+              <img src="https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400&q=60" alt="">
+              <svg viewBox="0 0 400 400" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;"><rect x="80" y="120" width="240" height="160" fill="none" stroke="#d32f2f" stroke-width="3"/></svg>
+              <span class="mui-chip mui-chip--error risk-badge">위험 8.4</span>
+              <span class="date">2026.04.12</span>
+            </div>
+            <div class="body">
+              <div class="desc">새 책상 도착 ‼ 박스 그대로 풀어봤어요</div>
+              <div class="tags"><span class="mui-chip mui-chip--soft-error" style="height:20px;font-size:10px;">송장</span><span class="mui-chip mui-chip--soft-warning" style="height:20px;font-size:10px;">주소</span></div>
+              <a href="15-replace-options.html" class="mui-btn mui-btn--contained mui-btn--sm mui-btn--block">처리하기</a>
+            </div>
+          </div>
+
+          <div class="post-card">
+            <div class="thumb">
+              <img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=400&q=60" alt="">
+              <svg viewBox="0 0 400 400" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;"><rect x="180" y="100" width="80" height="80" fill="none" stroke="#ed6c02" stroke-width="3"/><rect x="80" y="180" width="80" height="80" fill="none" stroke="#ed6c02" stroke-width="3"/></svg>
+              <span class="mui-chip mui-chip--warning risk-badge">주의 6.7</span>
+              <span class="date">2026.03.28</span>
+            </div>
+            <div class="body">
+              <div class="desc">우리 가족 주말 피크닉 🌳</div>
+              <div class="tags"><span class="mui-chip mui-chip--soft-warning" style="height:20px;font-size:10px;">얼굴 3명</span></div>
+              <a href="15-replace-options.html" class="mui-btn mui-btn--contained mui-btn--sm mui-btn--block">처리하기</a>
+            </div>
+          </div>
+
+          <div class="post-card">
+            <div class="thumb" style="background:linear-gradient(135deg,#424242,#212121);display:flex;align-items:center;justify-content:center;">
+              <span class="material-icons" style="color:#fff;font-size:64px;">directions_car</span>
+              <span class="mui-chip mui-chip--error risk-badge">위험 7.8</span>
+              <span class="date">2026.03.15</span>
+            </div>
+            <div class="body">
+              <div class="desc">새 차 출고 기념 🚗 우리 동네에서</div>
+              <div class="tags"><span class="mui-chip mui-chip--soft-error" style="height:20px;font-size:10px;">번호판</span><span class="mui-chip mui-chip--soft-info" style="height:20px;font-size:10px;">위치 태그</span></div>
+              <a href="15-replace-options.html" class="mui-btn mui-btn--contained mui-btn--sm mui-btn--block">처리하기</a>
+            </div>
+          </div>
+
+          <div class="post-card">
+            <div class="thumb">
+              <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=400&q=60" alt="">
+              <svg viewBox="0 0 400 400" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;"><rect x="100" y="160" width="200" height="80" fill="none" stroke="#d32f2f" stroke-width="3"/></svg>
+              <span class="mui-chip mui-chip--error risk-badge">위험 8.2</span>
+              <span class="date">2026.02.21</span>
+            </div>
+            <div class="body">
+              <div class="desc">주말 배달 도착! 컵라면 한 박스</div>
+              <div class="tags"><span class="mui-chip mui-chip--soft-error" style="height:20px;font-size:10px;">송장</span></div>
+              <a href="15-replace-options.html" class="mui-btn mui-btn--contained mui-btn--sm mui-btn--block">처리하기</a>
+            </div>
+          </div>
+
+          <div class="post-card">
+            <div class="thumb">
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=60" alt="">
+              <svg viewBox="0 0 400 400" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;"><rect x="160" y="80" width="100" height="100" fill="none" stroke="#ed6c02" stroke-width="3"/></svg>
+              <span class="mui-chip mui-chip--warning risk-badge">주의 5.9</span>
+              <span class="date">2026.02.10</span>
+            </div>
+            <div class="body">
+              <div class="desc">절친이랑 카페 데이트 ☕</div>
+              <div class="tags"><span class="mui-chip mui-chip--soft-warning" style="height:20px;font-size:10px;">얼굴</span></div>
+              <a href="15-replace-options.html" class="mui-btn mui-btn--contained mui-btn--sm mui-btn--block">처리하기</a>
+            </div>
+          </div>
+
+          <div class="post-card">
+            <div class="thumb">
+              <img src="https://images.unsplash.com/photo-1521295121783-8a321d551ad2?w=400&q=60" alt="">
+              <svg viewBox="0 0 400 400" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;"><rect x="240" y="220" width="120" height="60" fill="none" stroke="#ed6c02" stroke-width="3"/></svg>
+              <span class="mui-chip mui-chip--warning risk-badge">주의 6.4</span>
+              <span class="date">2026.01.30</span>
+            </div>
+            <div class="body">
+              <div class="desc">집 근처 산책로 발견! 너무 좋네요</div>
+              <div class="tags"><span class="mui-chip mui-chip--soft-warning" style="height:20px;font-size:10px;">번호판</span></div>
+              <a href="15-replace-options.html" class="mui-btn mui-btn--contained mui-btn--sm mui-btn--block">처리하기</a>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding:16px 20px;text-align:center;border-top:1px solid var(--mui-divider);color:var(--fg-2);font:400 13px var(--font-sans);">
+          위험 게시물 6/9 표시 중 · <a href="#" style="color:#1976d2;">3건 더 보기</a> · 안전 게시물 51개는 숨겨져 있습니다
+        </div>
+      </div>
+
+      <aside class="side">
+        <div class="side-card guide-card">
+          <h3>처리 후 흐름 — 직접 해야 하는 일</h3>
+          <p class="caption-k" style="font-size:12px;margin-bottom:12px;">Garim은 인스타에 자동 게시·삭제를 하지 않습니다 (B-2 권한 정책).</p>
+          <div class="guide-step">
+            <span class="n">1</span>
+            <div><div class="t">게시물 "처리하기" 클릭</div><div class="s">치환 옵션 → 미리보기 → 결과 다운로드</div></div>
+          </div>
+          <div class="guide-step">
+            <span class="n">2</span>
+            <div><div class="t">인스타에서 기존 게시물 삭제</div><div class="s">앱·웹에서 직접 삭제하세요</div></div>
+          </div>
+          <div class="guide-step">
+            <span class="n">3</span>
+            <div><div class="t">새 버전 업로드</div><div class="s">캡션·해시태그 그대로 유지 권장</div></div>
+          </div>
+        </div>
+
+        <div class="side-card">
+          <h3>연결 상태</h3>
+          <div class="row" style="gap:8px;">
+            <span class="material-icons" style="color:#2e7d32;">check_circle</span>
+            <div>
+              <div class="body2-k" style="font-weight:500;">@mynn_creator</div>
+              <div class="caption-k" style="font-size:11px;">연결됨 · 토큰 만료 60일 후</div>
+            </div>
+          </div>
+          <button class="mui-btn mui-btn--text mui-btn--sm" style="margin-top:12px;padding-left:0;color:#d32f2f;">연결 해제 →</button>
+        </div>
+
+        <div class="side-card" style="opacity:0.6;">
+          <h3>정기 자동 스캔</h3>
+          <div class="row" style="justify-content:space-between;">
+            <span class="body2-k">매주 자동 점검</span>
+            <span class="mui-chip">v2</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<div id="footer"></div>
+
+<script src="garim-chrome.js"></script>
+<script>
+  document.getElementById('header').innerHTML = gh({ variant: 'app', current: 'sns', authed: true });
+  document.getElementById('footer').innerHTML = gf();
+</script>
+</body></html>

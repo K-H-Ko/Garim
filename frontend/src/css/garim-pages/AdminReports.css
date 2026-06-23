@@ -1,0 +1,129 @@
+/*
+코드 설명:
+관리자 신고/문의 관리(AdminReports) 페이지 전용 스타일. 목록 테이블, 상세 패널, 첨부 미리보기 영역의
+정적 레이아웃 값을 정의한다(다크 모달 색상 등 복잡 인라인은 컴포넌트에 유지).
+*/
+
+.arp-pad-20 {
+  padding: 20px;
+}
+/* 목록/상세 로딩·빈 안내 */
+.arp-loading {
+  padding: 40px;
+  text-align: center;
+}
+.arp-empty {
+  padding: 40px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+}
+/* 목록 행 */
+.arp-row-click {
+  cursor: pointer;
+}
+.arp-td-id {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 12px;
+}
+/* 삭제 버튼 */
+.arp-del-btn {
+  color: #ef5350;
+  border-color: #ef5350;
+}
+/* 페이지네이션 */
+.arp-pagination-row {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+/* 상세 헤더 */
+.arp-mb-8 {
+  margin-bottom: 8px;
+}
+.arp-chip-mr {
+  margin-right: 8px;
+}
+.arp-meta-date {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 14px;
+}
+.arp-author {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+}
+.arp-detail-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+}
+/* 첨부 영역 */
+.arp-mb-30 {
+  margin-bottom: 30px;
+}
+.arp-attach-title {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+.arp-attach-list {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.arp-attach-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.arp-ico-18 {
+  font-size: 18px;
+}
+.arp-attach-note {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 8px;
+}
+/* 상태 처리 */
+.arp-status-label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+}
+.arp-status-btns {
+  display: flex;
+  gap: 10px;
+}
+/* 첨부 미리보기 */
+.arp-media-empty {
+  color: rgba(255, 255, 255, 0.5);
+}
+.arp-media {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.arp-json-empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.5);
+}
+.arp-match-count {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  white-space: nowrap;
+}
+.arp-nav-btn {
+  background: transparent;
+  border: none;
+  color: #ccc;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+}
+.arp-ico-16 {
+  font-size: 16px;
+}

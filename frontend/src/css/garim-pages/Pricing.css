@@ -1,0 +1,638 @@
+/* =========================================================
+   요금제 페이지 (Pricing) — 럭셔리 톤
+   - 라이트: 미니멀 아이보리 + 세리프 헤드라인
+   - 다크  : 블랙 + 골드 액센트
+   - 호버 : 카드가 떠오르고(translateY) 해당 카드가 선택된 것처럼 강조
+   모든 규칙은 .pricing-page 스코프로 한정하여 다른 페이지에 영향 없음.
+   ========================================================= */
+
+/* ----- 페이지 배경 (라이트=아이보리) ----- */
+.pricing-page.page-public {
+  background: linear-gradient(180deg, #faf8f3 0%, #f4f1ea 100%);
+}
+
+/* ----- 상단 헤더 ----- */
+.pricing-page .page-head {
+  padding: 80px 32px 40px;
+  text-align: center;
+  background: transparent;
+}
+
+.pricing-page .pricing-eyebrow {
+  font: 800 22px var(--font-sans);
+  letter-spacing: 4px;
+  color: #b08d57;
+  margin-bottom: 16px;
+}
+
+.pricing-page .page-head h1 {
+  font: 300 48px/1.2 var(--font-serif);
+  letter-spacing: -0.5px;
+  margin: 0 0 16px;
+  color: var(--fg-1);
+}
+
+.pricing-page .page-head p {
+  font: 300 17px/1.6 var(--font-sans);
+  color: var(--fg-2);
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+/* 결제 주기 토글 — 슬라이딩 스위치 */
+.pricing-page .billing-toggle {
+  position: relative;
+  display: inline-flex;
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 9999px;
+  padding: 4px;
+  margin-top: 28px;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* 슬라이딩 인디케이터 — active 위치로 부드럽게 이동 */
+.pricing-page .billing-toggle__slider {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc(50% - 4px);
+  background: var(--bg-1);
+  border-radius: 9999px;
+  box-shadow: var(--mui-elev-1);
+  transition: transform .28s cubic-bezier(.4, 0, .2, 1);
+  z-index: 0;
+}
+
+.pricing-page .billing-toggle--yearly .billing-toggle__slider {
+  transform: translateX(100%);
+}
+
+.pricing-page .billing-toggle button {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  white-space: nowrap;
+  padding: 0 24px;
+  height: 52px;
+  border-radius: 9999px;
+  border: none;
+  background: transparent !important;
+  font: 500 15px var(--font-sans);
+  cursor: pointer;
+  color: var(--fg-2);
+  transition: color .2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.pricing-page .billing-toggle button.active {
+  color: var(--fg-1);
+}
+
+.pricing-page .billing-toggle .save {
+  color: #b08d57;
+  font-weight: 700;
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+/* ----- 카드 그리드 (구독 3종) ----- */
+.pricing-grid {
+  grid-template-columns: repeat(3, 1fr) !important;
+  max-width: 1080px !important;
+}
+
+/* ----- 구독 카드 ----- */
+.pricing-page .price-card {
+  background: #ffffff;
+  border: 1px solid #e8e3d8;
+  border-radius: 18px;
+  box-shadow: 0 2px 18px rgba(0, 0, 0, 0.03);
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+
+.pricing-page .overline-k {
+  color: var(--fg-2);
+}
+
+/* 카드 뱃지 (Basic/Team) 베이지 톤 — 샘플 통일 */
+.pricing-page .price-card__badge {
+  background: #f3eee2;
+  color: #8a7a52;
+  border: none;
+}
+
+.pricing-page .price-card__name {
+  font: 600 22px var(--font-serif);
+  color: var(--fg-1);
+  letter-spacing: 1px;
+  text-transform: none;
+}
+
+.pricing-page .price-card__price {
+  font-family: var(--font-serif);
+  color: var(--fg-1);
+  font-weight: 600;
+}
+
+.pricing-page .price-card__permonth {
+  font: 400 13px var(--font-sans);
+  color: var(--fg-3);
+  margin-top: -8px;
+}
+
+.pricing-page .price-card__desc {
+  color: var(--fg-2);
+  min-height: 40px;
+  font-size: 13px;
+}
+
+/* 크레딧 강조 라인 (이 박스만 강조, 나머지 특징은 텍스트) */
+.pricing-page .price-card__credit-line {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font: 600 19px var(--font-serif);
+  color: var(--fg-1);
+  text-align: center;
+  padding: 14px 0;
+  margin: 4px 0 8px;
+  border-radius: 10px;
+  background: var(--surface-alt);
+  border: 1px solid var(--mui-divider);
+}
+
+/* 연 결제 시 월 환산 보조 문구 */
+.pricing-page .price-card__credit-note {
+  font: 400 12px var(--font-sans);
+  color: var(--fg-3);
+}
+
+/* 특징 목록 — 박스/배경 제거, 작은 체크 + 텍스트만 (샘플 동일) */
+.pricing-page .price-card__feats {
+  gap: 12px;
+}
+
+.pricing-page .price-card__feats li {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  font: 300 14px var(--font-sans);
+  color: var(--fg-2);
+  align-items: center;
+}
+
+.pricing-page .price-card__feats li .material-icons {
+  font-size: 15px !important;
+  color: var(--fg-3);
+  margin-top: 0;
+}
+
+/* CTA 버튼 — 전 카드 통일 (라이트: 다크 채움) */
+.pricing-page .price-card__cta {
+  margin-top: auto;
+  background: #2a2724;
+  color: #faf8f3;
+  border: none;
+  border-radius: 8px !important;
+  padding: 15px !important;
+  font-weight: 600 !important;
+  font-size: 15px !important;
+}
+
+.pricing-page .price-card__cta:hover {
+  background: #000;
+}
+
+/* 하단 크레딧 차감 안내 */
+.pricing-page .pricing-note {
+  text-align: center;
+  margin: 48px auto 0;
+  font: 700 15px var(--font-sans);
+  color: var(--fg-3);
+  letter-spacing: 0.5px;
+}
+
+/* 호버: 어느 카드든 떠오르며 다크 보더로 강조(=선택된 것처럼) */
+.pricing-page .price-card:hover {
+  transform: translateY(-8px);
+  border-color: #2a2724;
+  box-shadow: 0 22px 50px rgba(42, 39, 36, 0.14);
+}
+
+/* 기본 강조(추천/PRO) — 살짝 떠 있고 진한 보더 */
+.pricing-page .price-card--featured {
+  border: 1.5px solid #2a2724 !important;
+  box-shadow: 0 18px 44px rgba(42, 39, 36, 0.12);
+  transform: scale(1.03);
+}
+
+.pricing-page .price-card--featured:hover {
+  transform: scale(1.03) translateY(-8px);
+}
+
+.pricing-page .price-card--featured .price-card__badge {
+  background: #2a2724;
+  color: #f4f1ea;
+}
+
+/* 현재 이용 중 플랜 (라이트/다크 공통 그린) */
+.price-card--current {
+  border-color: #2e7d32 !important;
+  box-shadow: 0 10px 28px rgba(46, 125, 50, 0.16) !important;
+}
+
+.price-card--current .price-card__badge {
+  background: #e8f5e9;
+  color: #1b5e20;
+}
+
+.price-card--current .mui-btn:disabled {
+  background: #2e7d32 !important;
+  color: #fff !important;
+  cursor: default;
+  opacity: 1;
+}
+
+@media (max-width: 1100px) {
+  .pricing-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .pricing-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ----- 크레딧 충전 카드 ----- */
+.credit-row-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+  width: 100%;
+}
+
+.credit-row {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.pricing-page .credit-card {
+  width: 300px;
+  text-align: center;
+  border: 1px solid #e8e3d8;
+  padding: 30px 24px;
+  border-radius: 16px;
+  background: #fff;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+
+.pricing-page .credit-card:hover {
+  transform: translateY(-6px);
+  border-color: #b08d57;
+  box-shadow: 0 18px 40px rgba(176, 141, 87, 0.16);
+}
+
+.pricing-page .credit-card--hot {
+  border: 1.5px solid #b08d57;
+}
+
+.credit-card__tag {
+  position: absolute;
+  top: -13px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #b08d57;
+  color: #fff;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.credit-card__head {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.credit-card__icon {
+  color: var(--fg-2);
+  font-size: 24px !important;
+}
+
+.pricing-page .credit-card--hot .credit-card__icon {
+  color: #b08d57;
+}
+
+.credit-card__name {
+  margin: 0;
+  font: 600 20px var(--font-serif);
+  color: var(--fg-1);
+}
+
+.credit-card__price {
+  font: 600 30px var(--font-serif);
+  margin: 14px 0 4px;
+  color: var(--fg-1);
+}
+
+.credit-card__won {
+  font: 400 15px var(--font-sans);
+  color: var(--fg-2);
+  margin-left: 2px;
+}
+
+.credit-card__desc {
+  color: var(--fg-2);
+  font-size: 13px;
+  margin-bottom: 22px;
+  flex: 1;
+}
+
+.credit-card__btn {
+  background: #2a2724;
+  color: #faf8f3;
+  border: none;
+  border-radius: 8px !important;
+  padding: 15px !important;
+  font-weight: 600 !important;
+  font-size: 15px !important;
+}
+.credit-card__btn:hover {
+  background: #000;
+}
+
+/* ----- 비교 표 ----- */
+.compare-section {
+  padding: 64px 32px;
+  background: transparent;
+}
+
+table.compare {
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  border-collapse: collapse;
+  background: var(--bg-1);
+  box-shadow: var(--mui-elev-1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+table.compare th,
+table.compare td {
+  padding: 16px 20px;
+  text-align: left;
+  font: 400 14px/1.5 var(--font-sans);
+  border-bottom: 1px solid var(--mui-divider);
+  color: var(--fg-1);
+}
+
+table.compare thead th {
+  background: var(--surface-alt);
+  font: 500 14px var(--font-sans);
+  color: var(--fg-1);
+}
+
+table.compare tbody tr:last-child td {
+  border-bottom: none;
+}
+
+table.compare .row-head td {
+  background: #f3eee2;
+  color: #6b5526;
+  font: 700 14px/1.5 var(--font-sans);
+  border-left: 4px solid #b08d57;
+  border-bottom-color: #e6dcc6;
+}
+
+table.compare .check {
+  color: #2e7d32;
+}
+
+table.compare .x {
+  color: var(--fg-3);
+}
+
+/* ----- 결제 모달 ----- */
+.payment-modal {
+  max-width: 860px;
+  width: min(860px, calc(100vw - 32px));
+  height: auto;
+  max-height: calc(100vh - 24px);
+  overflow: hidden;
+  transition: height 0.25s ease;
+}
+
+.payment-modal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--mui-divider);
+  font: 600 16px var(--font-sans);
+}
+
+.payment-modal__frame {
+  width: 100%;
+  height: var(--payment-frame-height, 820px);
+  max-height: calc(100vh - 56px);
+  flex: none;
+  border: 0;
+  background: #fff;
+  transition: height 0.25s ease;
+}
+
+/* ----- FAQ ----- */
+.faq-short {
+  padding: 64px 32px 96px;
+  background: transparent;
+}
+
+.faq-short h2 {
+  text-align: center;
+  font: 300 30px var(--font-serif);
+  margin: 0 0 32px;
+  color: var(--fg-1);
+}
+
+.faq-item {
+  max-width: 760px;
+  margin: 0 auto 12px;
+  background: var(--bg-1);
+  border: 1px solid var(--mui-border);
+  border-radius: 8px;
+  padding: 20px 24px;
+}
+
+.faq-item h4 {
+  font: 500 16px var(--font-sans);
+  margin: 0 0 8px;
+  color: var(--fg-1);
+}
+
+.faq-item p {
+  font: 400 14px/1.6 var(--font-sans);
+  color: var(--fg-2);
+  margin: 0;
+}
+
+/* =========================================================
+   🌙 다크 모드 — 블랙 + 골드
+   ========================================================= */
+:root[data-theme="dark"] .pricing-page.page-public {
+  background: radial-gradient(ellipse at top, #1c1c1e 0%, #0a0a0b 70%);
+}
+
+:root[data-theme="dark"] .pricing-page .pricing-eyebrow {
+  color: #c9a24b;
+}
+
+:root[data-theme="dark"] .pricing-page .billing-toggle {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+:root[data-theme="dark"] .pricing-page .billing-toggle .save {
+  color: #e9c878;
+}
+
+/* 다크 — 일반 뱃지(Basic/Team) 골드 톤 */
+:root[data-theme="dark"] .pricing-page .price-card__badge {
+  background: rgba(201, 162, 75, 0.14);
+  color: #c9a24b;
+}
+
+/* 다크 — 일반 카드 CTA(회색). PRO 카드는 아래 featured 규칙에서 골드로 덮어씀 */
+:root[data-theme="dark"] .pricing-page .price-card__cta {
+  background: #2a2a2d;
+  color: #ece8df;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+:root[data-theme="dark"] .pricing-page .price-card__cta:hover {
+  background: #34343a;
+}
+
+/* 구독 카드 (다크 기본) */
+:root[data-theme="dark"] .pricing-page .price-card {
+  background: #151517;
+  border: 1px solid rgba(201, 162, 75, 0.14);
+  box-shadow: none;
+}
+
+:root[data-theme="dark"] .pricing-page .price-card:hover {
+  border-color: #c9a24b;
+  box-shadow: 0 22px 55px rgba(201, 162, 75, 0.16);
+}
+
+/* 추천(PRO) 카드 — 골드 */
+:root[data-theme="dark"] .pricing-page .price-card--featured {
+  background: linear-gradient(165deg, #1f1b12 0%, #14130f 100%);
+  border: 1px solid #c9a24b !important;
+  box-shadow: 0 22px 55px rgba(201, 162, 75, 0.18);
+}
+
+:root[data-theme="dark"] .pricing-page .price-card--featured .price-card__badge {
+  background: #c9a24b;
+  color: #1a1407;
+}
+
+:root[data-theme="dark"] .pricing-page .price-card--featured .price-card__price {
+  color: #e9c878;
+}
+
+:root[data-theme="dark"] .pricing-page .price-card--featured .price-card__credit-line {
+  background: rgba(201, 162, 75, 0.1);
+  color: #e9c878;
+  border-color: rgba(201, 162, 75, 0.3);
+}
+
+:root[data-theme="dark"] .pricing-page .price-card--featured .mui-btn {
+  background: linear-gradient(90deg, #d9b65e, #c9a24b);
+  color: #1a1407;
+  border-color: #c9a24b;
+  font-weight: 700;
+}
+
+:root[data-theme="dark"] .pricing-page .price-card--featured .mui-btn:hover {
+  background: linear-gradient(90deg, #e3c570, #d4ad53);
+}
+
+/* 충전 카드 (다크) */
+:root[data-theme="dark"] .pricing-page .credit-card {
+  background: #151517;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+:root[data-theme="dark"] .pricing-page .credit-card:hover {
+  border-color: #c9a24b;
+  box-shadow: 0 18px 44px rgba(201, 162, 75, 0.16);
+}
+
+:root[data-theme="dark"] .pricing-page .credit-card--hot {
+  border: 1.5px solid #c9a24b;
+}
+
+:root[data-theme="dark"] .pricing-page .credit-card--hot .credit-card__tag {
+  background: #c9a24b;
+  color: #1a1407;
+}
+
+:root[data-theme="dark"] .pricing-page .credit-card--hot .credit-card__icon,
+:root[data-theme="dark"] .pricing-page .credit-card--hot .credit-card__name {
+  color: #e9c878;
+}
+
+:root[data-theme="dark"] .pricing-page .credit-card--hot .mui-btn--contained {
+  background: linear-gradient(90deg, #d9b65e, #c9a24b);
+  color: #1a1407;
+  border-color: #c9a24b;
+  font-weight: 700;
+}
+
+/* 비교표 강조줄 (다크 골드) */
+:root[data-theme="dark"] table.compare .row-head td {
+  background: rgba(201, 162, 75, 0.12);
+  color: #e9c878;
+  border-left: 4px solid #c9a24b;
+  border-bottom-color: rgba(201, 162, 75, 0.25);
+}
+/* 플랜 그리드 섹션 여백 */
+.pricing-page .pricing-plans-section {
+  padding: 24px 32px 64px;
+}
+/* 크레딧 충전 섹션 */
+.pricing-page .credit-section {
+  padding: 0 32px 64px;
+}
+.pricing-page .credit-section__head {
+  text-align: center;
+  margin-bottom: 40px;
+}
+.pricing-page .credit-section__title {
+  font-size: 28px;
+  font-weight: 600;
+}
+.pricing-page .credit-section__desc {
+  color: var(--fg-2);
+  margin-top: 8px;
+}

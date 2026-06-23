@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>로그인 · Garim</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="garim.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<style>
+  .auth-card {
+    width: 440px; background: #fff; border-radius: 4px;
+    box-shadow: var(--mui-elev-2); padding: 40px;
+  }
+  .auth-card h1 { font: 500 24px var(--font-sans); margin: 0 0 8px; }
+  .auth-card .sub { font: 400 14px var(--font-sans); color: var(--fg-2); margin-bottom: 32px; }
+  .sso-btn {
+    width: 100%; height: 48px; border-radius: 4px;
+    background: #FEE500; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    font: 500 14px var(--font-sans); color: rgba(0,0,0,0.85);
+    letter-spacing: 0.1px;
+  }
+  .divider-or {
+    display: flex; align-items: center; gap: 16px;
+    margin: 24px 0; color: var(--fg-2); font-size: 12px;
+  }
+  .divider-or::before, .divider-or::after { content: ""; flex: 1; height: 1px; background: var(--mui-divider); }
+  .form-fields { display: flex; flex-direction: column; gap: 16px; }
+  .pwd-wrap { position: relative; }
+  .pwd-wrap .toggle { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: transparent; border: none; cursor: pointer; color: var(--fg-2); width: 32px; height: 32px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; }
+  .row-between { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+  .checkbox { width: 18px; height: 18px; border: 2px solid rgba(0,0,0,0.54); border-radius: 2px; flex-shrink: 0; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; background: #fff; }
+  .checkbox.checked { background: #1976d2; border-color: #1976d2; }
+  .checkbox.checked::after { content: ""; width: 5px; height: 9px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg) translate(-1px, -1px); }
+  .keep-row { display: flex; align-items: center; gap: 8px; font: 400 14px var(--font-sans); color: var(--fg-1); cursor: pointer; }
+  .links { font: 400 13px var(--font-sans); display: flex; gap: 4px; align-items: center; color: var(--fg-2); }
+  .links a { color: #1976d2; font-weight: 500; }
+  .footer-link { text-align: center; margin-top: 24px; font: 400 14px var(--font-sans); color: var(--fg-2); }
+  .footer-link a { color: #1976d2; font-weight: 500; }
+</style>
+</head>
+<body class="page-auth" data-screen-label="06 Login">
+<div id="header"></div>
+
+<main class="auth-main">
+  <div class="auth-card">
+    <h1>다시 만나서 반가워요</h1>
+    <p class="sub">로그인 후 이전에 작업하던 곳으로 안내해드릴게요.</p>
+
+    <button class="sso-btn">
+      <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#3C1E1E" d="M12 3C6.5 3 2 6.6 2 11c0 2.9 1.9 5.5 4.8 6.9-.2.7-.7 2.6-.8 3-.1.5.2.5.4.4l3.5-2.4c.7.1 1.4.2 2.1.2 5.5 0 10-3.6 10-8.1S17.5 3 12 3z"/></svg>
+      카카오 계정으로 로그인
+    </button>
+
+    <div class="divider-or">또는</div>
+
+    <div id="alert-slot"></div>
+
+    <form id="login-form" class="form-fields" novalidate>
+      <div class="mui-field" id="f-email">
+        <input type="email" class="mui-input" id="email" placeholder="이메일" autocomplete="email" required>
+        <span class="mui-field__helper" id="h-email"></span>
+      </div>
+
+      <div class="mui-field" id="f-pwd">
+        <div class="pwd-wrap">
+          <input type="password" class="mui-input" id="pwd" placeholder="비밀번호" autocomplete="current-password" required>
+          <button type="button" class="toggle" id="pwd-toggle" tabindex="-1"><span class="material-icons" style="font-size:20px;">visibility</span></button>
+        </div>
+        <span class="mui-field__helper" id="h-pwd"></span>
+      </div>
+
+      <div class="row-between">
+        <label class="keep-row">
+          <span class="checkbox" id="cb-keep"></span>
+          30일 동안 로그인 유지
+        </label>
+        <span class="links"><a href="07-password-reset.html">비밀번호 잊으셨나요?</a></span>
+      </div>
+
+      <button type="submit" class="mui-btn mui-btn--contained mui-btn--lg mui-btn--block" id="submit-btn" disabled style="margin-top:16px;">
+        로그인
+      </button>
+    </form>
+
+    <div class="footer-link">아직 계정이 없나요? <a href="05-signup.html">무료로 가입하기</a></div>
+  </div>
+</main>
+
+<div id="footer"></div>
+
+<script src="garim-chrome.js"></script>
+<script>
+  document.getElementById('header').innerHTML = gh({ variant: 'minimal' });
+  document.getElementById('footer').innerHTML = gf({ minimal: true });
+
+  const email = document.getElementById('email');
+  const pwd = document.getElementById('pwd');
+  const submit = document.getElementById('submit-btn');
+  const hEmail = document.getElementById('h-email');
+  const hPwd = document.getElementById('h-pwd');
+  const alertSlot = document.getElementById('alert-slot');
+
+  let attempts = 0;
+  let locked = false;
+
+  function checkEmail() {
+    const v = email.value.trim();
+    if (!v) return { ok: false, msg: '' };
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) {
+      return { ok: false, msg: '올바른 이메일 형식이 아닙니다.' };
+    }
+    return { ok: true, msg: '' };
+  }
+
+  function validate() {
+    const eRes = checkEmail();
+    hEmail.textContent = eRes.msg;
+    hEmail.className = 'mui-field__helper' + (eRes.msg ? ' mui-field__helper--error' : '');
+    email.classList.toggle('mui-input--error', !!eRes.msg);
+    submit.disabled = !(eRes.ok && pwd.value.length >= 1) || locked;
+  }
+  email.addEventListener('input', validate);
+  pwd.addEventListener('input', validate);
+
+  document.getElementById('pwd-toggle').addEventListener('click', () => {
+    const t = pwd.type === 'password' ? 'text' : 'password';
+    pwd.type = t;
+    document.querySelector('#pwd-toggle span').textContent = t === 'password' ? 'visibility' : 'visibility_off';
+  });
+  document.getElementById('cb-keep').addEventListener('click', (e) => e.currentTarget.classList.toggle('checked'));
+
+  document.getElementById('login-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (email.value === 'demo@garim.kr' && pwd.value === 'demo1234') {
+      window.location.href = '19-dashboard.html';
+      return;
+    }
+    attempts++;
+    if (attempts >= 5) {
+      locked = true;
+      alertSlot.innerHTML = '<div class="mui-alert mui-alert--error" style="margin-bottom:16px;"><span class="material-icons">error</span><div class="mui-alert__body"><strong>로그인이 5회 실패했습니다.</strong> 보안을 위해 캡차 확인이 필요합니다.</div></div>';
+    } else {
+      alertSlot.innerHTML = `<div class="mui-alert mui-alert--error" style="margin-bottom:16px;"><span class="material-icons">error</span><div class="mui-alert__body">이메일 또는 비밀번호가 일치하지 않습니다. (시도 ${attempts}/5)</div></div>`;
+    }
+    submit.disabled = locked;
+  });
+</script>
+</body></html>

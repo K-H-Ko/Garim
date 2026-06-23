@@ -1,0 +1,281 @@
+/* ════════════════════════════════════════════════════════════════
+   ResultPage — 구간 다운로드 스타일
+════════════════════════════════════════════════════════════════ */
+
+/* ── 미리보기 영역 ─────────────────────────────────────────────── */
+.rp-preview-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0;
+}
+
+.rp-preview-video {
+  max-width: 100%;
+  max-height: 480px;
+  border-radius: 6px;
+  background: #000;
+}
+
+.rp-preview-img {
+  max-width: 100%;
+  max-height: 480px;
+  border-radius: 6px;
+  object-fit: contain;
+  display: block;
+}
+
+.rp-preview-caption {
+  color: var(--fg-2);
+  font: 500 15px var(--font-sans);
+  margin: 8px 0 0;
+}
+
+/* ── 이미지 크롭 래퍼 — canvas 오버레이 기준점 ───────────────── */
+.rp-crop-wrapper {
+  position: relative;   /* canvas 절대 위치 기준 */
+  display: inline-block;
+  line-height: 0;       /* img 하단 공백 제거 */
+  max-width: 100%;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+/* canvas 오버레이 — 이미지 위에 정확히 덮기 */
+.rp-crop-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+  touch-action: none; /* 모바일 스크롤 방지 */
+}
+
+/* ── 우측 패널 공통 블록 ───────────────────────────────────────── */
+.rp-info-block {
+  padding: 16px 24px;
+  border-top: 1px solid var(--mui-divider);
+  font: 400 13px var(--font-sans);
+  line-height: 1.8;
+  color: var(--fg-2);
+}
+
+.rp-info-title {
+  color: var(--fg-1);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.rp-info-val {
+  color: var(--fg-1);
+}
+
+.rp-info-note {
+  margin: 8px 0 0;
+  color: #888;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* ── 버튼 영역 ────────────────────────────────────────────────── */
+.rp-btn-area {
+  padding: 24px;
+  border-top: 1px solid var(--mui-divider);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 너비 100% + flex center 버튼 공통 */
+.rp-btn-full {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* 구간 다운로드 토글 활성 상태 강조 */
+.rp-range-toggle--active {
+  border-color: #1976d2 !important;
+  color: #1976d2 !important;
+}
+
+/* ── 구간 다운로드 패널 ───────────────────────────────────────── */
+.rp-range-panel {
+  border: 1px solid var(--mui-border);
+  border-radius: 6px;
+  padding: 16px;
+  background: var(--bg-2);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* 패널 섹션 레이블 */
+.rp-range-label {
+  font: 500 13px var(--font-sans);
+  color: var(--fg-1);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* 보조 설명 텍스트 */
+.rp-range-hint {
+  font: 400 12px var(--font-sans);
+  color: var(--fg-3);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* 주의사항 텍스트 */
+.rp-range-note {
+  font: 400 11px var(--font-sans);
+  color: var(--fg-3);
+  margin: 0;
+}
+
+/* 에러 메시지 */
+.rp-range-error {
+  font: 400 12px var(--font-sans);
+  color: var(--error, #d32f2f);
+  background: rgba(211, 47, 47, 0.06);
+  border-radius: 4px;
+  padding: 6px 10px;
+}
+
+/* ── 영상 시간 입력 ─────────────────────────────────────────────── */
+.rp-time-inputs {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.rp-time-sep {
+  font: 500 14px var(--font-sans);
+  color: var(--fg-2);
+  flex-shrink: 0;
+  padding-bottom: 10px; /* input 하단 정렬 */
+}
+
+.rp-time-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.rp-time-field label {
+  font: 400 11px var(--font-sans);
+  color: var(--fg-3);
+}
+
+.rp-time-field input {
+  padding: 8px 10px;
+  border: 1px solid var(--mui-border);
+  border-radius: 4px;
+  font: 400 14px var(--font-mono, monospace);
+  background: var(--bg-1);
+  color: var(--fg-1);
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.15s;
+}
+
+.rp-time-field input:focus {
+  outline: none;
+  border-color: #1976d2;
+}
+
+.rp-time-field input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── 녹화 중 배지 ─────────────────────────────────────────────── */
+.rp-recording-badge {
+  font: 500 13px var(--font-sans);
+  color: #d32f2f;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  animation: rp-blink 1s ease-in-out infinite;
+}
+
+@keyframes rp-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.35; }
+}
+
+/* ── 다크 모드 보정 ───────────────────────────────────────────── */
+:root[data-theme="dark"] .rp-range-panel {
+  background: var(--bg-1);
+}
+
+:root[data-theme="dark"] .rp-time-field input {
+  background: var(--bg-2);
+  border-color: var(--mui-border);
+}
+
+:root[data-theme="dark"] .rp-time-field input:focus {
+  border-color: #42a5f5; /* 다크 모드에서 파랑 약간 밝게 */
+}
+
+/* 에러 표시 */
+.rp-error {
+  padding: 32px;
+  text-align: center;
+  color: var(--error);
+}
+.rp-error-ico {
+  font-size: 40px;
+}
+.rp-error-msg {
+  margin-top: 8px;
+}
+/* 보관 만료일 (만료 없으면 흐리게) */
+.rp-expire {
+  color: var(--fg-1);
+}
+.rp-expire--off {
+  color: var(--fg-3);
+}
+/* 다운로드 버튼 아이콘 */
+.rp-dl-ico {
+  font-size: 20px;
+  margin-right: 8px;
+}
+/* 구간 다운로드 라벨/버튼 아이콘 */
+.rp-range-label-ico {
+  font-size: 16px;
+}
+.rp-range-btn-ico {
+  font-size: 18px;
+  margin-right: 6px;
+}
+/* 이미지 크롭 버튼 영역 */
+.rp-crop-btns {
+  display: flex;
+  gap: 8px;
+}
+.rp-crop-go {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+/* 크롭 완료 안내 */
+.rp-range-hint--done {
+  color: #1976d2;
+  margin-top: 0;
+}
+/* 다른 파일 체크 버튼 */
+.rp-newfile-btn {
+  display: flex;
+  justify-content: center;
+}
+.rp-newfile-ico {
+  font-size: 18px;
+  margin-right: 8px;
+}

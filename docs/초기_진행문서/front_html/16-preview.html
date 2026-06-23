@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>처리 전 미리보기 · Garim</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="garim.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<style>
+  body { background: #f5f5f5; }
+  .pv-page { display: flex; flex-direction: column; min-height: calc(100vh - 64px); }
+  .pv-toolbar { background: #fff; border-bottom: 1px solid var(--mui-divider); padding: 12px 24px; display: flex; align-items: center; gap: 16px; }
+  .pv-toolbar h1 { font: 500 18px var(--font-sans); margin: 0; flex: 1; }
+  .pv-toolbar .meta { font: 400 13px var(--font-sans); color: var(--fg-2); }
+  .pv-grid { flex: 1; display: grid; grid-template-columns: 1fr 380px; gap: 0; }
+
+  .pv-left { background: #1a1a1a; display: flex; flex-direction: column; padding: 24px; }
+  .ba-compare {
+    flex: 1; max-width: 1000px; margin: 0 auto;
+    background: #000; border-radius: 4px; overflow: hidden;
+    position: relative; box-shadow: var(--mui-elev-12);
+    width: 100%; aspect-ratio: 16/9;
+  }
+  .ba-compare .layer { position: absolute; inset: 0; overflow: hidden; }
+  .ba-compare .layer img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .ba-compare .after { clip-path: inset(0 0 0 50%); }
+  .ba-compare .handle {
+    position: absolute; top: 0; bottom: 0; left: 50%; width: 4px;
+    background: #fff; transform: translateX(-50%);
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.3);
+    cursor: ew-resize;
+  }
+  .ba-compare .handle::after {
+    content: ""; position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 44px; height: 44px; border-radius: 50%;
+    background: #fff; box-shadow: var(--mui-elev-4);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ba-compare .handle .grip {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    z-index: 1; pointer-events: none;
+  }
+  .ba-compare .badge {
+    position: absolute; top: 16px; padding: 6px 12px; border-radius: 4px;
+    font: 500 12px var(--font-sans); letter-spacing: 0.5px; text-transform: uppercase;
+    background: rgba(0,0,0,0.7); color: #fff;
+  }
+  .ba-compare .badge.before { left: 16px; }
+  .ba-compare .badge.after { right: 16px; background: rgba(46,125,50,0.85); }
+
+  .pv-mode { display: flex; gap: 4px; padding: 12px 0 0; justify-content: center; }
+  .pv-mode button { padding: 6px 16px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.8); border-radius: 4px; cursor: pointer; font: 500 13px var(--font-sans); }
+  .pv-mode button.active { background: #fff; color: var(--fg-1); }
+
+  /* RIGHT */
+  .pv-right { background: #fff; border-left: 1px solid var(--mui-divider); display: flex; flex-direction: column; }
+  .pv-right .head { padding: 20px 24px 16px; border-bottom: 1px solid var(--mui-divider); }
+  .pv-right .head h2 { font: 500 18px var(--font-sans); margin: 0 0 4px; }
+  .pv-right .head .sub { font: 400 13px var(--font-sans); color: var(--fg-2); }
+  .pv-summary { padding: 16px 24px; display: flex; gap: 8px; flex-wrap: wrap; border-bottom: 1px solid var(--mui-divider); }
+  .item-list { flex: 1; padding: 12px; overflow-y: auto; }
+  .pv-item { display: flex; gap: 12px; padding: 10px; border-radius: 4px; cursor: pointer; }
+  .pv-item:hover { background: rgba(0,0,0,0.04); }
+  .pv-item .thumb { width: 64px; aspect-ratio: 16/9; border-radius: 2px; background: #000; flex-shrink: 0; overflow: hidden; }
+  .pv-item .thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .pv-item .body { flex: 1; min-width: 0; }
+  .pv-item .time { font: 500 12px var(--font-sans); color: #1976d2; font-variant-numeric: tabular-nums; }
+  .pv-item .title { font: 500 13px var(--font-sans); }
+  .pv-item .change { font: 400 12px/1.4 var(--font-sans); color: var(--fg-2); }
+  .pv-item .change s { color: var(--fg-3); }
+  .pv-item .change strong { color: #2e7d32; font-weight: 500; }
+
+  /* Self-rating */
+  .rating-block { padding: 16px 24px; background: rgba(151,71,255,0.04); border-top: 1px solid var(--mui-divider); }
+  .rating-block h3 { font: 500 14px var(--font-sans); margin: 0 0 12px; }
+  .rating-row { display: flex; gap: 8px; }
+  .rating-btn {
+    flex: 1; padding: 12px 8px; border: 1px solid var(--mui-border); background: #fff;
+    border-radius: 4px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px;
+    font: 400 12px var(--font-sans); color: var(--fg-2);
+    transition: border-color 150ms;
+  }
+  .rating-btn:hover { border-color: #9747ff; }
+  .rating-btn.selected { border: 2px solid #9747ff; background: rgba(151,71,255,0.08); color: var(--fg-1); padding: 11px 7px; }
+  .rating-btn .face { font-size: 24px; }
+
+  .wmk-note { padding: 12px 24px; border-top: 1px solid var(--mui-divider); }
+
+  .pv-footer { background: #fff; border-top: 1px solid var(--mui-divider); padding: 16px 24px; display: flex; align-items: center; gap: 12px; }
+  .pv-footer .info { flex: 1; font: 400 13px var(--font-sans); color: var(--fg-2); }
+</style>
+</head>
+<body class="page-app" data-screen-label="16 Preview">
+<div id="header"></div>
+
+<div class="pv-page">
+  <div class="pv-toolbar">
+    <a href="15-replace-options.html" class="gh__icon" style="margin-left:-8px;"><span class="material-icons">arrow_back</span></a>
+    <h1>처리 전 미리보기</h1>
+    <span class="meta">family_picnic_2026.mp4 · 17건 처리</span>
+    <span class="mui-chip mui-chip--soft-info mui-chip--md">샘플 프레임 · 본 처리는 영상 전체에 적용</span>
+  </div>
+
+  <div class="pv-grid">
+    <div class="pv-left">
+      <div class="ba-compare" id="compare">
+        <div class="layer before">
+          <img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=1200&q=80" alt="원본">
+          <svg viewBox="0 0 1200 675" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;">
+            <rect x="420" y="180" width="220" height="220" fill="none" stroke="#d32f2f" stroke-width="3" stroke-dasharray="8 4" rx="2"/>
+            <rect x="700" y="240" width="140" height="160" fill="none" stroke="#ed6c02" stroke-width="3" stroke-dasharray="8 4" rx="2"/>
+          </svg>
+        </div>
+        <div class="layer after">
+          <img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=1200&q=80" alt="처리 후" style="filter:contrast(1.02);">
+          <svg viewBox="0 0 1200 675" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;">
+            <!-- Auto-replaced delivery label -->
+            <rect x="420" y="180" width="220" height="220" fill="#fafafa"/>
+            <rect x="420" y="180" width="220" height="220" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+            <text x="436" y="220" fill="#212121" font-family="Pretendard" font-size="14" font-weight="600">CJ대한통운 송장</text>
+            <text x="436" y="245" fill="#757575" font-family="Pretendard" font-size="12">받는분: 김OO 님</text>
+            <text x="436" y="265" fill="#757575" font-family="Pretendard" font-size="12">서울특별시 ○○구</text>
+            <text x="436" y="285" fill="#757575" font-family="Pretendard" font-size="12">010-****-****</text>
+            <text x="436" y="318" fill="#9e9e9e" font-family="monospace" font-size="10">‖‖‖ ‖‖ ‖‖‖‖ ‖‖‖</text>
+            <!-- Blurred face -->
+            <rect x="700" y="240" width="140" height="160" fill="url(#blurp)" />
+            <defs>
+              <pattern id="blurp" patternUnits="userSpaceOnUse" width="20" height="20"><circle cx="10" cy="10" r="8" fill="rgba(189,189,189,0.7)" filter="blur(3px)"/></pattern>
+              <filter id="blr"><feGaussianBlur stdDeviation="10"/></filter>
+            </defs>
+            <!-- Watermark badge -->
+            <text x="1180" y="650" fill="rgba(151,71,255,0.55)" font-family="Pretendard" font-size="14" font-weight="600" text-anchor="end">garim · 워터마크</text>
+          </svg>
+        </div>
+        <div class="handle" id="handle" style="left:50%;">
+          <span class="grip" style="color:var(--fg-1);"><span class="material-icons">drag_handle</span></span>
+        </div>
+        <span class="badge before">원본</span>
+        <span class="badge after">처리 후</span>
+      </div>
+
+      <div class="pv-mode">
+        <button class="active" data-mode="slider">Before/After 슬라이더</button>
+        <button data-mode="before">원본만</button>
+        <button data-mode="after">처리 후만</button>
+      </div>
+    </div>
+
+    <aside class="pv-right">
+      <div class="head">
+        <h2>이 결과 어떠세요?</h2>
+        <div class="sub">아래에서 각 항목이 자연스러운지 확인하고, 어색하면 옵션을 수정해주세요.</div>
+      </div>
+
+      <div class="pv-summary">
+        <span class="mui-chip mui-chip--soft-info">자동 9건</span>
+        <span class="mui-chip mui-chip--soft-info">지정 3건</span>
+        <span class="mui-chip mui-chip--soft-info">마스킹 4건</span>
+        <span class="mui-chip">건너뛰기 1건</span>
+      </div>
+
+      <div class="item-list">
+        <div class="pv-item">
+          <div class="thumb"><img src="https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=200&q=60" alt=""></div>
+          <div class="body">
+            <div class="time">00:11</div>
+            <div class="title">택배 송장 → 자동</div>
+            <div class="change"><s>박OO · 강남구...</s> → <strong>김OO · ○○구...</strong></div>
+          </div>
+        </div>
+        <div class="pv-item">
+          <div class="thumb" style="background:linear-gradient(45deg,#424242,#212121);display:flex;align-items:center;justify-content:center;"><span class="material-icons" style="color:#fff;font-size:20px;">directions_car</span></div>
+          <div class="body">
+            <div class="time">00:31</div>
+            <div class="title">번호판 → 지정</div>
+            <div class="change"><s>12가 3456</s> → <strong>98나 7777</strong></div>
+          </div>
+        </div>
+        <div class="pv-item">
+          <div class="thumb"><img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=200&q=60" alt=""></div>
+          <div class="body">
+            <div class="time">00:47</div>
+            <div class="title">얼굴 → 마스킹 (블러 중)</div>
+            <div class="change">미등록 인물 3명 블러 처리</div>
+          </div>
+        </div>
+        <div class="pv-item">
+          <div class="thumb" style="background:linear-gradient(135deg,#9c27b0,#7b1fa2);display:flex;align-items:center;justify-content:center;"><span class="material-icons" style="color:#fff;font-size:20px;">graphic_eq</span></div>
+          <div class="body">
+            <div class="time">01:08</div>
+            <div class="title">음성 → 지정</div>
+            <div class="change"><s>"수민아!"</s> → <strong>"민지야!"</strong></div>
+          </div>
+        </div>
+        <div class="pv-item">
+          <div class="thumb" style="background:linear-gradient(135deg,#0288d1,#01579b);display:flex;align-items:center;justify-content:center;"><span class="material-icons" style="color:#fff;font-size:20px;">location_on</span></div>
+          <div class="body">
+            <div class="time">EXIF</div>
+            <div class="title">GPS → 제거</div>
+            <div class="change">메타데이터에서 위치 좌표 삭제</div>
+          </div>
+        </div>
+        <div style="padding:8px;text-align:center;font:400 12px var(--font-sans);color:var(--fg-3);">… 12개 항목 더 보기</div>
+      </div>
+
+      <div class="rating-block">
+        <h3>이 결과가 자연스러운가요?</h3>
+        <div class="rating-row">
+          <button class="rating-btn selected"><span class="face">😊</span>좋음</button>
+          <button class="rating-btn"><span class="face">😐</span>보통</button>
+          <button class="rating-btn"><span class="face">😬</span>이상함</button>
+        </div>
+      </div>
+
+      <div class="wmk-note">
+        <div class="watermark-note">
+          <strong>워터마크 안내</strong><br>
+          미리보기는 검토용으로 큰 워터마크가 표시됩니다. 본 처리 결과에는 우하단 작은 워터마크 + 비식별 워터마크만 삽입됩니다.
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="pv-footer">
+    <span class="info">미리보기는 영상 중 샘플 5프레임으로 생성됐습니다. 본 처리는 전체 영상에 적용됩니다.</span>
+    <a href="15-replace-options.html" class="mui-btn mui-btn--outlined">← 옵션 수정</a>
+    <a href="17-processing.html" class="mui-btn mui-btn--contained mui-btn--lg">
+      <span class="material-icons" style="font-size:20px;">play_arrow</span>
+      처리 진행
+    </a>
+  </div>
+</div>
+
+<script src="garim-chrome.js"></script>
+<script>
+  document.getElementById('header').innerHTML = gh({ variant: 'app', current: 'detect', authed: true });
+
+  // Before/After draggable slider
+  const compare = document.getElementById('compare');
+  const handle = document.getElementById('handle');
+  const after = compare.querySelector('.after');
+  let dragging = false;
+  function setSplit(pct) {
+    pct = Math.max(0, Math.min(100, pct));
+    handle.style.left = pct + '%';
+    after.style.clipPath = `inset(0 0 0 ${pct}%)`;
+  }
+  function getX(e) {
+    const r = compare.getBoundingClientRect();
+    const x = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
+    return (x / r.width) * 100;
+  }
+  compare.addEventListener('mousedown', (e) => { dragging = true; setSplit(getX(e)); });
+  window.addEventListener('mousemove', (e) => { if (dragging) setSplit(getX(e)); });
+  window.addEventListener('mouseup', () => { dragging = false; });
+
+  // Mode buttons
+  document.querySelectorAll('.pv-mode button').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.pv-mode button').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      const m = b.dataset.mode;
+      if (m === 'slider') { setSplit(50); handle.style.display = ''; }
+      else if (m === 'before') { setSplit(100); handle.style.display = 'none'; }
+      else { setSplit(0); handle.style.display = 'none'; }
+    });
+  });
+
+  // Rating
+  document.querySelectorAll('.rating-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.rating-btn').forEach(x => x.classList.remove('selected'));
+      b.classList.add('selected');
+    });
+  });
+</script>
+</body></html>

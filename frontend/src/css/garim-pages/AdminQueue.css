@@ -1,0 +1,151 @@
+body { background: #fafafa; }
+  .adm-shell { display: grid; grid-template-columns: 220px 1fr; min-height: calc(100vh - 64px); }
+  .adm-side { background: #1e1b3a; padding: 16px 8px; }
+  .adm-side .sec { font: 500 10px var(--font-sans); text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.5); padding: 14px 12px 6px; }
+  .adm-side a { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 4px; font: 400 13px var(--font-sans); color: rgba(255,255,255,0.85); margin-bottom: 2px; }
+  .adm-side a:hover { background: rgba(255,255,255,0.06); }
+  .adm-side a.active { background: rgba(149,117,205,0.2); color: #b39ddb; }
+  .adm-side a .material-icons { font-size: 18px; color: rgba(255,255,255,0.5); }
+  .adm-side a.active .material-icons { color: #b39ddb; }
+  .adm-main { padding: 24px 28px; }
+  .adm-head { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+  .adm-head h1 { font: 500 22px var(--font-sans); margin: 0; }
+  /* LIVE 배지 */
+  .live-badge { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; background: rgba(46,125,50,0.1); color: #1b5e20; border-radius: 12px; font: 600 11px var(--font-sans); letter-spacing: 0.5px; }
+  .live-dot { width: 7px; height: 7px; border-radius: 50%; background: #2e7d32; animation: livepulse 1.4s ease-in-out infinite; }
+  @keyframes livepulse { 0%,100%{opacity:0.4;} 50%{opacity:1;} }
+  .adm-head-meta { font: 400 12px var(--font-sans); color: var(--fg-2); font-family: var(--font-mono); }
+
+  .metric-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 20px; }
+  .metric { background: #fff; border-radius: 4px; border: 1px solid var(--mui-border); padding: 12px 14px; }
+  .metric .lbl { font: 400 10px var(--font-sans); text-transform: uppercase; letter-spacing: 0.5px; color: var(--fg-2); }
+  .metric .num { font: 500 22px var(--font-sans); letter-spacing: -0.25px; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .metric .delta { font: 400 11px var(--font-sans); color: var(--fg-2); margin-top: 2px; }
+  .metric.warn .num { color: #ed6c02; }
+  .metric.err .num { color: #d32f2f; }
+  .metric.danger .num { color: #d32f2f; }
+  .metric.ok .num { color: #2e7d32; }
+
+  .charts { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .chart-card { background: #fff; border-radius: 4px; border: 1px solid var(--mui-border); padding: 16px; }
+  .chart-card h3 { font: 500 13px var(--font-sans); margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
+  .chart-card h3 .spacer { flex: 1; }
+  .chart-area { height: 160px; }
+
+  .lower { display: grid; grid-template-columns: 1.6fr 1fr; gap: 12px; }
+  .adm-card { background: #fff; border-radius: 4px; border: 1px solid var(--mui-border); }
+  .adm-card .head { padding: 12px 16px; border-bottom: 1px solid var(--mui-divider); display: flex; align-items: center; gap: 12px; }
+  .adm-card .head h3 { font: 500 13px var(--font-sans); margin: 0; flex: 1; }
+
+  .job-row { display: grid; grid-template-columns: 100px 1fr 90px 100px 110px 80px; gap: 12px; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--mui-divider); }
+  .adm-shell .job-row.tbl-head { display: grid; background: #fafafa; font: 500 11px var(--font-sans); text-transform: uppercase; letter-spacing: 0.5px; color: var(--fg-2); }
+  .job-row .jid { font-family: var(--font-mono); font-size: 12px; }
+  .job-row .file { font: 400 12px var(--font-sans); overflow: hidden; }
+  .job-row .file > div { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .job-row .file small { color: var(--fg-2); display: block; font-size: 11px; margin-top: 2px; }
+  .progress-mini { width: 100%; height: 4px; background: rgba(0,0,0,0.08); border-radius: 2px; overflow: hidden; }
+  .progress-mini > div { height: 100%; background: #1976d2; }
+
+  .gpu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 16px; }
+  .gpu-card { background: #fafafa; border: 1px solid var(--mui-border); border-radius: 4px; padding: 12px; }
+  .gpu-card.alert { background: rgba(211,47,47,0.04); border-color: rgba(211,47,47,0.3); }
+  .gpu-card h4 { font: 500 12px var(--font-sans); margin: 0 0 8px; display: flex; align-items: center; gap: 6px; }
+  .gpu-card .stat-row { display: flex; gap: 8px; font: 400 11px var(--font-sans); color: var(--fg-2); }
+  .gpu-card .util { font: 500 22px var(--font-sans); }
+  .gpu-card .util.warn { color: #ed6c02; }
+  .gpu-card .util.err { color: #d32f2f; }
+  .util-bar { height: 4px; background: rgba(0,0,0,0.08); border-radius: 2px; margin-top: 6px; overflow: hidden; }
+  .util-bar > div { height: 100%; background: linear-gradient(90deg, #2e7d32 0%, #ed6c02 70%, #d32f2f 100%); }
+
+/* 헤더 에러 메시지 */
+.aq-error {
+  margin-left: 8px;
+  color: #d32f2f;
+  font-size: 12px;
+}
+/* 숫자 단위(초/분/%) */
+.aq-unit {
+  font-size: 12px;
+  color: var(--fg-2);
+}
+/* 카드 캡션 */
+.aq-cap-11 {
+  font-size: 11px;
+}
+/* 차트 SVG */
+.aq-chart-svg {
+  width: 100%;
+  height: 100%;
+}
+/* 큐 현황 바 차트 영역 */
+.aq-queue-chart {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px 16px;
+}
+.aq-bar-label {
+  display: flex;
+  justify-content: space-between;
+  font: 400 11px var(--font-sans);
+  color: var(--fg-2);
+  margin-bottom: 4px;
+}
+.aq-bar-value {
+  font-family: var(--font-mono);
+  color: var(--fg-1);
+}
+.aq-bar-track {
+  height: 8px;
+  background: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.aq-chip-row {
+  margin-top: 8px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.aq-empty-text {
+  font: 400 12px var(--font-sans);
+  color: var(--fg-2);
+}
+/* 작업 목록 비어있음 */
+.aq-empty {
+  padding: 24px 16px;
+  text-align: center;
+  color: var(--fg-2);
+  font: 400 13px var(--font-sans);
+}
+/* 작업 행 이메일 */
+.aq-job-email {
+  font: 400 11px var(--font-mono);
+  color: var(--fg-2);
+  margin-bottom: 1px;
+}
+/* 워커 없음 영역 */
+.aq-gpu-empty-wrap {
+  padding: 24px 16px;
+}
+.aq-gpu-empty {
+  grid-column: 1/-1;
+  text-align: center;
+  color: var(--fg-2);
+  font: 400 12px var(--font-sans);
+}
+.aq-gpu-empty-ico {
+  font-size: 32px;
+  display: block;
+  margin-bottom: 6px;
+  opacity: 0.3;
+}
+.aq-gpu-empty-sub {
+  font-size: 11px;
+  margin-top: 4px;
+}
+/* 워커 카드 상태 행 */
+.aq-stat-row {
+  margin-top: 6px;
+}

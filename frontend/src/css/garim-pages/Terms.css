@@ -1,0 +1,67 @@
+.terms-page { padding: 32px 32px 80px; background: var(--bg-2); }
+  .terms-head { max-width: 1080px; margin: 0 auto 24px; }
+  .terms-head h1 { font: 500 32px var(--font-sans); margin: 0 0 16px; }
+  .terms-tabs { display: flex; gap: 0; background: #fff; border: 1px solid var(--mui-border); border-radius: 4px; overflow: hidden; max-width: 1080px; margin: 0 auto; }
+  .terms-tabs button {
+    flex: 1; padding: 14px 12px; background: #fff; border: none; cursor: pointer;
+    font: 500 13px var(--font-sans); color: var(--fg-2); letter-spacing: 0.1px;
+    border-right: 1px solid var(--mui-border);
+  }
+  .terms-tabs button:last-child { border-right: none; }
+  .terms-tabs button.active { background: #1976d2; color: #fff; }
+  .terms-grid { max-width: 1080px; margin: 24px auto 0; display: grid; grid-template-columns: 240px 1fr; gap: 32px; }
+  .toc-side {
+    background: #fff; border: 1px solid var(--mui-border); border-radius: 4px;
+    padding: 16px; position: sticky; top: 96px; align-self: start;
+  }
+  .toc-side h3 { font: 500 11px var(--font-sans); text-transform: uppercase; letter-spacing: 0.6px; color: var(--fg-2); margin: 0 0 12px; padding: 0 8px; }
+  .toc-side a { display: block; padding: 6px 8px; font: 400 13px/1.4 var(--font-sans); color: var(--fg-2); border-radius: 4px; border-left: 2px solid transparent; }
+  .toc-side a:hover { background: rgba(0,0,0,0.04); color: var(--fg-1); }
+  .toc-side a.active { color: #1976d2; border-left-color: #1976d2; background: rgba(25,118,210,0.04); font-weight: 500; }
+  .terms-content {
+    background: #fff; border: 1px solid var(--mui-border); border-radius: 4px;
+    padding: 40px 48px;
+  }
+  .terms-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--mui-divider); }
+  .terms-meta .caption-k { font-size: 13px; }
+  .terms-content h2 { font: 500 24px var(--font-sans); margin: 0 0 12px; }
+  .terms-content h3 { font: 500 18px var(--font-sans); margin: 32px 0 12px; }
+  .terms-content p { font: 400 15px/1.7 var(--font-sans); color: var(--fg-1); margin: 0 0 12px; letter-spacing: 0.1px; }
+  .terms-content ul { padding-left: 20px; margin: 0 0 16px; }
+  .terms-content li { font: 400 15px/1.7 var(--font-sans); color: var(--fg-1); margin-bottom: 4px; }
+  .terms-content .callout {
+    background: rgba(25,118,210,0.06); border-left: 3px solid #1976d2;
+    padding: 16px 20px; margin: 16px 0; border-radius: 2px;
+    font: 400 14px/1.6 var(--font-sans); color: var(--fg-1);
+  }
+  .terms-content .callout.warning {
+    background: rgba(237,108,2,0.06); border-left-color: #ed6c02;
+  }
+  .terms-content .callout.success {
+    background: rgba(46,125,50,0.06); border-left-color: #2e7d32;
+  }
+  /* 탭 간격 */
+  .meta-date { font: 400 13px var(--font-sans); color: var(--fg-2); margin-top: 4px; }
+  .terms-content table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+  .terms-content table th, .terms-content table td {
+    padding: 12px; text-align: left; font: 400 13px/1.5 var(--font-sans);
+    border: 1px solid var(--mui-divider);
+  }
+  .terms-content table th { background: #fafafa; font-weight: 500; }
+  .terms-actions { display: flex; gap: 8px; }
+
+  /* ── 다크 모드 보정 ── 탭/목차/본문 흰 배경 → 다크 표면색 */
+  :root[data-theme="dark"] .terms-tabs,
+  :root[data-theme="dark"] .terms-tabs button,
+  :root[data-theme="dark"] .toc-side,
+  :root[data-theme="dark"] .terms-content { background: var(--bg-1); }
+  /* 활성 탭은 라이트/다크 공통 파랑 유지 */
+  :root[data-theme="dark"] .terms-tabs button.active { background: #1976d2; color: #fff; }
+  /* 표 헤더 음영 → 다크 보조 표면 */
+  :root[data-theme="dark"] .terms-content table th { background: var(--surface-alt); }
+  :root[data-theme="dark"] .toc-side a:hover { background: rgba(255,255,255,0.06); }
+
+/* 약관 도구 버튼(인쇄/PDF) 아이콘 크기 */
+.terms-tool-ico {
+  font-size: 18px;
+}

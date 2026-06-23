@@ -1,0 +1,1301 @@
+-- Garim PostgreSQL 전체 테이블 생성 SQL
+-- Source: Garim_DB_Design_final_clean_v11.xlsx
+-- Generated for PostgreSQL
+CREATE EXTENSION IF NOT EXISTS vector;
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+commit;
+
+DROP TABLE IF EXISTS uploaded_files;
+DROP TABLE IF EXISTS upload_sessions;
+
+CREATE TABLE IF NOT EXISTS users (
+    user_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    email varchar(255),
+    display_name varchar(100),
+    role varchar(20) NOT NULL DEFAULT 'user',
+    status varchar(20) NOT NULL DEFAULT 'active',
+    profile_image_url text,
+    last_login_at timestamp,
+    created_at timestamp NOT NULL DEFAULT now(),
+    updated_at timestamp,
+    deleted_at timestamp,
+    CONSTRAINT pk_users PRIMARY KEY (user_id)
+);
+COMMENT ON TABLE users IS '회원 기본 정보 및 서비스 계정 상태 관리 테이블';
+COMMENT ON COLUMN users.user_id IS '사용자 ID - 서비스 회원을 식별하는 기본 키';
+COMMENT ON COLUMN users.email IS '이메일 - OAuth 제공자에서 받은 이메일 또는 연락용 이메일';
+COMMENT ON COLUMN users.display_name IS '사용자명 - 화면에 표시할 사용자 이름';
+COMMENT ON COLUMN users.role IS '역할 - 일반 사용자와 관리자를 구분하는 권한 값';
+COMMENT ON COLUMN users.status IS '계정 상태 - 활성, 정지, 탈퇴 대기 등 계정 상태';
+COMMENT ON COLUMN users.profile_image_url IS '프로필 이미지 URL - 파일 또는 외부 리소스의 위치 정보';
+COMMENT ON COLUMN users.last_login_at IS '마지막 로그인 일시 - 마지막 로그인 시각 기록';
+COMMENT ON COLUMN users.created_at IS '가입 일시 - 레코드가 생성된 시각';
+COMMENT ON COLUMN users.updated_at IS '수정 일시 - 레코드가 마지막으로 수정된 시각';
+COMMENT ON COLUMN users.deleted_at IS '탈퇴 일시 - 소프트 삭제 또는 삭제 완료 처리 시각';
+
+CREATE TABLE IF NOT EXISTS oauth_accounts (
+    oauth_account_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    user_id uuid NOT NULL REFERENCES users(user_id),
+    provider varchar(20) NOT NULL,
+    provider_user_id varchar(255) NOT NULL,
+    provider_email varchar(255),
+    provider_name varchar(100),
+    linked_at timestamp NOT NULL DEFAULT now(),
+    last_used_at timestamp,
+    revoked_at timestamp,
+    CONSTRAINT pk_oauth_accounts PRIMARY KEY (oauth_account_id),
+    CONSTRAINT uq_oauth_accounts_provider_provider_user_id UNIQUE (provider, provider_user_id)
+);
+COMMENT ON TABLE oauth_accounts IS '카카오, 구글, facebook, X 소셜 로그인 계정 연결 정보 테이블';
+COMMENT ON COLUMN oauth_accounts.oauth_account_id IS 'OAuth 계정 ID - oauth_accounts 테이블의 기본 식별자';
+COMMENT ON COLUMN oauth_accounts.user_id IS '사용자 ID - 관련 테이블(O)과 연결하기 위한 외래 키';
+COMMENT ON COLUMN oauth_accounts.provider IS '제공자 - 업무 규칙 또는 제약조건 관리: kakao, google, facebook, x';
+COMMENT ON COLUMN oauth_accounts.provider_user_id IS '제공자 사용자 ID - 관련 데이터나 외부 리소스를 식별하는 ID';
+COMMENT ON COLUMN oauth_accounts.provider_email IS '제공자 이메일 - 제공자 이메일 정보를 저장하는 컬럼';
+COMMENT ON COLUMN oauth_accounts.provider_name IS '제공자 사용자명 - 화면 표시 또는 관리자가 식별하기 위한 이름';
+COMMENT ON COLUMN oauth_accounts.linked_at IS '연결 일시 - 업무 이벤트가 발생한 시각';
+COMMENT ON COLUMN oauth_accounts.last_used_at IS '마지막 사용 일시 - 업무 이벤트가 발생한 시각';
+COMMENT ON COLUMN oauth_accounts.revoked_at IS '연결 해제 일시 - 업무 이벤트가 발생한 시각';
+
+CREATE TABLE IF NOT EXISTS user_login_histories (
+    login_history_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    user_id uuid REFERENCES users(user_id) ON DELETE SET NULL,
+    oauth_account_id uuid REFERENCES oauth_accounts(oauth_account_id) ON DELETE SET NULL,
+    provider varchar(20),
+    provider_user_id varchar(255),
+    provider_email varchar(255),
+    login_result varchar(20) NOT NULL,
+    failure_reason varchar(100),
+    ip_address varchar(45),
+    user_agent text,
+    session_id uuid,
+    refresh_jti uuid,
+    logged_in_at timestamp NOT NULL DEFAULT now(),
+    CONSTRAINT pk_user_login_histories PRIMARY KEY (login_history_id),
+    CONSTRAINT chk_user_login_histories_provider CHECK (
+        provider IS NULL OR provider IN ('kakao', 'google', 'naver', 'facebook', 'x')
+    ),
+    CONSTRAINT chk_user_login_histories_result CHECK (
+        login_result IN ('success', 'failed', 'blocked', 'deleted', 'error')
+    )
+);
+COMMENT ON TABLE user_login_histories IS '관리자 페이지 사용자 로그인 성공/실패 이력 조회 테이블';
+COMMENT ON COLUMN user_login_histories.login_history_id IS '로그인 이력 ID - 로그인 시도 이력을 식별하는 기본 키';
+COMMENT ON COLUMN user_login_histories.user_id IS '사용자 ID - 로그인 사용자. 실패/탈퇴/식별 전 단계에서는 null 가능';
+COMMENT ON COLUMN user_login_histories.oauth_account_id IS 'OAuth 계정 ID - 로그인에 사용된 OAuth 연결 계정';
+COMMENT ON COLUMN user_login_histories.provider IS '제공자 - OAuth 제공자 구분 값';
+COMMENT ON COLUMN user_login_histories.provider_user_id IS '제공자 사용자 ID - OAuth 제공자의 사용자 ID 스냅샷';
+COMMENT ON COLUMN user_login_histories.provider_email IS '제공자 이메일 - OAuth 제공자가 내려준 이메일 스냅샷';
+COMMENT ON COLUMN user_login_histories.login_result IS '로그인 결과 - success, failed, blocked, deleted, error';
+COMMENT ON COLUMN user_login_histories.failure_reason IS '실패 사유 - 로그인 실패 또는 차단 사유';
+COMMENT ON COLUMN user_login_histories.ip_address IS '요청 IP - 로그인 요청 IP 주소';
+COMMENT ON COLUMN user_login_histories.user_agent IS 'User-Agent - 브라우저/디바이스 식별 정보';
+COMMENT ON COLUMN user_login_histories.session_id IS '세션 ID - 로그인 성공 시 발급된 서비스 세션 식별자';
+COMMENT ON COLUMN user_login_histories.refresh_jti IS 'Refresh JTI - Refresh token 추적용 JTI';
+COMMENT ON COLUMN user_login_histories.logged_in_at IS '로그인 시각 - 로그인 시도 또는 완료 시각';
+
+CREATE TABLE IF NOT EXISTS user_consents (
+    consent_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    user_id uuid NOT NULL REFERENCES users(user_id),
+    consent_type varchar(40) NOT NULL,
+    is_agreed boolean NOT NULL,
+    version varchar(20) NOT NULL,
+    source varchar(50),
+    ip_address varchar(45),
+    user_agent text,
+    created_at timestamp NOT NULL DEFAULT now(),
+    CONSTRAINT pk_user_consents PRIMARY KEY (consent_id)
+);
+COMMENT ON TABLE user_consents IS '약관, 개인정보처리방침, 마케팅, AI 학습 동의 변경 이력 테이블';
+COMMENT ON COLUMN user_consents.consent_id IS '동의 이력 ID - user_consents 테이블의 기본 식별자';
+COMMENT ON COLUMN user_consents.user_id IS '사용자 ID - 관련 테이블(O)과 연결하기 위한 외래 키';
+COMMENT ON COLUMN user_consents.consent_type IS '동의 유형 - 데이터나 업무 이벤트의 종류를 구분하는 값';
+COMMENT ON COLUMN user_consents.is_agreed IS '동의 여부 - 동의 여부 정보를 저장하는 컬럼';
+COMMENT ON COLUMN user_consents.version IS '약관 버전 - 약관 버전 정보를 저장하는 컬럼';
+COMMENT ON COLUMN user_consents.source IS '동의 출처 - 업무 규칙 또는 제약조건 관리: signup, settings, admin';
+COMMENT ON COLUMN user_consents.ip_address IS '요청 IP - 요청 IP 정보를 저장하는 컬럼';
+COMMENT ON COLUMN user_consents.user_agent IS 'User-Agent - User-Agent 정보를 저장하는 컬럼';
+COMMENT ON COLUMN user_consents.created_at IS '등록 일시 - 레코드가 생성된 시각';
+
+CREATE TABLE IF NOT EXISTS uploads (
+    upload_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    user_id uuid NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+    original_filename varchar(255) NOT NULL,
+    stored_filename varchar(255) NOT NULL,
+    stored_path text NOT NULL,
+    content_type varchar(100) NOT NULL,
+    file_size bigint NOT NULL,
+    file_hash varchar(128),
+    media_type varchar(20) NOT NULL,
+    chunk_size integer,
+    total_chunks integer,
+    uploaded_chunks integer NOT NULL DEFAULT 0,
+    temp_dir_path text,
+    merged_file_path text,
+    duration_seconds integer,
+    width integer,
+    height integer,
+    thumbnail_path text,
+    status varchar(30) NOT NULL DEFAULT 'initialized',
+    expires_at timestamp,
+    created_at timestamp NOT NULL DEFAULT now(),
+    updated_at timestamp NOT NULL DEFAULT now(),
+    deleted_at timestamp,
+    CONSTRAINT pk_uploads PRIMARY KEY (upload_id)
+);
+COMMENT ON TABLE uploads IS '사용자가 업로드한 원본 파일 메타데이터와 chunk upload 세션/병합 상태를 통합 관리하는 테이블';
+COMMENT ON COLUMN uploads.upload_id IS '업로드 ID - chunk upload와 분석 job 연결 기준';
+COMMENT ON COLUMN uploads.user_id IS '사용자 ID - 업로드 요청 사용자';
+COMMENT ON COLUMN uploads.original_filename IS '원본 파일명 - 사용자가 업로드한 파일명';
+COMMENT ON COLUMN uploads.stored_filename IS '저장 파일명 - 백엔드 저장 파일명 또는 병합 완료 파일명';
+COMMENT ON COLUMN uploads.stored_path IS '저장 경로 - 최종 원본 파일 저장 경로';
+COMMENT ON COLUMN uploads.content_type IS '콘텐츠 타입 - MIME type';
+COMMENT ON COLUMN uploads.file_size IS '파일 크기 - 원본 파일 크기 byte';
+COMMENT ON COLUMN uploads.file_hash IS '파일 해시 - 최종 병합 파일 무결성 검증용 hash';
+COMMENT ON COLUMN uploads.media_type IS '미디어 유형 - video, image, audio';
+COMMENT ON COLUMN uploads.chunk_size IS 'Chunk 크기 - chunk upload 사용 시 chunk 크기 byte';
+COMMENT ON COLUMN uploads.total_chunks IS '전체 Chunk 수 - chunk upload 사용 시 전체 chunk 수';
+COMMENT ON COLUMN uploads.uploaded_chunks IS '업로드 완료 Chunk 수 - 진행률 계산 기준';
+COMMENT ON COLUMN uploads.temp_dir_path IS '임시 디렉터리 경로 - chunk 임시 저장 디렉터리 경로';
+COMMENT ON COLUMN uploads.merged_file_path IS '병합 파일 경로 - chunk 병합 완료 파일 경로';
+COMMENT ON COLUMN uploads.duration_seconds IS '재생 시간 - 영상/음성 파일 재생 시간';
+COMMENT ON COLUMN uploads.width IS '이미지/영상 너비 - px';
+COMMENT ON COLUMN uploads.height IS '이미지/영상 높이 - px';
+COMMENT ON COLUMN uploads.thumbnail_path IS '썸네일 경로 - 미리보기 썸네일 파일 경로';
+COMMENT ON COLUMN uploads.status IS '업로드 상태 - initialized/uploading/uploaded/failed/expired/cancelled/deleted';
+COMMENT ON COLUMN uploads.expires_at IS '원본 만료 일시 - 원본 자동 삭제 또는 미완료 업로드 세션 만료 기준';
+COMMENT ON COLUMN uploads.created_at IS '등록 일시 - 레코드 생성 시각';
+COMMENT ON COLUMN uploads.updated_at IS '수정 일시 - 업로드 진행률/상태 갱신 시각';
+COMMENT ON COLUMN uploads.deleted_at IS '삭제 일시 - 파일 또는 레코드 삭제 처리 완료 시각';
+
+CREATE TABLE IF NOT EXISTS upload_chunks (
+    upload_chunk_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    upload_id uuid NOT NULL REFERENCES uploads(upload_id) ON DELETE CASCADE,
+    chunk_index integer NOT NULL,
+    chunk_size integer NOT NULL,
+    chunk_hash varchar(128),
+    storage_path text NOT NULL,
+    status varchar(30) NOT NULL DEFAULT 'uploaded',
+    created_at timestamp NOT NULL DEFAULT now(),
+    CONSTRAINT pk_upload_chunks PRIMARY KEY (upload_chunk_id),
+    CONSTRAINT uq_upload_chunks_upload_index UNIQUE (upload_id, chunk_index)
+);
+COMMENT ON TABLE upload_chunks IS '업로드된 chunk 단위 파일 정보';
+COMMENT ON COLUMN upload_chunks.upload_chunk_id IS '업로드 chunk ID - chunk 레코드 기본 식별자';
+COMMENT ON COLUMN upload_chunks.upload_id IS '업로드 ID - uploads(upload_id) 기준 소속 업로드';
+COMMENT ON COLUMN upload_chunks.chunk_index IS 'Chunk 순번 - 0부터 시작하는 chunk 순번';
+COMMENT ON COLUMN upload_chunks.chunk_size IS 'Chunk 크기 - 업로드된 chunk 크기 byte';
+COMMENT ON COLUMN upload_chunks.chunk_hash IS 'Chunk 해시 - chunk 무결성 검증용 hash';
+COMMENT ON COLUMN upload_chunks.storage_path IS '저장 경로 - chunk 파일 임시 저장 경로';
+COMMENT ON COLUMN upload_chunks.status IS '상태 - uploaded/failed';
+COMMENT ON COLUMN upload_chunks.created_at IS '생성 일시 - 레코드 생성 시각';
+
+CREATE TABLE IF NOT EXISTS analysis_jobs (
+    job_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    user_id uuid NOT NULL REFERENCES users(user_id),
+    upload_id uuid REFERENCES uploads(upload_id) ON DELETE SET NULL,
+    job_type varchar(30) NOT NULL,
+    status varchar(30) NOT NULL DEFAULT 'queued',
+    current_stage varchar(50),
+    stage_progress integer NOT NULL DEFAULT 0 CHECK (stage_progress BETWEEN 0 AND 100),
+    total_progress integer NOT NULL DEFAULT 0 CHECK (total_progress BETWEEN 0 AND 100),
+    queue_position integer CHECK (queue_position IS NULL OR queue_position >= 0),
+    eta_seconds integer CHECK (eta_seconds IS NULL OR eta_seconds >= 0),
+    message text,
+    cancel_requested boolean NOT NULL DEFAULT false,
+    duration_seconds integer,
+    width integer,
+    height integer,
+    detection_count integer NOT NULL DEFAULT 0,
+    error_code varchar(100),
+    error_message text,
+    result_file_path text,
+    report_id uuid,
+    started_at timestamp,
+    completed_at timestamp,
+    created_at timestamp NOT NULL DEFAULT now(),
+    updated_at timestamp,
+    CONSTRAINT pk_analysis_jobs PRIMARY KEY (job_id),
+    CONSTRAINT ck_analysis_jobs_status CHECK (status IN ('queued','processing','completed','failed','cancelled','cancelling','retrying')),
+    CONSTRAINT ck_analysis_jobs_job_type CHECK (job_type IN ('analysis','preview','render','sns_scan','whitelist_scan','mask_preview','mask_final','stt_analysis'))
+);
+COMMENT ON TABLE analysis_jobs IS '업로드 파일의 개인정보 탐지 및 처리 작업 상태 관리 테이블';
+COMMENT ON COLUMN analysis_jobs.job_id IS '작업 ID - analysis_jobs 테이블의 기본 식별자';
+COMMENT ON COLUMN analysis_jobs.upload_id IS '업로드 ID - 관련 테이블(O)과 연결하기 위한 외래 키';
+COMMENT ON COLUMN analysis_jobs.user_id IS '사용자 ID - 관련 테이블(O)과 연결하기 위한 외래 키';
+COMMENT ON COLUMN analysis_jobs.job_type IS '작업 유형 - analysis, preview, render, sns_scan, whitelist_scan';
+COMMENT ON COLUMN analysis_jobs.status IS '작업 상태 - 분석 작업의 현재 상태';
+COMMENT ON COLUMN analysis_jobs.current_stage IS '현재 단계';
+COMMENT ON COLUMN analysis_jobs.stage_progress IS '단계 진행률';
+COMMENT ON COLUMN analysis_jobs.total_progress IS '전체 진행률';
+COMMENT ON COLUMN analysis_jobs.queue_position IS '큐 대기 순번';
+COMMENT ON COLUMN analysis_jobs.eta_seconds IS '예상 남은 시간 초';
+COMMENT ON COLUMN analysis_jobs.message IS '진행 메시지';
+COMMENT ON COLUMN analysis_jobs.cancel_requested IS '취소 요청 여부';
+COMMENT ON COLUMN analysis_jobs.duration_seconds IS '원본 길이 초 - 원본 길이 초 정보를 저장하는 컬럼';
+COMMENT ON COLUMN analysis_jobs.width IS '원본 너비 - 원본 너비 정보를 저장하는 컬럼';
+COMMENT ON COLUMN analysis_jobs.height IS '원본 높이 - 원본 높이 정보를 저장하는 컬럼';
+COMMENT ON COLUMN analysis_jobs.detection_count IS '탐지 개수 - 목록 재집계를 줄이기 위해 저장하는 집계 값';
+COMMENT ON COLUMN analysis_jobs.error_message IS '오류 메시지 - 사용자 또는 관리자에게 보여줄 상세 설명';
+COMMENT ON COLUMN analysis_jobs.started_at IS '시작 일시 - 업무 이벤트가 발생한 시각';
+COMMENT ON COLUMN analysis_jobs.completed_at IS '완료 일시 - 업무 이벤트가 발생한 시각';
+COMMENT ON COLUMN analysis_jobs.created_at IS '등록 일시 - 레코드가 생성된 시각';
+COMMENT ON COLUMN analysis_jobs.updated_at IS '수정 일시 - 레코드가 마지막으로 수정된 시각';
+
+CREATE TABLE IF NOT EXISTS detections (
+    detection_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    job_id uuid NOT NULL REFERENCES analysis_jobs(job_id),
+    detection_type varchar(40) NOT NULL,
+    label varchar(100),
+    confidence numeric(5,4),
+    frame_no integer,
+    start_time_sec numeric(10,3),
+    end_time_sec numeric(10,3),
+    bbox_x numeric(10,4),
+    bbox_y numeric(10,4),
+    bbox_w numeric(10,4),
+    bbox_h numeric(10,4),
+    detected_text text,
+    review_status varchar(30) NOT NULL DEFAULT 'pending',
+    pii_id varchar(100),
+    polygon_json text,
+    created_at timestamp NOT NULL DEFAULT now(),
+    CONSTRAINT pk_detections PRIMARY KEY (detection_id)
+);
+COMMENT ON TABLE detections IS '프레임, 이미지, 음성, 텍스트에서 발견된 개인정보 탐지 결과 테이블';
+COMMENT ON COLUMN detections.detection_id IS '탐지 ID - detections 테이블의 기본 식별자';
+COMMENT ON COLUMN detections.job_id IS '작업 ID - 관련 테이블(O)과 연결하기 위한 외래 키';
+COMMENT ON COLUMN detections.detection_type IS '탐지 유형 - 데이터나 업무 이벤트의 종류를 구분하는 값';
+COMMENT ON COLUMN detections.label IS '탐지 라벨 - 탐지 라벨 정보를 저장하는 컬럼';
+COMMENT ON COLUMN detections.confidence IS '신뢰도 - 업무 규칙 또는 제약조건 관리: 0.0000~1.0000';
+COMMENT ON COLUMN detections.frame_no IS '프레임 번호 - 프레임 번호 정보를 저장하는 컬럼';
+COMMENT ON COLUMN detections.start_time_sec IS '시작 초 - 시작 초 정보를 저장하는 컬럼';
+COMMENT ON COLUMN detections.end_time_sec IS '종료 초 - 종료 초 정보를 저장하는 컬럼';
+COMMENT ON COLUMN detections.bbox_x IS 'X 좌표 - 업무 규칙 또는 제약조건 관리: normalized';
+COMMENT ON COLUMN detections.bbox_y IS 'Y 좌표 - 업무 규칙 또는 제약조건 관리: normalized';
+COMMENT ON COLUMN detections.bbox_w IS '너비 - 업무 규칙 또는 제약조건 관리: normalized';
+COMMENT ON COLUMN detections.bbox_h IS '높이 - 업무 규칙 또는 제약조건 관리: normalized';
+COMMENT ON COLUMN detections.detected_text IS '탐지 원문 - 업무 규칙 또는 제약조건 관리: 민감정보는 필요 시 마스킹 저장';
+COMMENT ON COLUMN detections.review_status IS '검토 상태 - 업무 규칙 또는 제약조건 관리: pending, confirmed, rejected';
+COMMENT ON COLUMN detections.created_at IS '등록 일시 - 레코드가 생성된 시각';
+
+CREATE TABLE IF NOT EXISTS replacement_actions (
+    action_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    detection_id uuid NOT NULL REFERENCES detections(detection_id),
+    job_id uuid NOT NULL REFERENCES analysis_jobs(job_id),
+    action_type varchar(30) NOT NULL,
+    action_config jsonb,
+    is_user_selected boolean NOT NULL DEFAULT false,
+    status varchar(30) NOT NULL DEFAULT 'pending',
+    created_at timestamp NOT NULL DEFAULT now(),
+    updated_at timestamp,
+    CONSTRAINT pk_replacement_actions PRIMARY KEY (action_id)
+);
+COMMENT ON TABLE replacement_actions IS '탐지 항목별 블러, 마스킹, 합성, 건너뛰기 등 처리 방식 테이블';
+COMMENT ON COLUMN replacement_actions.action_id IS '처리 액션 ID - replacement_actions 테이블의 기본 식별자';
+COMMENT ON COLUMN replacement_actions.detection_id IS '탐지 ID - 관련 테이블(O)과 연결하기 위한 외래 키';
+COMMENT ON COLUMN replacement_actions.job_id IS '작업 ID - 관련 테이블(O)과 연결하기 위한 외래 키';
+COMMENT ON COLUMN replacement_actions.action_type IS '액션 유형 - 데이터나 업무 이벤트의 종류를 구분하는 값';
+COMMENT ON COLUMN replacement_actions.action_config IS '액션 설정 - 업무 규칙 또는 제약조건 관리: 블러 강도, 치환 텍스트 등';
+COMMENT ON COLUMN replacement_actions.is_user_selected IS '사용자 지정 여부 - 사용자 지정 여부 정보를 저장하는 컬럼';
+COMMENT ON COLUMN replacement_actions.status IS '처리 상태 - 현재 처리 상태 또는 업무 상태';
+COMMENT ON COLUMN replacement_actions.created_at IS '등록 일시 - 레코드가 생성된 시각';
+COMMENT ON COLUMN replacement_actions.updated_at IS '수정 일시 - 레코드가 마지막으로 수정된 시각';
+
+CREATE TABLE IF NOT EXISTS processed_files (
+    processed_file_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    job_id uuid NOT NULL REFERENCES analysis_jobs(job_id),
+    user_id uuid NOT NULL REFERENCES users(user_id),
+    filename varchar(255) NOT NULL,
+    stored_path text NOT NULL,
+    content_type varchar(100) NOT NULL,
+    file_size bigint NOT NULL,
+    watermark_applied boolean NOT NULL DEFAULT true,
+    watermark_hash varchar(128),
+    expires_at timestamp NOT NULL,
+    created_at timestamp NOT NULL DEFAULT now(),
+    deleted_at timestamp,
+    CONSTRAINT pk_processed_files PRIMARY KEY (processed_file_id)
+);
+COMMENT ON TABLE processed_files IS '비식별화 처리 완료 결과물 및 워터마크 추적 정보 테이블';
+COMMENT ON COLUMN processed_files.processed_file_id IS '결과 파일 ID - processed_files 테이블의 기본 식별자';
+COMMENT ON COLUMN processed_files.job_id IS '작업 ID - 관련 테이블(O)과 연결하기 위한 외래 키';
+COMMENT ON COLUMN processed_files.user_id IS '사용자 ID - 관련 테이블(O)과 연결하기 위한 외래 키';
+COMMENT ON COLUMN processed_files.filename IS '결과 파일명 - 화면 표시 또는 관리자가 식별하기 위한 이름';
+COMMENT ON COLUMN processed_files.stored_path IS '저장 경로 - 파일 또는 외부 리소스의 위치 정보';
+COMMENT ON COLUMN processed_files.content_type IS '콘텐츠 타입 - 데이터나 업무 이벤트의 종류를 구분하는 값';
+COMMENT ON COLUMN processed_files.file_size IS '파일 크기 - 업무 규칙 또는 제약조건 관리: bytes';
+COMMENT ON COLUMN processed_files.watermark_applied IS '워터마크 적용 여부 - 워터마크 적용 여부 정보를 저장하는 컬럼';
+COMMENT ON COLUMN processed_files.watermark_hash IS '워터마크 해시 - 워터마크 역추적에 사용하는 식별 해시';
+COMMENT ON COLUMN processed_files.expires_at IS '다운로드 만료 일시 - 플랜별 결과 파일 자동 삭제 기준 시각';
+COMMENT ON COLUMN processed_files.created_at IS '등록 일시 - 레코드가 생성된 시각';
+COMMENT ON COLUMN processed_files.deleted_at IS '삭제 일시 - 소프트 삭제 또는 삭제 완료 처리 시각';
+
+CREATE TABLE IF NOT EXISTS download_events (
+    download_event_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    processed_file_id uuid NOT NULL REFERENCES processed_files(processed_file_id),
+    user_id uuid NOT NULL REFERENCES users(user_id),
+    ip_address varchar(45),
+    user_agent text,
+    result varchar(20) NOT NULL,
+    created_at timestamp NOT NULL DEFAULT now(),
+    CONSTRAINT pk_download_events PRIMARY KEY (download_event_id)
+);
+COMMENT ON TABLE download_events IS '사용자 결과물 다운로드 및 접근 이력 테이블';
+COMMENT ON COLUMN download_events.download_event_id IS '다운로드 이벤트 ID - download_events 테이블의 기본 식별자';
+COMMENT ON COLUMN download_events.processed_file_id IS '결과 파일 ID - 관련 테이블(O)과 연결하기 위한 외래 키';
+COMMENT ON COLUMN download_events.user_id IS '사용자 ID - 관련 테이블(O)과 연결하기 위한 외래 키';
+COMMENT ON COLUMN download_events.ip_address IS '요청 IP - 요청 IP 정보를 저장하는 컬럼';
+COMMENT ON COLUMN download_events.user_agent IS 'User-Agent - User-Agent 정보를 저장하는 컬럼';
+COMMENT ON COLUMN download_events.result IS '다운로드 결과 - 업무 규칙 또는 제약조건 관리: success, expired, denied, failed';
+COMMENT ON COLUMN download_events.created_at IS '등록 일시 - 레코드가 생성된 시각';
+
+CREATE TABLE IF NOT EXISTS plans (
+    plan_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    plan_code varchar(30) NOT NULL,
+    plan_name varchar(100) NOT NULL,
+    badge_label varchar(50),
+    badge_class varchar(50),
+    description text,
+    monthly_quota integer,
+    result_retention_days integer NOT NULL,
+    watermark_required boolean NOT NULL DEFAULT true,
+    price_amount integer NOT NULL DEFAULT 0,
+    sort_order integer NOT NULL DEFAULT 0,
+    status varchar(20) NOT NULL DEFAULT 'active',
+    file_size_limit integer NOT NULL DEFAULT 50,
+    max_jobs integer NOT NULL DEFAULT 3,
+    auto_delete_original_hours integer NOT NULL DEFAULT 12,
+    metadata_retention_days integer NOT NULL DEFAULT 90,
+    credits integer NOT NULL DEFAULT 0,
+    created_at timestamp NOT NULL DEFAULT now(),
+    updated_at timestamp,
+    CONSTRAINT pk_plans PRIMARY KEY (plan_id),
+    CONSTRAINT uq_plans_plan_code UNIQUE (plan_code),
+    CONSTRAINT ck_plans_status CHECK (status IN ('active', 'inactive', 'deleted'))
+);
+COMMENT ON TABLE plans IS 'Free, 1회권, Pro 등 서비스 요금제 정책 테이블';
+COMMENT ON COLUMN plans.plan_id IS '요금제 ID - plans 테이블의 기본 식별자';
+COMMENT ON COLUMN plans.plan_code IS '요금제 코드 - 업무 규칙 또는 제약조건 관리: unique';
+COMMENT ON COLUMN plans.plan_name IS '요금제명 - 화면 표시 또는 관리자가 식별하기 위한 이름';
+COMMENT ON COLUMN plans.badge_label IS 'pricing 카드 배지 문구 - 기본, 추천, 팀/스튜디오 등';
+COMMENT ON COLUMN plans.badge_class IS 'pricing 카드 배지 스타일 클래스 - mui-chip 계열 클래스명';
+COMMENT ON COLUMN plans.description IS 'pricing 카드 설명 문구 - 가격 아래 노출되는 플랜 소개 문구';
+COMMENT ON COLUMN plans.monthly_quota IS '월 처리 한도 - 월 처리 한도 정보를 저장하는 컬럼';
+COMMENT ON COLUMN plans.result_retention_days IS '결과 보관 일수 - 결과 보관 일수 정보를 저장하는 컬럼';
+COMMENT ON COLUMN plans.watermark_required IS '워터마크 포함 여부 - 워터마크 포함 여부 정보를 저장하는 컬럼';
+COMMENT ON COLUMN plans.price_amount IS '가격 - 결제 또는 과금 계산에 사용하는 금액 값';
+COMMENT ON COLUMN plans.sort_order IS '정렬 순서 - 요금제 화면 노출 순서';
+COMMENT ON COLUMN plans.status IS '관리 상태 - active(노출), inactive(비노출), deleted(소프트삭제)';
+COMMENT ON COLUMN plans.file_size_limit IS '최대 파일 크기 제한 - 업로드 가능한 파일의 최대 크기(MB)';
+COMMENT ON COLUMN plans.max_jobs IS '동시 처리 최대 건수 - 사용자가 동시에 실행 가능한 최대 분석 작업 개수';
+COMMENT ON COLUMN plans.auto_delete_original_hours IS '원본 파일 자동 삭제 대기 시간 - 원본 영상/음성이 보관되는 시간';
+COMMENT ON COLUMN plans.metadata_retention_days IS '처리 메타데이터 보존 일수 - 탐지 및 리포트 등의 메타데이터 보관 기간';
+COMMENT ON COLUMN plans.credits IS '제공 크레딧 - 요금제 구매 시 부여되는 사용 가능 크레딧 수';
+COMMENT ON COLUMN plans.created_at IS '등록 일시 - 레코드가 생성된 시각';
+COMMENT ON COLUMN plans.updated_at IS '수정 일시 - 레코드가 마지막으로 수정된 시각';
+
+CREATE TABLE IF NOT EXISTS subscriptions (
+    subscription_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    user_id uuid NOT NULL REFERENCES users(user_id),
+    plan_id uuid NOT NULL REFERENCES plans(plan_id),
+    status varchar(20) NOT NULL,
+    started_at timestamp NOT NULL,
+    ended_at timestamp,
+    renew_at timestamp,
+    created_at timestamp NOT NULL DEFAULT now(),
+    updated_at timestamp,
+    CONSTRAINT pk_subscriptions PRIMARY KEY (subscription_id)
+);
+COMMENT ON TABLE subscriptions IS '사용자 구독 및 이용권 상태 관리 테이블';
+COMMENT ON COLUMN subscriptions.subscription_id IS '구독 ID - subscriptions 테이블의 기본 식별자';
+COMMENT ON COLUMN subscriptions.user_id IS '사용자 ID - 관련 테이블(O)과 연결하기 위한 외래 키';
+COMMENT ON COLUMN subscriptions.plan_id IS '요금제 ID - 관련 테이블(O)과 연결하기 위한 외래 키';
+COMMENT ON COLUMN subscriptions.status IS '구독 상태 - 현재 처리 상태 또는 업무 상태';
+COMMENT ON COLUMN subscriptions.started_at IS '시작 일시 - 업무 이벤트가 발생한 시각';
+COMMENT ON COLUMN subscriptions.ended_at IS '종료 일시 - 업무 이벤트가 발생한 시각';
+COMMENT ON COLUMN subscriptions.renew_at IS '갱신 예정 일시 - 업무 이벤트가 발생한 시각';
+COMMENT ON COLUMN subscriptions.created_at IS '등록 일시 - 레코드가 생성된 시각';
+COMMENT ON COLUMN subscriptions.updated_at IS '수정 일시 - 레코드가 마지막으로 수정된 시각';
+
+CREATE TABLE IF NOT EXISTS credit_plans (
+    credit_plan_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    credit_plan_code varchar(40) NOT NULL,
+    credit_plan_name varchar(100) NOT NULL,
+    price_amount integer NOT NULL,
+    base_credits integer NOT NULL,
+    bonus_credits integer NOT NULL DEFAULT 0,
+    expires_days integer,
+    sort_order integer NOT NULL DEFAULT 0,
+    status varchar(20) NOT NULL DEFAULT 'active',
+    created_at timestamp NOT NULL DEFAULT now(),
+    updated_at timestamp,
+    CONSTRAINT pk_credit_plans PRIMARY KEY (credit_plan_id),
+    CONSTRAINT uq_credit_plans_code UNIQUE (credit_plan_code),
+    CONSTRAINT ck_credit_plans_price_non_negative CHECK (price_amount >= 0),
+    CONSTRAINT ck_credit_plans_base_positive CHECK (base_credits > 0),
+    CONSTRAINT ck_credit_plans_bonus_non_negative CHECK (bonus_credits >= 0),
+    CONSTRAINT ck_credit_plans_status CHECK (status IN ('active', 'inactive', 'deleted'))
+);
+COMMENT ON TABLE credit_plans IS 'Credit recharge product catalog';
+COMMENT ON COLUMN credit_plans.credit_plan_id IS 'Credit product ID';
+COMMENT ON COLUMN credit_plans.credit_plan_code IS 'Credit product code such as credit_100';
+COMMENT ON COLUMN credit_plans.credit_plan_name IS 'Credit product display name';
+COMMENT ON COLUMN credit_plans.price_amount IS 'Payment amount in KRW';
+COMMENT ON COLUMN credit_plans.base_credits IS 'Base credits granted by this product';
+COMMENT ON COLUMN credit_plans.bonus_credits IS 'Additional promotional credits';
+COMMENT ON COLUMN credit_plans.expires_days IS 'Credit expiration days; null means no expiration policy yet';
+COMMENT ON COLUMN credit_plans.sort_order IS 'Display ordering for pricing page';
+COMMENT ON COLUMN credit_plans.status IS 'Management status: active(visible), inactive(hidden), deleted(soft-deleted)';
+COMMENT ON COLUMN credit_plans.created_at IS 'Row creation timestamp';
+COMMENT ON COLUMN credit_plans.updated_at IS 'Last update timestamp';
+
+CREATE TABLE IF NOT EXISTS user_credit_balances (
+    user_id uuid NOT NULL REFERENCES users(user_id),
+    balance integer NOT NULL DEFAULT 0,
+    updated_at timestamp NOT NULL DEFAULT now(),
+    CONSTRAINT pk_user_credit_balances PRIMARY KEY (user_id),
+    CONSTRAINT ck_user_credit_balances_non_negative CHECK (balance >= 0)
+);
+COMMENT ON TABLE user_credit_balances IS 'Current user credit balance';
+COMMENT ON COLUMN user_credit_balances.user_id IS 'User ID and primary key';
+COMMENT ON COLUMN user_credit_balances.balance IS 'Current available credit balance';
+COMMENT ON COLUMN user_credit_balances.updated_at IS 'Last balance update timestamp';
+
+CREATE TABLE IF NOT EXISTS credit_ledger (
+    ledger_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    user_id uuid NOT NULL REFERENCES users(user_id),
+    amount integer NOT NULL,
+    balance_after integer NOT NULL,
+    entry_type varchar(30) NOT NULL,
+    source_type varchar(30) NOT NULL,
+    source_id uuid,
+    description varchar(255),
+    created_at timestamp NOT NULL DEFAULT now(),
+    CONSTRAINT pk_credit_ledger PRIMARY KEY (ledger_id),
+    CONSTRAINT ck_credit_ledger_amount_not_zero CHECK (amount <> 0),
+    CONSTRAINT ck_credit_ledger_balance_after_non_negative CHECK (balance_after >= 0),
+    CONSTRAINT ck_credit_ledger_entry_type CHECK (entry_type IN ('grant','purchase','spend','refund','adjust','first_login')),
+    CONSTRAINT ck_credit_ledger_source_type CHECK (source_type IN ('subscription','payment','analysis','admin','oauth'))
+);
+COMMENT ON TABLE credit_ledger IS 'Append-only credit balance change history';
+COMMENT ON COLUMN credit_ledger.ledger_id IS 'Credit ledger row ID';
+COMMENT ON COLUMN credit_ledger.user_id IS 'User ID';
+COMMENT ON COLUMN credit_ledger.amount IS 'Credit delta; positive for grants, negative for spending';
+COMMENT ON COLUMN credit_ledger.balance_after IS 'Balance after applying this ledger entry';
+COMMENT ON COLUMN credit_ledger.entry_type IS 'grant, purchase, spend, refund, adjust';
+COMMENT ON COLUMN credit_ledger.source_type IS 'subscription, payment, analysis, admin';
+COMMENT ON COLUMN credit_ledger.source_id IS 'Related source row ID';
+COMMENT ON COLUMN credit_ledger.description IS 'Human-readable reason for the credit change';
+COMMENT ON COLUMN credit_ledger.created_at IS 'Ledger creation timestamp';
+
+CREATE TABLE IF NOT EXISTS payments (
+    payment_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    user_id uuid NOT NULL REFERENCES users(user_id),
+    subscription_id uuid REFERENCES subscriptions(subscription_id),
+    product_type varchar(30),
+    plan_id uuid REFERENCES plans(plan_id),
+    credit_plan_id uuid REFERENCES credit_plans(credit_plan_id),
+    pg_provider varchar(40),
+    pg_transaction_id varchar(255),
+    last_transaction_key varchar(255),
+    order_name varchar(255),
+    payment_method varchar(40),
+    easy_pay_provider varchar(50),
+    toss_status varchar(30),
+    total_amount integer,
+    balance_amount integer,
+    currency varchar(10) NOT NULL DEFAULT 'KRW',
+    requested_at timestamp,
+    approved_at timestamp,
+    receipt_url text,
+    is_partial_cancelable boolean,
+    amount integer NOT NULL,
+    status varchar(30) NOT NULL,
+    paid_at timestamp,
+    refunded_at timestamp,
+    created_at timestamp NOT NULL DEFAULT now(),
+    refund_reason varchar(100),
+    updated_at timestamp,
+    CONSTRAINT pk_payments PRIMARY KEY (payment_id),
+    CONSTRAINT ck_payments_product_type CHECK (product_type IN ('subscription','credit'))
+);
+ALTER TABLE IF EXISTS payments ADD COLUMN IF NOT EXISTS product_type varchar(30);
+ALTER TABLE IF EXISTS payments ADD COLUMN IF NOT EXISTS plan_id uuid REFERENCES plans(plan_id);
+ALTER TABLE IF EXISTS payments ADD COLUMN IF NOT EXISTS credit_plan_id uuid REFERENCES credit_plans(credit_plan_id);
+ALTER TABLE IF EXISTS payments ADD COLUMN IF NOT EXISTS payment_method varchar(40);
+ALTER TABLE IF EXISTS payments ADD COLUMN IF NOT EXISTS last_transaction_key varchar(255);
+ALTER TABLE IF EXISTS payments ADD COLUMN IF NOT EXISTS order_name varchar(255);
+ALTER TABLE IF EXISTS payments ADD COLUMN IF NOT EXISTS easy_pay_provider varchar(50);
+ALTER TABLE IF EXISTS payments ADD COLUMN IF NOT EXISTS toss_status varchar(30);
+ALTER TABLE IF EXISTS payments ADD COLUMN IF NOT EXISTS total_amount integer;
+ALTER TABLE IF EXISTS payments ADD COLUMN IF NOT EXISTS balance_amount integer;
+ALTER TABLE IF EXISTS payments ADD COLUMN IF NOT EXISTS currency varchar(10) NOT NULL DEFAULT 'KRW';
+ALTER TABLE IF EXISTS payments ADD COLUMN IF NOT EXISTS requested_at timestamp;
+ALTER TABLE IF EXISTS payments ADD COLUMN IF NOT EXISTS approved_at timestamp;
+ALTER TABLE IF EXISTS payments ADD COLUMN IF NOT EXISTS receipt_url text;
+ALTER TABLE IF EXISTS payments ADD COLUMN IF NOT EXISTS is_partial_cancelable boolean;
+ALTER TABLE IF EXISTS payments ADD COLUMN IF NOT EXISTS updated_at timestamp;
+ALTER TABLE IF EXISTS payments DROP COLUMN IF EXISTS checkout_url;
+ALTER TABLE IF EXISTS payments DROP COLUMN IF EXISTS raw_response;
+COMMENT ON TABLE payments IS 'PG 결제 거래, 환불, 영수증 상태 관리 테이블';
+COMMENT ON COLUMN payments.payment_id IS '결제 ID - payments 테이블의 기본 식별자';
+COMMENT ON COLUMN payments.user_id IS '사용자 ID - 관련 테이블(O)과 연결하기 위한 외래 키';
+COMMENT ON COLUMN payments.subscription_id IS '구독 ID - 관련 테이블(O)과 연결하기 위한 외래 키';
+COMMENT ON COLUMN payments.product_type IS 'Payment product type: subscription or credit';
+COMMENT ON COLUMN payments.plan_id IS 'Subscription plan purchased by this payment';
+COMMENT ON COLUMN payments.credit_plan_id IS 'Credit recharge product purchased by this payment';
+COMMENT ON COLUMN payments.pg_provider IS 'PG사 - PG사 정보를 저장하는 컬럼';
+COMMENT ON COLUMN payments.pg_transaction_id IS 'PG 거래 ID - 관련 데이터나 외부 리소스를 식별하는 ID';
+COMMENT ON COLUMN payments.last_transaction_key IS 'Toss 마지막 거래 키 - 거래 추적 및 고객센터 대응에 사용하는 키';
+COMMENT ON COLUMN payments.order_name IS '주문명 - Toss 결제 승인 응답의 주문 표시명';
+COMMENT ON COLUMN payments.payment_method IS '결제 수단 - 카드, 간편결제, 계좌이체 등 PG에서 반환한 결제 방식';
+COMMENT ON COLUMN payments.easy_pay_provider IS '간편결제 제공자 - 카카오페이 등 easyPay.provider 값';
+COMMENT ON COLUMN payments.toss_status IS 'Toss 결제 상태 - DONE, CANCELED 등 Toss Payments 원본 상태';
+COMMENT ON COLUMN payments.total_amount IS '총 결제 금액 - Toss 승인 응답의 totalAmount';
+COMMENT ON COLUMN payments.balance_amount IS '취소 가능 잔액 - Toss 승인 응답의 balanceAmount';
+COMMENT ON COLUMN payments.currency IS '통화 코드 - KRW 등 결제 통화';
+COMMENT ON COLUMN payments.requested_at IS 'Toss 결제 요청 일시 - PG에서 반환한 결제 요청 시각';
+COMMENT ON COLUMN payments.approved_at IS 'Toss 승인 일시 - PG에서 반환한 결제 승인 시각';
+COMMENT ON COLUMN payments.receipt_url IS '영수증 URL - Toss Payments에서 제공하는 영수증 링크';
+COMMENT ON COLUMN payments.is_partial_cancelable IS '부분 취소 가능 여부 - Toss 승인 응답의 isPartialCancelable';
+COMMENT ON COLUMN payments.amount IS '결제 금액 - 결제 또는 과금 계산에 사용하는 금액 값';
+COMMENT ON COLUMN payments.status IS '결제 상태 - 현재 처리 상태 또는 업무 상태';
+COMMENT ON COLUMN payments.paid_at IS '결제 승인 일시 - 업무 이벤트가 발생한 시각';
+COMMENT ON COLUMN payments.refunded_at IS '환불 일시 - 업무 이벤트가 발생한 시각';
+COMMENT ON COLUMN payments.created_at IS '등록 일시 - 레코드가 생성된 시각';
+COMMENT ON COLUMN payments.updated_at IS '수정 일시 - 결제 상태 또는 PG 상세 정보가 마지막으로 갱신된 시각';
+
+CREATE TABLE IF NOT EXISTS face_whitelists (
+    face_whitelist_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    user_id uuid NOT NULL REFERENCES users(user_id),
+    label varchar(100),
+    embedding vector(512) NOT NULL,
+    sample_count integer NOT NULL DEFAULT 0,
+    status varchar(20) NOT NULL DEFAULT 'active',
+    created_at timestamp NOT NULL DEFAULT now(),
+    deleted_at timestamp,
+    CONSTRAINT pk_face_whitelists PRIMARY KEY (face_whitelist_id)
+);
+COMMENT ON TABLE face_whitelists IS '본인 얼굴 자동 마스킹 제외를 위한 얼굴 임베딩 메타데이터 테이블';
+COMMENT ON COLUMN face_whitelists.face_whitelist_id IS '얼굴 등록 ID - face_whitelists 테이블의 기본 식별자';
+COMMENT ON COLUMN face_whitelists.user_id IS '사용자 ID - 관련 테이블(O)과 연결하기 위한 외래 키';
+COMMENT ON COLUMN face_whitelists.label IS '표시 이름 - 표시 이름 정보를 저장하는 컬럼';
+COMMENT ON COLUMN face_whitelists.embedding IS '임베딩 벡터 - 업무 규칙 또는 제약조건 관리: pgvector 사용 시';
+COMMENT ON COLUMN face_whitelists.sample_count IS '샘플 개수 - 목록 재집계를 줄이기 위해 저장하는 집계 값';
+COMMENT ON COLUMN face_whitelists.status IS '상태 - 현재 처리 상태 또는 업무 상태';
+COMMENT ON COLUMN face_whitelists.created_at IS '등록 일시 - 레코드가 생성된 시각';
+COMMENT ON COLUMN face_whitelists.deleted_at IS '삭제 일시 - 소프트 삭제 또는 삭제 완료 처리 시각';
+
+CREATE TABLE IF NOT EXISTS abuse_reports (
+    report_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    reporter_user_id uuid REFERENCES users(user_id),
+    processed_file_id uuid REFERENCES processed_files(processed_file_id),
+    watermark_hash varchar(128),
+    report_type varchar(40) NOT NULL,
+    description text,
+    status varchar(30) NOT NULL DEFAULT 'received',
+    created_at timestamp NOT NULL DEFAULT now(),
+    resolved_at timestamp,
+    CONSTRAINT pk_abuse_reports PRIMARY KEY (report_id)
+);
+COMMENT ON TABLE abuse_reports IS '결과물 도용, 악용, 위변조 의심 신고 접수 및 처리 테이블';
+COMMENT ON COLUMN abuse_reports.report_id IS '신고 ID - abuse_reports 테이블의 기본 식별자';
+COMMENT ON COLUMN abuse_reports.reporter_user_id IS '신고자 사용자 ID - 관련 테이블(O)과 연결하기 위한 외래 키';
+COMMENT ON COLUMN abuse_reports.processed_file_id IS '관련 결과 파일 ID - 관련 테이블(O)과 연결하기 위한 외래 키';
+COMMENT ON COLUMN abuse_reports.watermark_hash IS '워터마크 해시 - 무결성 확인, 중복 방지 또는 역추적용 해시 값';
+COMMENT ON COLUMN abuse_reports.report_type IS '신고 유형 - 데이터나 업무 이벤트의 종류를 구분하는 값';
+COMMENT ON COLUMN abuse_reports.description IS '신고 내용 - 사용자 또는 관리자에게 보여줄 상세 설명';
+COMMENT ON COLUMN abuse_reports.status IS '처리 상태 - 현재 처리 상태 또는 업무 상태';
+COMMENT ON COLUMN abuse_reports.created_at IS '등록 일시 - 레코드가 생성된 시각';
+COMMENT ON COLUMN abuse_reports.resolved_at IS '처리 완료 일시 - 업무 이벤트가 발생한 시각';
+
+CREATE TABLE IF NOT EXISTS audit_logs (
+    audit_log_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    actor_user_id uuid REFERENCES users(user_id),
+    actor_type varchar(20) NOT NULL,
+    action varchar(80) NOT NULL,
+    target_type varchar(50),
+    target_id uuid,
+    detail jsonb,
+    ip_address varchar(45),
+    created_at timestamp NOT NULL DEFAULT now(),
+    CONSTRAINT pk_audit_logs PRIMARY KEY (audit_log_id)
+);
+COMMENT ON TABLE audit_logs IS '시스템, 사용자, 관리자 주요 행위 및 컴플라이언스 감사 로그 테이블';
+COMMENT ON COLUMN audit_logs.audit_log_id IS '감사 로그 ID - audit_logs 테이블의 기본 식별자';
+COMMENT ON COLUMN audit_logs.actor_user_id IS '행위자 사용자 ID - 관련 테이블(O)과 연결하기 위한 외래 키';
+COMMENT ON COLUMN audit_logs.actor_type IS '행위자 유형 - 데이터나 업무 이벤트의 종류를 구분하는 값';
+COMMENT ON COLUMN audit_logs.action IS '액션 - 업무 규칙 또는 제약조건 관리: upload, delete, download, admin_action 등';
+COMMENT ON COLUMN audit_logs.target_type IS '대상 유형 - 데이터나 업무 이벤트의 종류를 구분하는 값';
+COMMENT ON COLUMN audit_logs.target_id IS '대상 ID - 관련 데이터나 외부 리소스를 식별하는 ID';
+COMMENT ON COLUMN audit_logs.detail IS '로그 상세 - 로그 상세 정보를 저장하는 컬럼';
+COMMENT ON COLUMN audit_logs.ip_address IS '요청 IP - 요청 IP 정보를 저장하는 컬럼';
+COMMENT ON COLUMN audit_logs.created_at IS '등록 일시 - 레코드가 생성된 시각';
+
+CREATE TABLE IF NOT EXISTS sns_connections (
+    sns_connection_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    user_id uuid NOT NULL REFERENCES users(user_id),
+    provider varchar(30) NOT NULL,
+    provider_account_id varchar(255) NOT NULL,
+    account_name varchar(100),
+    account_type varchar(30),
+    status varchar(30) NOT NULL DEFAULT 'active',
+    scopes text,
+    access_token_cipher text,
+    refresh_token_cipher text,
+    token_expires_at timestamp,
+    last_synced_at timestamp,
+    created_at timestamp NOT NULL DEFAULT now(),
+    updated_at timestamp,
+    revoked_at timestamp,
+    CONSTRAINT pk_sns_connections PRIMARY KEY (sns_connection_id),
+    CONSTRAINT uq_sns_connections_provider_provider_account_id UNIQUE (provider, provider_account_id)
+);
+COMMENT ON TABLE sns_connections IS 'Instagram Graph API 등 SNS 연결 정보 및 토큰 상태를 관리하는 테이블';
+COMMENT ON COLUMN sns_connections.sns_connection_id IS 'SNS 연결 ID - sns_connections 테이블의 기본 식별자';
+COMMENT ON COLUMN sns_connections.user_id IS '사용자 ID - 관련 테이블(O)과 연결하기 위한 외래 키';
+COMMENT ON COLUMN sns_connections.provider IS '제공자 - 업무 규칙 또는 제약조건 관리: instagram, facebook ?';
+COMMENT ON COLUMN sns_connections.provider_account_id IS '제공자 계정 ID - 관련 데이터나 외부 리소스를 식별하는 ID';
+COMMENT ON COLUMN sns_connections.account_name IS '계정명 - 화면 표시 또는 관리자가 식별하기 위한 이름';
+COMMENT ON COLUMN sns_connections.account_type IS '계정 유형 - 데이터나 업무 이벤트의 종류를 구분하는 값';
+COMMENT ON COLUMN sns_connections.status IS '연결 상태 - 현재 처리 상태 또는 업무 상태';
+COMMENT ON COLUMN sns_connections.scopes IS '권한 범위 - SNS API에서 허용받은 권한 범위를 저장하는 컬럼';
+COMMENT ON COLUMN sns_connections.access_token_cipher IS '액세스 토큰 암호문 - OAuth 또는 외부 연동 인증에 필요한 토큰 정보';
+COMMENT ON COLUMN sns_connections.refresh_token_cipher IS '리프레시 토큰 암호문 - OAuth 또는 외부 연동 인증에 필요한 토큰 정보';
+COMMENT ON COLUMN sns_connections.token_expires_at IS '토큰 만료 일시 - OAuth 또는 외부 연동 인증에 필요한 토큰 정보';
+COMMENT ON COLUMN sns_connections.last_synced_at IS '마지막 동기화 일시 - 업무 이벤트가 발생한 시각';
+COMMENT ON COLUMN sns_connections.created_at IS '생성 일시 - 레코드가 생성된 시각';
+COMMENT ON COLUMN sns_connections.updated_at IS '수정 일시 - 레코드가 마지막으로 수정된 시각';
+COMMENT ON COLUMN sns_connections.revoked_at IS '연결 해제 일시 - 업무 이벤트가 발생한 시각';
+
+CREATE TABLE IF NOT EXISTS sns_media_items (
+    sns_media_item_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    sns_connection_id uuid NOT NULL REFERENCES sns_connections(sns_connection_id),
+    user_id uuid NOT NULL REFERENCES users(user_id),
+    provider_media_id varchar(255) NOT NULL,
+    media_type varchar(30) NOT NULL,
+    caption text,
+    permalink text,
+    media_url text,
+    thumbnail_url text,
+    location_name varchar(255),
+    posted_at timestamp,
+    collect_status varchar(30) NOT NULL DEFAULT 'collected',
+    created_at timestamp NOT NULL DEFAULT now(),
+    updated_at timestamp,
+    CONSTRAINT pk_sns_media_items PRIMARY KEY (sns_media_item_id),
+    CONSTRAINT uq_sns_media_items_provider_media_id_sns_connection_id UNIQUE (provider_media_id, sns_connection_id)
+);
+COMMENT ON TABLE sns_media_items IS 'SNS 게시물 메타데이터, 미디어 URL, 게시 일시 등을 저장하는 테이블';
+COMMENT ON COLUMN sns_media_items.sns_media_item_id IS 'SNS 미디어 ID - sns_media_items 테이블의 기본 식별자';
+COMMENT ON COLUMN sns_media_items.sns_connection_id IS 'SNS 연결 ID - 관련 테이블(O)과 연결하기 위한 외래 키';
+COMMENT ON COLUMN sns_media_items.user_id IS '사용자 ID - 관련 테이블(O)과 연결하기 위한 외래 키';
+COMMENT ON COLUMN sns_media_items.provider_media_id IS '제공자 미디어 ID - 관련 데이터나 외부 리소스를 식별하는 ID';
+COMMENT ON COLUMN sns_media_items.media_type IS '미디어 유형 - 데이터나 업무 이벤트의 종류를 구분하는 값';
+COMMENT ON COLUMN sns_media_items.caption IS '캡션 - 게시물 캡션 또는 본문 내용을 저장하는 컬럼';
+COMMENT ON COLUMN sns_media_items.permalink IS '게시물 URL - SNS 게시물 원본 URL 정보를 저장하는 컬럼';
+COMMENT ON COLUMN sns_media_items.media_url IS '미디어 URL - 파일 또는 외부 리소스의 위치 정보';
+COMMENT ON COLUMN sns_media_items.thumbnail_url IS '썸네일 URL - 파일 또는 외부 리소스의 위치 정보';
+COMMENT ON COLUMN sns_media_items.location_name IS '위치명 - 화면 표시 또는 관리자가 식별하기 위한 이름';
+COMMENT ON COLUMN sns_media_items.posted_at IS '게시 일시 - 업무 이벤트가 발생한 시각';
+COMMENT ON COLUMN sns_media_items.collect_status IS '수집 상태 - 업무 규칙 또는 제약조건 관리: collected, failed, expired';
+COMMENT ON COLUMN sns_media_items.created_at IS '생성 일시 - 레코드가 생성된 시각';
+COMMENT ON COLUMN sns_media_items.updated_at IS '수정 일시 - 레코드가 마지막으로 수정된 시각';
+
+CREATE TABLE IF NOT EXISTS sns_diagnosis_jobs (
+    sns_diagnosis_job_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    sns_connection_id uuid NOT NULL REFERENCES sns_connections(sns_connection_id),
+    user_id uuid NOT NULL REFERENCES users(user_id),
+    status varchar(30) NOT NULL DEFAULT 'queued',
+    media_count integer NOT NULL DEFAULT 0,
+    risky_media_count integer NOT NULL DEFAULT 0,
+    detection_count integer NOT NULL DEFAULT 0,
+    risk_score numeric(5,2) CHECK (risk_score BETWEEN 0 AND 100),
+    summary jsonb,
+    error_message text,
+    started_at timestamp,
+    completed_at timestamp,
+    created_at timestamp NOT NULL DEFAULT now(),
+    updated_at timestamp,
+    CONSTRAINT pk_sns_diagnosis_jobs PRIMARY KEY (sns_diagnosis_job_id)
+);
+COMMENT ON TABLE sns_diagnosis_jobs IS 'SNS 게시물 진단 작업의 상태, 위험 점수 및 요약 결과를 저장하는 테이블';
+COMMENT ON COLUMN sns_diagnosis_jobs.sns_diagnosis_job_id IS 'SNS 진단 작업 ID - sns_diagnosis_jobs 테이블의 기본 식별자';
+COMMENT ON COLUMN sns_diagnosis_jobs.sns_connection_id IS 'SNS 연결 ID - 관련 테이블(O)과 연결하기 위한 외래 키';
+COMMENT ON COLUMN sns_diagnosis_jobs.user_id IS '사용자 ID - 관련 테이블(O)과 연결하기 위한 외래 키';
+COMMENT ON COLUMN sns_diagnosis_jobs.status IS '진단 상태 - 현재 처리 상태 또는 업무 상태';
+COMMENT ON COLUMN sns_diagnosis_jobs.media_count IS '진단 미디어 수 - 목록 재집계를 줄이기 위해 저장하는 집계 값';
+COMMENT ON COLUMN sns_diagnosis_jobs.risky_media_count IS '위험 미디어 수 - 목록 재집계를 줄이기 위해 저장하는 집계 값';
+COMMENT ON COLUMN sns_diagnosis_jobs.detection_count IS '검출 건수 - 목록 재집계를 줄이기 위해 저장하는 집계 값';
+COMMENT ON COLUMN sns_diagnosis_jobs.risk_score IS '위험 점수 - 업무 규칙 또는 제약조건 관리: 0~100';
+COMMENT ON COLUMN sns_diagnosis_jobs.summary IS '진단 요약 - SNS 진단 결과 요약 정보를 저장하는 컬럼';
+COMMENT ON COLUMN sns_diagnosis_jobs.error_message IS '오류 메시지 - 사용자 또는 관리자에게 보여줄 상세 설명';
+COMMENT ON COLUMN sns_diagnosis_jobs.started_at IS '시작 일시 - 업무 이벤트가 발생한 시각';
+COMMENT ON COLUMN sns_diagnosis_jobs.completed_at IS '완료 일시 - 업무 이벤트가 발생한 시각';
+COMMENT ON COLUMN sns_diagnosis_jobs.created_at IS '생성 일시 - 레코드가 생성된 시각';
+COMMENT ON COLUMN sns_diagnosis_jobs.updated_at IS '수정 일시 - 레코드가 마지막으로 수정된 시각';
+
+CREATE TABLE IF NOT EXISTS notification_events (
+    notification_event_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    user_id uuid REFERENCES users(user_id),
+    channel varchar(30) NOT NULL,
+    notification_type varchar(60) NOT NULL,
+    title varchar(255),
+    message text,
+    target_type varchar(50),
+    target_id uuid,
+    status varchar(30) NOT NULL DEFAULT 'pending',
+    error_message text,
+    created_at timestamp NOT NULL DEFAULT now(),
+    sent_at timestamp,
+    CONSTRAINT pk_notification_events PRIMARY KEY (notification_event_id)
+);
+COMMENT ON TABLE notification_events IS '이메일, WebSocket, 푸시 등 사용자 알림 발송 이력 및 상태를 저장하는 테이블';
+COMMENT ON COLUMN notification_events.notification_event_id IS '알림 이벤트 ID - notification_events 테이블의 기본 식별자';
+COMMENT ON COLUMN notification_events.user_id IS '사용자 ID - 관련 테이블(O)과 연결하기 위한 외래 키';
+COMMENT ON COLUMN notification_events.channel IS '채널 - 업무 규칙 또는 제약조건 관리: email, websocket, push';
+COMMENT ON COLUMN notification_events.notification_type IS '알림 유형 - 데이터나 업무 이벤트의 종류를 구분하는 값';
+COMMENT ON COLUMN notification_events.title IS '제목 - 화면 표시 또는 관리자가 식별하기 위한 이름';
+COMMENT ON COLUMN notification_events.message IS '메시지 - 사용자 또는 관리자에게 보여줄 상세 설명';
+COMMENT ON COLUMN notification_events.target_type IS '대상 유형 - 데이터나 업무 이벤트의 종류를 구분하는 값';
+COMMENT ON COLUMN notification_events.target_id IS '대상 ID - 관련 데이터나 외부 리소스를 식별하는 ID';
+COMMENT ON COLUMN notification_events.status IS '발송 상태 - 현재 처리 상태 또는 업무 상태';
+COMMENT ON COLUMN notification_events.error_message IS '오류 메시지 - 사용자 또는 관리자에게 보여줄 상세 설명';
+COMMENT ON COLUMN notification_events.created_at IS '생성 일시 - 레코드가 생성된 시각';
+COMMENT ON COLUMN notification_events.sent_at IS '발송 일시 - 업무 이벤트가 발생한 시각';
+
+CREATE TABLE IF NOT EXISTS analysis_artifacts (
+    artifact_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    job_id uuid NOT NULL REFERENCES analysis_jobs(job_id),
+    user_id uuid NOT NULL REFERENCES users(user_id),
+    artifact_type varchar(40) NOT NULL,
+    stored_path text NOT NULL,
+    content_type varchar(100),
+    file_size bigint,
+    checksum varchar(128),
+    metadata jsonb,
+    expires_at timestamp,
+    created_at timestamp NOT NULL DEFAULT now(),
+    deleted_at timestamp,
+    CONSTRAINT pk_analysis_artifacts PRIMARY KEY (artifact_id)
+);
+COMMENT ON TABLE analysis_artifacts IS '분석 과정에서 생성되는 썸네일, OCR JSON, 탐지 결과 JSON 등 산출물을 관리하는 테이블';
+COMMENT ON COLUMN analysis_artifacts.artifact_id IS '분석 산출물 ID - analysis_artifacts 테이블의 기본 식별자';
+COMMENT ON COLUMN analysis_artifacts.job_id IS '분석 작업 ID - 관련 테이블(O)과 연결하기 위한 외래 키';
+COMMENT ON COLUMN analysis_artifacts.user_id IS '사용자 ID - 관련 테이블(O)과 연결하기 위한 외래 키';
+COMMENT ON COLUMN analysis_artifacts.artifact_type IS '산출물 유형 - 썸네일, 리포트, 로그 등 산출물 종류';
+COMMENT ON COLUMN analysis_artifacts.stored_path IS '저장 경로 - 파일 또는 외부 리소스의 위치 정보';
+COMMENT ON COLUMN analysis_artifacts.content_type IS '콘텐츠 유형 - 데이터나 업무 이벤트의 종류를 구분하는 값';
+COMMENT ON COLUMN analysis_artifacts.file_size IS '파일 크기 - 업무 규칙 또는 제약조건 관리: bytes';
+COMMENT ON COLUMN analysis_artifacts.checksum IS '체크섬 - 파일 무결성 확인 또는 중복 방지에 사용하는 체크섬 정보';
+COMMENT ON COLUMN analysis_artifacts.metadata IS '메타데이터 - 산출물에 대한 부가 메타데이터를 저장하는 컬럼';
+COMMENT ON COLUMN analysis_artifacts.expires_at IS '만료 일시 - 보관 정책에 따른 만료 또는 자동 삭제 기준 시각';
+COMMENT ON COLUMN analysis_artifacts.created_at IS '생성 일시 - 레코드가 생성된 시각';
+COMMENT ON COLUMN analysis_artifacts.deleted_at IS '삭제 일시 - 소프트 삭제 또는 삭제 완료 처리 시각';
+
+CREATE TABLE IF NOT EXISTS deletion_events (
+    deletion_event_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    target_type varchar(50) NOT NULL,
+    target_id uuid NOT NULL,
+    target_path text,
+    delete_reason varchar(60) NOT NULL,
+    retention_policy_code varchar(50),
+    scheduled_delete_at timestamp,
+    deleted_at timestamp NOT NULL,
+    result varchar(30) NOT NULL,
+    error_message text,
+    actor_type varchar(20) NOT NULL DEFAULT 'system',
+    actor_user_id uuid REFERENCES users(user_id),
+    created_at timestamp NOT NULL DEFAULT now(),
+    CONSTRAINT pk_deletion_events PRIMARY KEY (deletion_event_id)
+);
+COMMENT ON TABLE deletion_events IS '원본, 결과물, 분석 산출물, 로그 등 보관 정책에 따른 삭제 이력을 저장하는 테이블';
+COMMENT ON COLUMN deletion_events.deletion_event_id IS '삭제 이벤트 ID - deletion_events 테이블의 기본 식별자';
+COMMENT ON COLUMN deletion_events.target_type IS '삭제 대상 유형 - 데이터나 업무 이벤트의 종류를 구분하는 값';
+COMMENT ON COLUMN deletion_events.target_id IS '삭제 대상 ID - 관련 데이터나 외부 리소스를 식별하는 ID';
+COMMENT ON COLUMN deletion_events.target_path IS '삭제 대상 경로 - 파일 또는 외부 리소스의 위치 정보';
+COMMENT ON COLUMN deletion_events.delete_reason IS '삭제 사유 - 업무 규칙 또는 제약조건 관리: expired, user_request, admin_request, cleanup';
+COMMENT ON COLUMN deletion_events.retention_policy_code IS '보관 정책 코드 - 삭제에 적용된 보관 정책 코드를 저장하는 컬럼';
+COMMENT ON COLUMN deletion_events.scheduled_delete_at IS '삭제 예정 일시 - 업무 이벤트가 발생한 시각';
+COMMENT ON COLUMN deletion_events.deleted_at IS '삭제 완료 일시 - 소프트 삭제 또는 삭제 완료 처리 시각';
+COMMENT ON COLUMN deletion_events.result IS '삭제 결과 - 업무 규칙 또는 제약조건 관리: success, partial, failed';
+COMMENT ON COLUMN deletion_events.error_message IS '오류 메시지 - 사용자 또는 관리자에게 보여줄 상세 설명';
+COMMENT ON COLUMN deletion_events.actor_type IS '수행자 유형 - 데이터나 업무 이벤트의 종류를 구분하는 값';
+COMMENT ON COLUMN deletion_events.actor_user_id IS '수행자 사용자 ID - 관련 테이블(O)과 연결하기 위한 외래 키';
+COMMENT ON COLUMN deletion_events.created_at IS '생성 일시 - 레코드가 생성된 시각';
+
+CREATE TABLE IF NOT EXISTS worker_tasks (
+    worker_task_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    job_id uuid NOT NULL REFERENCES analysis_jobs(job_id) on delete cascade,
+    upload_id uuid REFERENCES uploads(upload_id) on delete set null,
+    task_type varchar(50) NOT NULL check (task_type in ('visual_detection','ocr','audio_detection','metadata_scan','watermark','encoding')),
+    queue_name varchar(50) NOT NULL DEFAULT 'default' check (queue_name in ('default','high_priority','pro','admin')),
+    priority integer NOT NULL DEFAULT 0 check (priority >= 0),
+    worker_id varchar(100),
+    attempt_no integer NOT NULL DEFAULT 1 check (attempt_no >= 1),
+    status varchar(30) NOT NULL DEFAULT 'queued' check (status in ('queued','started','succeeded','failed','retrying','cancelled')),
+    progress_percent integer NOT NULL DEFAULT 0 check (progress_percent between 0 and 100),
+    started_at timestamp,
+    finished_at timestamp,
+    duration_ms integer check (duration_ms >= 0),
+    next_retry_at timestamp,
+    error_code varchar(80),
+    error_message text,
+    input_payload jsonb,
+    output_payload jsonb,
+    created_at timestamp NOT NULL DEFAULT now(),
+    updated_at timestamp NOT NULL DEFAULT now(),
+    CONSTRAINT pk_worker_tasks PRIMARY KEY (worker_task_id)
+);
+COMMENT ON TABLE worker_tasks IS '분석/치환/워터마크/인코딩 등 큐 기반 워커 처리 이력 테이블';
+COMMENT ON COLUMN worker_tasks.worker_task_id IS '워커 작업 ID - 워커 처리 이력 한 건을 식별하는 기본 키';
+COMMENT ON COLUMN worker_tasks.job_id IS '분석 작업 ID - 분석 작업과 워커 처리 이력을 연결하는 외래 키';
+COMMENT ON COLUMN worker_tasks.upload_id IS '업로드 ID - 원본 업로드 파일과 직접 연결이 필요할 때 사용하는 외래 키';
+COMMENT ON COLUMN worker_tasks.task_type IS '작업 유형 - 워커가 수행하는 세부 처리 유형';
+COMMENT ON COLUMN worker_tasks.queue_name IS '큐 이름 - 작업이 적재된 큐를 구분하는 값';
+COMMENT ON COLUMN worker_tasks.priority IS '우선순위 - 큐에서 작업 처리 순서를 정하기 위한 우선순위';
+COMMENT ON COLUMN worker_tasks.worker_id IS '워커 ID - 실제로 작업을 처리한 워커 호스트 또는 프로세스 식별자';
+COMMENT ON COLUMN worker_tasks.attempt_no IS '시도 번호 - 재시도를 포함한 워커 실행 차수';
+COMMENT ON COLUMN worker_tasks.status IS '작업 상태 - 워커 작업의 현재 처리 상태';
+COMMENT ON COLUMN worker_tasks.progress_percent IS '진행률 - 워커 단위 처리 진행률, 서비스에서는 5% 단위로 갱신';
+COMMENT ON COLUMN worker_tasks.started_at IS '시작 일시 - 워커가 작업을 시작한 시각';
+COMMENT ON COLUMN worker_tasks.finished_at IS '종료 일시 - 워커가 작업을 종료한 시각';
+COMMENT ON COLUMN worker_tasks.duration_ms IS '소요 시간 - 작업 처리에 걸린 시간';
+COMMENT ON COLUMN worker_tasks.next_retry_at IS '다음 재시도 일시 - 실패한 작업의 다음 재시도 예정 시각';
+COMMENT ON COLUMN worker_tasks.error_code IS '오류 코드 - 실패 원인을 시스템적으로 분류하기 위한 코드';
+COMMENT ON COLUMN worker_tasks.error_message IS '오류 메시지 - 실패 원인을 확인하기 위한 상세 메시지, 민감정보는 저장하지 않음';
+COMMENT ON COLUMN worker_tasks.input_payload IS '입력 페이로드 - 워커 실행에 필요한 입력 요약 JSON, 파일 경로와 옵션 등 요약 정보만 저장';
+COMMENT ON COLUMN worker_tasks.output_payload IS '출력 페이로드 - 워커 실행 결과 요약 JSON, 산출물 경로와 검출 요약 등 저장';
+COMMENT ON COLUMN worker_tasks.created_at IS '생성 일시 - 레코드가 생성된 시각';
+COMMENT ON COLUMN worker_tasks.updated_at IS '수정 일시 - 레코드가 마지막으로 수정된 시각';
+
+-- Indexes
+DROP INDEX IF EXISTS idx_users_email_unique;
+CREATE INDEX IF NOT EXISTS idx_users_email ON users (email);
+COMMENT ON INDEX idx_users_email IS '연락용 이메일 조회 인덱스. OAuth 로그인 식별자는 oauth_accounts(provider, provider_email)를 사용한다';
+CREATE INDEX IF NOT EXISTS idx_users_status_created_at ON users (status, created_at);
+COMMENT ON INDEX idx_users_status_created_at IS '업무 이벤트가 발생한 시각';
+CREATE UNIQUE INDEX IF NOT EXISTS idx_oauth_accounts_provider_user_unique ON oauth_accounts (provider, provider_user_id);
+COMMENT ON INDEX idx_oauth_accounts_provider_user_unique IS '업무 규칙 또는 제약조건 관리: oauth_accounts(provider, provider_user_id), 소셜 로그인 식별';
+CREATE UNIQUE INDEX IF NOT EXISTS idx_oauth_accounts_provider_email_unique ON oauth_accounts (provider, LOWER(provider_email)) WHERE provider_email IS NOT NULL;
+COMMENT ON INDEX idx_oauth_accounts_provider_email_unique IS 'OAuth 제공자와 제공자 이메일 조합으로 계정을 식별하기 위한 복합 유니크 인덱스';
+CREATE INDEX IF NOT EXISTS idx_oauth_accounts_user_id ON oauth_accounts (user_id);
+COMMENT ON INDEX idx_oauth_accounts_user_id IS '관련 테이블(users.user_id)과 연결하기 위한 외래 키';
+CREATE INDEX IF NOT EXISTS idx_user_login_histories_user_logged_in ON user_login_histories (user_id, logged_in_at DESC);
+COMMENT ON INDEX idx_user_login_histories_user_logged_in IS '사용자별 로그인 이력을 최신순으로 조회';
+CREATE INDEX IF NOT EXISTS idx_user_login_histories_logged_in ON user_login_histories (logged_in_at DESC);
+COMMENT ON INDEX idx_user_login_histories_logged_in IS '관리자 로그인 히스토리 목록 최신순 조회';
+CREATE INDEX IF NOT EXISTS idx_user_login_histories_result_logged_in ON user_login_histories (login_result, logged_in_at DESC);
+COMMENT ON INDEX idx_user_login_histories_result_logged_in IS '로그인 성공, 실패, 차단, 탈퇴, 오류 결과별 조회';
+CREATE INDEX IF NOT EXISTS idx_user_login_histories_provider_logged_in ON user_login_histories (provider, logged_in_at DESC);
+COMMENT ON INDEX idx_user_login_histories_provider_logged_in IS 'OAuth 제공자별 로그인 이력 조회';
+CREATE INDEX IF NOT EXISTS idx_user_login_histories_ip_logged_in ON user_login_histories (ip_address, logged_in_at DESC);
+COMMENT ON INDEX idx_user_login_histories_ip_logged_in IS 'IP 기반 의심 로그인 및 반복 실패 이력 조회';
+CREATE INDEX IF NOT EXISTS idx_user_consents_user_type_version ON user_consents (user_id, consent_type, version);
+COMMENT ON INDEX idx_user_consents_user_type_version IS '관련 테이블(users.user_id)과 연결하기 위한 외래 키';
+CREATE INDEX IF NOT EXISTS idx_uploads_user_created_at ON uploads (user_id, created_at DESC);
+COMMENT ON INDEX idx_uploads_user_created_at IS '관련 테이블(users.user_id)과 연결하기 위한 외래 키';
+CREATE INDEX IF NOT EXISTS idx_uploads_status_created_at ON uploads (status, created_at);
+COMMENT ON INDEX idx_uploads_status_created_at IS '업무 이벤트가 발생한 시각';
+CREATE INDEX IF NOT EXISTS idx_uploads_expires_at ON uploads (expires_at) where deleted_at is null;
+COMMENT ON INDEX idx_uploads_expires_at IS '업무 이벤트가 발생한 시각';
+CREATE INDEX IF NOT EXISTS idx_upload_chunks_upload_index ON upload_chunks (upload_id, chunk_index);
+COMMENT ON INDEX idx_upload_chunks_upload_index IS 'uploads(upload_id) 기준 chunk 병합 순서 조회';
+CREATE INDEX IF NOT EXISTS idx_upload_chunks_status_created_at ON upload_chunks (status, created_at);
+COMMENT ON INDEX idx_upload_chunks_status_created_at IS '실패 chunk 재시도 및 정리 대상 조회';
+CREATE INDEX IF NOT EXISTS idx_analysis_jobs_user_created_at ON analysis_jobs (user_id, created_at DESC);
+COMMENT ON INDEX idx_analysis_jobs_user_created_at IS '관련 테이블(users.user_id)과 연결하기 위한 외래 키';
+-- SKIP idx_analysis_jobs_status_priority_created: index design references columns not found in table definition: analysis_jobs(status, priority, created_at), 워커 작업 선택
+CREATE INDEX IF NOT EXISTS idx_analysis_jobs_status_progress ON analysis_jobs (status, total_progress);
+COMMENT ON INDEX idx_analysis_jobs_status_progress IS '업무 규칙 또는 제약조건 관리: analysis_jobs(status, total_progress), 진행 페이지 폴링';
+CREATE INDEX IF NOT EXISTS idx_detections_job_type ON detections (job_id, detection_type);
+COMMENT ON INDEX idx_detections_job_type IS '관련 테이블(analysis_jobs.job_id)과 연결하기 위한 외래 키';
+-- SKIP idx_detections_job_severity: index design references columns not found in table definition: detections(job_id, severity), 위험도 요약
+CREATE INDEX IF NOT EXISTS idx_replacement_actions_job_status ON replacement_actions (job_id, status);
+COMMENT ON INDEX idx_replacement_actions_job_status IS '관련 테이블(analysis_jobs.job_id)과 연결하기 위한 외래 키';
+CREATE INDEX IF NOT EXISTS idx_processed_files_job_id ON processed_files (job_id);
+COMMENT ON INDEX idx_processed_files_job_id IS '관련 테이블(analysis_jobs.job_id)과 연결하기 위한 외래 키';
+CREATE INDEX IF NOT EXISTS idx_processed_files_expires_at ON processed_files (expires_at) where deleted_at is null;
+COMMENT ON INDEX idx_processed_files_expires_at IS '업무 이벤트가 발생한 시각';
+-- SKIP idx_download_events_job_created_at: index design references columns not found in table definition: download_events(job_id, created_at desc), 최근 다운로드
+CREATE INDEX IF NOT EXISTS idx_subscriptions_user_status ON subscriptions (user_id, status);
+COMMENT ON INDEX idx_subscriptions_user_status IS '관련 테이블(users.user_id)과 연결하기 위한 외래 키';
+CREATE INDEX IF NOT EXISTS idx_plans_status_sort ON plans (status, sort_order);
+COMMENT ON INDEX idx_plans_status_sort IS 'Subscription products ordered for pricing display by status';
+CREATE INDEX IF NOT EXISTS idx_credit_plans_status_sort ON credit_plans (status, sort_order);
+COMMENT ON INDEX idx_credit_plans_status_sort IS 'Credit products ordered for pricing display by status';
+CREATE INDEX IF NOT EXISTS idx_credit_ledger_user_created_at ON credit_ledger (user_id, created_at DESC);
+COMMENT ON INDEX idx_credit_ledger_user_created_at IS 'Recent credit ledger entries by user';
+CREATE INDEX IF NOT EXISTS idx_payments_product_type_created_at ON payments (product_type, created_at DESC);
+COMMENT ON INDEX idx_payments_product_type_created_at IS 'Payment history by product type';
+CREATE INDEX IF NOT EXISTS idx_payments_user_created_at ON payments (user_id, created_at DESC);
+COMMENT ON INDEX idx_payments_user_created_at IS '관련 테이블(users.user_id)과 연결하기 위한 외래 키';
+CREATE INDEX IF NOT EXISTS idx_face_whitelists_user_id ON face_whitelists (user_id);
+COMMENT ON INDEX idx_face_whitelists_user_id IS '관련 테이블(users.user_id)과 연결하기 위한 외래 키';
+CREATE INDEX IF NOT EXISTS idx_abuse_reports_status_created_at ON abuse_reports (status, created_at);
+COMMENT ON INDEX idx_abuse_reports_status_created_at IS '업무 이벤트가 발생한 시각';
+CREATE INDEX IF NOT EXISTS idx_audit_logs_actor_created_at ON audit_logs (actor_user_id, created_at DESC);
+COMMENT ON INDEX idx_audit_logs_actor_created_at IS '관련 테이블(users.user_id)과 연결하기 위한 외래 키';
+CREATE INDEX IF NOT EXISTS idx_audit_logs_target ON audit_logs (target_type, target_id, created_at DESC);
+COMMENT ON INDEX idx_audit_logs_target IS '업무 규칙 또는 제약조건 관리: audit_logs(target_type, target_id, created_at desc), 역추적';
+CREATE INDEX IF NOT EXISTS idx_sns_connections_user_provider ON sns_connections (user_id, provider);
+COMMENT ON INDEX idx_sns_connections_user_provider IS '관련 테이블(users.user_id)과 연결하기 위한 외래 키';
+CREATE INDEX IF NOT EXISTS idx_sns_connections_token_expires_at ON sns_connections (token_expires_at);
+COMMENT ON INDEX idx_sns_connections_token_expires_at IS 'OAuth 또는 외부 연동 인증에 필요한 토큰 정보';
+CREATE INDEX IF NOT EXISTS idx_sns_media_items_connection_created ON sns_media_items (sns_connection_id, posted_at DESC);
+COMMENT ON INDEX idx_sns_media_items_connection_created IS '관련 테이블(sns_connections.sns_connection_id)과 연결하기 위한 외래 키';
+-- SKIP idx_sns_media_items_provider_media_unique: index design references columns not found in table definition: sns_media_items(provider, provider_media_id), 중복 수집 방지
+CREATE INDEX IF NOT EXISTS idx_sns_diagnosis_jobs_status_created ON sns_diagnosis_jobs (status, created_at);
+COMMENT ON INDEX idx_sns_diagnosis_jobs_status_created IS '업무 규칙 또는 제약조건 관리: sns_diagnosis_jobs(status, created_at), 진단 큐/대시보드';
+-- SKIP idx_notification_events_status_scheduled: index design references columns not found in table definition: notification_events(status, scheduled_at), 알림 워커
+CREATE INDEX IF NOT EXISTS idx_notification_events_user_created ON notification_events (user_id, created_at DESC);
+COMMENT ON INDEX idx_notification_events_user_created IS '관련 테이블(users.user_id)과 연결하기 위한 외래 키';
+CREATE INDEX IF NOT EXISTS idx_analysis_artifacts_job_type ON analysis_artifacts (job_id, artifact_type);
+COMMENT ON INDEX idx_analysis_artifacts_job_type IS '관련 테이블(analysis_jobs.job_id)과 연결하기 위한 외래 키';
+CREATE INDEX IF NOT EXISTS idx_analysis_artifacts_expires_at ON analysis_artifacts (expires_at) where deleted_at is null;
+COMMENT ON INDEX idx_analysis_artifacts_expires_at IS '업무 이벤트가 발생한 시각';
+-- SKIP idx_deletion_events_target: index design references columns not found in table definition: deletion_events(target_table, target_id, created_at desc), 삭제 완료 증적
+-- SKIP idx_deletion_events_policy_created: index design references columns not found in table definition: deletion_events(policy_code, created_at desc), 자동 삭제 모니터
+CREATE INDEX IF NOT EXISTS idx_worker_tasks_job_created_at ON worker_tasks (job_id, created_at DESC);
+COMMENT ON INDEX idx_worker_tasks_job_created_at IS '관련 테이블(analysis_jobs.job_id)과 연결하기 위한 외래 키';
+CREATE INDEX IF NOT EXISTS idx_worker_tasks_status_priority_created ON worker_tasks (status, priority DESC, created_at);
+COMMENT ON INDEX idx_worker_tasks_status_priority_created IS '업무 규칙 또는 제약조건 관리: worker_tasks(status, priority desc, created_at), 큐에서 다음 작업 선택';
+CREATE INDEX IF NOT EXISTS idx_worker_tasks_next_retry_at ON worker_tasks (next_retry_at) where status='retrying';
+COMMENT ON INDEX idx_worker_tasks_next_retry_at IS '업무 이벤트가 발생한 시각';
+CREATE INDEX IF NOT EXISTS idx_worker_tasks_worker_status ON worker_tasks (worker_id, status, updated_at DESC);
+COMMENT ON INDEX idx_worker_tasks_worker_status IS '업무 규칙 또는 제약조건 관리: worker_tasks(worker_id, status, updated_at desc), 워커 모니터링';
+
+CREATE TABLE IF NOT EXISTS user_settings (
+    user_id uuid PRIMARY KEY REFERENCES users(user_id),
+    email_notification boolean DEFAULT true,
+    browser_notification boolean DEFAULT true,
+    data_usage_consent boolean DEFAULT true,
+    created_at timestamp default now(),
+    updated_at timestamp
+);
+COMMENT ON TABLE user_settings IS '사용자 환경 설정 - 알림 수신 여부와 데이터 활용 동의 설정을 저장하는 테이블';
+COMMENT ON COLUMN user_settings.user_id IS '사용자 ID - users 테이블과 1:1로 연결되는 기본 키이자 외래 키';
+COMMENT ON COLUMN user_settings.email_notification IS '이메일 알림 여부 - 이메일 알림 수신 동의 상태';
+COMMENT ON COLUMN user_settings.browser_notification IS '브라우저 알림 여부 - 웹 브라우저 알림 수신 동의 상태';
+COMMENT ON COLUMN user_settings.data_usage_consent IS '데이터 활용 동의 여부 - 서비스 개선 또는 분석을 위한 데이터 활용 동의 상태';
+COMMENT ON COLUMN user_settings.created_at IS '생성 일시 - 설정 레코드가 생성된 시각';
+COMMENT ON COLUMN user_settings.updated_at IS '수정 일시 - 설정 레코드가 마지막으로 수정된 시각';
+
+
+-- =========================================================
+-- v4 추가: Front-Back-Colab 작업 진행률/큐/Heartbeat 관리
+-- 목적:
+-- 1) Page09 분석 진행 / Page17 처리 진행 / Page19 진행중 작업 복원 지원
+-- 2) WebSocket + Polling fallback 에 필요한 작업 상태 영속화
+-- 3) Colab/ngrok Worker heartbeat 및 Redis Queue 이력 보강
+-- =========================================================
+
+-- 1. analysis_jobs 확장
+-- 기존 analysis_jobs는 작업의 기본 상태를 관리하므로 별도 jobs 테이블을 만들지 않고 확장한다.
+ALTER TABLE analysis_jobs
+    ADD COLUMN IF NOT EXISTS job_type varchar(30) NOT NULL DEFAULT 'analysis',
+    ADD COLUMN IF NOT EXISTS current_stage varchar(50),
+    ADD COLUMN IF NOT EXISTS stage_progress integer NOT NULL DEFAULT 0 CHECK (stage_progress BETWEEN 0 AND 100),
+    ADD COLUMN IF NOT EXISTS total_progress integer NOT NULL DEFAULT 0 CHECK (total_progress BETWEEN 0 AND 100),
+    ADD COLUMN IF NOT EXISTS queue_position integer CHECK (queue_position IS NULL OR queue_position >= 0),
+    ADD COLUMN IF NOT EXISTS eta_seconds integer CHECK (eta_seconds IS NULL OR eta_seconds >= 0),
+    ADD COLUMN IF NOT EXISTS message text,
+    ADD COLUMN IF NOT EXISTS cancel_requested boolean NOT NULL DEFAULT false,
+    ADD COLUMN IF NOT EXISTS error_code varchar(100),
+    ADD COLUMN IF NOT EXISTS result_file_path text,
+    ADD COLUMN IF NOT EXISTS report_id uuid;
+
+COMMENT ON COLUMN analysis_jobs.job_type IS '작업 유형 - analysis, preview, render, sns_scan 등 작업 흐름 구분';
+COMMENT ON COLUMN analysis_jobs.current_stage IS '현재 단계 - upload_completed, queued, visual_detection, audio_detection, report_generation, preview_generation, render_processing, watermarking, output_encoding, completed 등';
+COMMENT ON COLUMN analysis_jobs.stage_progress IS '현재 단계 진행률 - Page09/Page17 stepper의 단계별 퍼센트';
+COMMENT ON COLUMN analysis_jobs.total_progress IS '전체 진행률 - 작업 전체 기준 진행 퍼센트';
+COMMENT ON COLUMN analysis_jobs.queue_position IS '큐 대기 순번 - Free 사용자 내 앞 N명 표시 및 관리자 큐 모니터링용';
+COMMENT ON COLUMN analysis_jobs.eta_seconds IS '예상 남은 시간 초 - 진행 화면의 ETA 표시용';
+COMMENT ON COLUMN analysis_jobs.message IS '진행 메시지 - 현재 처리 상태를 사용자 또는 관리자에게 표시하는 문구';
+COMMENT ON COLUMN analysis_jobs.cancel_requested IS '취소 요청 여부 - 사용자가 작업 취소를 요청했는지 여부';
+COMMENT ON COLUMN analysis_jobs.error_code IS '오류 코드 - 워커/검증/인코딩 실패 유형 식별자';
+COMMENT ON COLUMN analysis_jobs.result_file_path IS '결과 파일 경로 - 최종 처리 결과물 파일 경로 또는 객체 스토리지 키';
+COMMENT ON COLUMN analysis_jobs.report_id IS '리포트 ID - 분석 리포트 또는 결과 문서와 연결하기 위한 식별자';
+
+-- status 값 제약은 기존 데이터와 충돌할 수 있으므로 NOT VALID 방식으로 추가한다.
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint WHERE conname = 'ck_analysis_jobs_status_v4'
+    ) THEN
+        ALTER TABLE analysis_jobs
+            ADD CONSTRAINT ck_analysis_jobs_status_v4
+            CHECK (status IN ('queued','processing','completed','failed','cancelled','cancelling','retrying'))
+            NOT VALID;
+    END IF;
+END $$;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint WHERE conname = 'ck_analysis_jobs_job_type_v4'
+    ) THEN
+        ALTER TABLE analysis_jobs
+            ADD CONSTRAINT ck_analysis_jobs_job_type_v4
+            CHECK (job_type IN ('analysis','preview','render','sns_scan','whitelist_scan'))
+            NOT VALID;
+    END IF;
+END $$;
+
+-- 기존 progress_percent와 신규 total_progress를 함께 사용할 수 있도록 신규 컬럼 초기 보정
+-- 2. SNS 진단 작업과 analysis_jobs 연결
+ALTER TABLE sns_diagnosis_jobs
+    ADD COLUMN IF NOT EXISTS job_id uuid REFERENCES analysis_jobs(job_id) ON DELETE SET NULL;
+
+COMMENT ON COLUMN sns_diagnosis_jobs.job_id IS '작업 ID - analysis_jobs(job_type=sns_scan)와 연결되는 전체 작업 상태 ID';
+
+-- 3. 작업 단계 이력
+CREATE TABLE IF NOT EXISTS job_stage_logs (
+    stage_log_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    job_id uuid NOT NULL REFERENCES analysis_jobs(job_id) ON DELETE CASCADE,
+    stage_name varchar(50) NOT NULL,
+    stage_progress integer NOT NULL DEFAULT 0 CHECK (stage_progress BETWEEN 0 AND 100),
+    total_progress integer NOT NULL DEFAULT 0 CHECK (total_progress BETWEEN 0 AND 100),
+    status varchar(30) NOT NULL CHECK (status IN ('queued','processing','completed','failed','cancelled','cancelling','retrying')),
+    message text,
+    eta_seconds integer CHECK (eta_seconds IS NULL OR eta_seconds >= 0),
+    queue_position integer CHECK (queue_position IS NULL OR queue_position >= 0),
+    source varchar(50),
+    created_at timestamp NOT NULL DEFAULT now(),
+    CONSTRAINT pk_job_stage_logs PRIMARY KEY (stage_log_id)
+);
+COMMENT ON TABLE job_stage_logs IS '작업 단계별 진행률 변경 이력 테이블 - 진행 화면 복원, 관리자 모니터링, 장애 분석에 사용';
+COMMENT ON COLUMN job_stage_logs.stage_log_id IS '작업 단계 로그 ID - job_stage_logs 테이블의 기본 식별자';
+COMMENT ON COLUMN job_stage_logs.job_id IS '작업 ID - analysis_jobs와 연결되는 외래 키';
+COMMENT ON COLUMN job_stage_logs.stage_name IS '단계명 - upload_completed, queued, visual_detection, audio_detection, report_generation, render_processing 등';
+COMMENT ON COLUMN job_stage_logs.stage_progress IS '단계 진행률 - 해당 stage 내부 진행 퍼센트';
+COMMENT ON COLUMN job_stage_logs.total_progress IS '전체 진행률 - 작업 전체 기준 진행 퍼센트';
+COMMENT ON COLUMN job_stage_logs.status IS '작업 상태 - 로그 발생 시점의 작업 상태';
+COMMENT ON COLUMN job_stage_logs.message IS '진행 메시지 - 사용자/관리자 표시용 상태 메시지';
+COMMENT ON COLUMN job_stage_logs.eta_seconds IS 'ETA 초';
+COMMENT ON COLUMN job_stage_logs.queue_position IS '큐 위치';
+COMMENT ON COLUMN job_stage_logs.source IS '로그 출처';
+COMMENT ON COLUMN job_stage_logs.created_at IS '로그 생성 일시 - 단계 변경 또는 진행률 업데이트 시각';
+
+-- 4. Worker heartbeat
+CREATE TABLE IF NOT EXISTS job_worker_heartbeats (
+    heartbeat_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    job_id uuid NOT NULL REFERENCES analysis_jobs(job_id) ON DELETE CASCADE,
+    worker_task_id uuid REFERENCES worker_tasks(worker_task_id) ON DELETE SET NULL,
+    worker_id varchar(100),
+    worker_type varchar(30) NOT NULL DEFAULT 'colab' CHECK (worker_type IN ('colab','local','cloud','scheduler')),
+    ngrok_url text,
+    current_stage varchar(50),
+    progress_percent integer NOT NULL DEFAULT 0 CHECK (progress_percent BETWEEN 0 AND 100),
+    message text,
+    heartbeat_at timestamp NOT NULL DEFAULT now(),
+    created_at timestamp NOT NULL DEFAULT now(),
+    CONSTRAINT pk_job_worker_heartbeats PRIMARY KEY (heartbeat_id)
+);
+COMMENT ON TABLE job_worker_heartbeats IS 'Colab/ngrok/Worker 생존 신호 이력 테이블 - worker timeout, ngrok disconnect 감지에 사용';
+COMMENT ON COLUMN job_worker_heartbeats.heartbeat_id IS 'Heartbeat ID - job_worker_heartbeats 테이블의 기본 식별자';
+COMMENT ON COLUMN job_worker_heartbeats.job_id IS '작업 ID - analysis_jobs와 연결되는 외래 키';
+COMMENT ON COLUMN job_worker_heartbeats.worker_task_id IS '워커 세부 작업 ID - worker_tasks와 연결되는 선택 외래 키';
+COMMENT ON COLUMN job_worker_heartbeats.worker_id IS '워커 식별자 - Colab 런타임 또는 워커 프로세스 식별 값';
+COMMENT ON COLUMN job_worker_heartbeats.worker_type IS '워커 유형 - colab, local, cloud, scheduler';
+COMMENT ON COLUMN job_worker_heartbeats.ngrok_url IS 'ngrok URL - Colab 임시 공개 URL 기록';
+COMMENT ON COLUMN job_worker_heartbeats.current_stage IS '현재 단계 - heartbeat 발생 시점의 작업 단계';
+COMMENT ON COLUMN job_worker_heartbeats.progress_percent IS '진행률 - heartbeat 발생 시점의 진행 퍼센트';
+COMMENT ON COLUMN job_worker_heartbeats.message IS '상태 메시지 - heartbeat와 함께 전달된 워커 상태 설명';
+COMMENT ON COLUMN job_worker_heartbeats.heartbeat_at IS 'Heartbeat 시각 - 워커가 생존 신호를 보낸 시각';
+COMMENT ON COLUMN job_worker_heartbeats.created_at IS '등록 일시 - heartbeat 레코드 생성 시각';
+
+-- 5. Queue 진입/해제 이력
+CREATE TABLE IF NOT EXISTS job_queue_history (
+    queue_log_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    job_id uuid NOT NULL REFERENCES analysis_jobs(job_id) ON DELETE CASCADE,
+    queue_name varchar(50) NOT NULL DEFAULT 'default',
+    priority integer NOT NULL DEFAULT 0 CHECK (priority >= 0),
+    entered_position integer CHECK (entered_position IS NULL OR entered_position >= 0),
+    dequeued_position integer CHECK (dequeued_position IS NULL OR dequeued_position >= 0),
+    status varchar(30) NOT NULL DEFAULT 'entered',
+    message text,
+    entered_at timestamp NOT NULL DEFAULT now(),
+    dequeued_at timestamp,
+    created_at timestamp NOT NULL DEFAULT now(),
+    CONSTRAINT pk_job_queue_history PRIMARY KEY (queue_log_id)
+);
+COMMENT ON TABLE job_queue_history IS 'Redis Queue 진입/해제/우선순위 변경 이력 테이블 - 사용자 큐 위치 표시와 관리자 큐 분석에 사용';
+COMMENT ON COLUMN job_queue_history.queue_log_id IS '큐 이력 ID - job_queue_history 테이블의 기본 식별자';
+COMMENT ON COLUMN job_queue_history.job_id IS '작업 ID - analysis_jobs와 연결되는 외래 키';
+COMMENT ON COLUMN job_queue_history.queue_name IS '큐 이름 - default, high_priority, pro, admin 등';
+COMMENT ON COLUMN job_queue_history.priority IS '우선순위 - 큐 처리 우선순위 값';
+COMMENT ON COLUMN job_queue_history.entered_position IS '큐 진입 위치';
+COMMENT ON COLUMN job_queue_history.dequeued_position IS '큐 해제 위치';
+COMMENT ON COLUMN job_queue_history.status IS '큐 상태 - entered, dequeued, expired, cancelled, failed';
+COMMENT ON COLUMN job_queue_history.message IS '큐 상태 메시지';
+COMMENT ON COLUMN job_queue_history.entered_at IS '큐 진입 일시 - 작업이 큐에 들어간 시각';
+COMMENT ON COLUMN job_queue_history.dequeued_at IS '큐 해제 일시 - 작업이 큐에서 빠져 워커 처리로 넘어간 시각';
+COMMENT ON COLUMN job_queue_history.created_at IS '등록 일시 - 큐 이력 레코드 생성 시각';
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint WHERE conname = 'ck_job_queue_history_event_type_v4'
+    ) THEN
+        ALTER TABLE job_queue_history
+            ADD CONSTRAINT ck_job_queue_history_event_type_v4
+            CHECK (status IN ('entered','dequeued','expired','cancelled','failed'))
+            NOT VALID;
+    END IF;
+END $$;
+
+-- 6. v4 인덱스
+CREATE INDEX IF NOT EXISTS idx_analysis_jobs_status_stage ON analysis_jobs (status, current_stage, updated_at DESC);
+COMMENT ON INDEX idx_analysis_jobs_status_stage IS '진행 화면 polling 및 관리자 작업 상태 조회용 인덱스';
+
+CREATE INDEX IF NOT EXISTS idx_analysis_jobs_user_status ON analysis_jobs (user_id, status, created_at DESC);
+COMMENT ON INDEX idx_analysis_jobs_user_status IS 'Page19 대시보드 진행중 작업 및 사용자 작업 이력 조회용 인덱스';
+
+CREATE INDEX IF NOT EXISTS idx_analysis_jobs_job_type_status ON analysis_jobs (job_type, status, created_at DESC);
+COMMENT ON INDEX idx_analysis_jobs_job_type_status IS 'analysis/render/sns_scan 등 작업 유형별 큐 및 상태 조회용 인덱스';
+
+CREATE INDEX IF NOT EXISTS idx_analysis_jobs_cancel_requested ON analysis_jobs (cancel_requested, updated_at DESC) WHERE cancel_requested = true;
+COMMENT ON INDEX idx_analysis_jobs_cancel_requested IS '취소 요청 작업 조회용 부분 인덱스';
+
+CREATE INDEX IF NOT EXISTS idx_sns_diagnosis_jobs_job_id ON sns_diagnosis_jobs (job_id);
+COMMENT ON INDEX idx_sns_diagnosis_jobs_job_id IS 'SNS 진단 결과와 analysis_jobs(job_type=sns_scan) 연결 조회용 인덱스';
+
+CREATE INDEX IF NOT EXISTS idx_job_stage_logs_job_created ON job_stage_logs (job_id, created_at DESC);
+COMMENT ON INDEX idx_job_stage_logs_job_created IS '작업별 최근 단계 로그 조회용 인덱스';
+
+CREATE INDEX IF NOT EXISTS idx_job_stage_logs_stage_created ON job_stage_logs (stage_name, created_at DESC);
+COMMENT ON INDEX idx_job_stage_logs_stage_created IS '단계별 처리 지연/오류 분석용 인덱스';
+
+CREATE INDEX IF NOT EXISTS idx_job_worker_heartbeats_job_time ON job_worker_heartbeats (job_id, heartbeat_at DESC);
+COMMENT ON INDEX idx_job_worker_heartbeats_job_time IS '작업별 최신 heartbeat 조회용 인덱스';
+
+CREATE INDEX IF NOT EXISTS idx_job_worker_heartbeats_worker_time ON job_worker_heartbeats (worker_id, heartbeat_at DESC);
+COMMENT ON INDEX idx_job_worker_heartbeats_worker_time IS '워커별 생존 상태 및 장애 분석용 인덱스';
+
+CREATE INDEX IF NOT EXISTS idx_job_queue_history_job_created ON job_queue_history (job_id, created_at DESC);
+COMMENT ON INDEX idx_job_queue_history_job_created IS '작업별 큐 이력 조회용 인덱스';
+
+CREATE INDEX IF NOT EXISTS idx_job_queue_history_queue_status ON job_queue_history (queue_name, status, created_at DESC);
+COMMENT ON INDEX idx_job_queue_history_queue_status IS '큐별 상태 분석용 인덱스';
+
+-- =========================================================
+-- v4 추가 끝
+-- =========================================================
+
+commit;
+
+-- =========================================================
+-- v7 admin policy settings
+-- Stores /admin/policy configuration by policy group.
+-- =========================================================
+
+CREATE TABLE IF NOT EXISTS admin_policy_settings (
+    policy_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    policy_key varchar(80) NOT NULL,
+    policy_value jsonb NOT NULL DEFAULT '{}'::jsonb,
+    description text,
+    updated_by uuid REFERENCES users(user_id) ON DELETE SET NULL,
+    created_at timestamp NOT NULL DEFAULT now(),
+    updated_at timestamp NOT NULL DEFAULT now(),
+    CONSTRAINT pk_admin_policy_settings PRIMARY KEY (policy_id),
+    CONSTRAINT uq_admin_policy_settings_policy_key UNIQUE (policy_key)
+);
+
+COMMENT ON TABLE admin_policy_settings IS 'Admin policy settings for file, payment, retention, and notification configuration';
+COMMENT ON COLUMN admin_policy_settings.policy_key IS 'Policy group key: file_processing, notification';
+COMMENT ON COLUMN admin_policy_settings.policy_value IS 'Policy configuration stored as JSONB';
+COMMENT ON COLUMN admin_policy_settings.updated_by IS 'Admin user who last updated the policy';
+
+CREATE INDEX IF NOT EXISTS idx_admin_policy_settings_key ON admin_policy_settings (policy_key);
+CREATE INDEX IF NOT EXISTS idx_admin_policy_settings_updated_at ON admin_policy_settings (updated_at DESC);
+
+
+
+-- =========================================================
+-- Initial Admin Users
+-- =========================================================
+INSERT INTO users (user_id, email, display_name, role, status, created_at, updated_at)
+VALUES
+    ('fe6d148d-7b8d-4926-86c9-7c32c2cf1ea8', 'socool.kh2@gmail.com', 'Admin 고관홍', 'admin', 'active', NOW(), NOW()),
+    ('288c70f8-4d46-426c-abf6-1687e658cbfa', 'younadme0112@gmail.com', 'Admin 오세덕', 'admin', 'active', NOW(), NOW()),
+    ('bf8c37b7-c53c-4e09-8674-9f9e976452d4', 'jlu4688@gmail.com', 'Admin 임정은', 'admin', 'active', NOW(), NOW())
+ON CONFLICT (user_id) DO NOTHING;
+
+-- Seed default plans
+INSERT INTO plans (
+    plan_code, plan_name, badge_label, badge_class, description,
+    monthly_quota, result_retention_days,
+    watermark_required, price_amount, sort_order, status,
+    file_size_limit, max_jobs, auto_delete_original_hours,
+    metadata_retention_days, credits
+)
+VALUES
+    ('free', 'Free', 'Basic', 'mui-chip--primary', '개인 진단과 가벼운 체험을 위한 무료 플랜.', 5, 0, true, 0, 10, 'active', 50, 3, 12, 90, 10),
+    ('pro', 'Pro', 'Most Popular', 'mui-chip--soft-warning', '정기적으로 영상을 다루는 크리에이터를 위한 플랜.', 50, 7, false, 9900, 20, 'active', 500, 10, 12, 90, 60),
+    ('studio', 'Studio', 'Team', 'mui-chip--secondary', '팀 단위 작업과 대량 분석을 위한 최상위 플랜.', null, 14, false, 19800, 30, 'active', 2048, 30, 12, 90, 150)
+ON CONFLICT (plan_code) DO UPDATE
+SET
+    plan_name = EXCLUDED.plan_name,
+    badge_label = EXCLUDED.badge_label,
+    badge_class = EXCLUDED.badge_class,
+    description = EXCLUDED.description,
+    monthly_quota = EXCLUDED.monthly_quota,
+    result_retention_days = EXCLUDED.result_retention_days,
+    watermark_required = EXCLUDED.watermark_required,
+    price_amount = EXCLUDED.price_amount,
+    sort_order = EXCLUDED.sort_order,
+    status = EXCLUDED.status,
+    file_size_limit = EXCLUDED.file_size_limit,
+    max_jobs = EXCLUDED.max_jobs,
+    auto_delete_original_hours = EXCLUDED.auto_delete_original_hours,
+    metadata_retention_days = EXCLUDED.metadata_retention_days,
+    credits = EXCLUDED.credits,
+    updated_at = NOW();
+
+-- Seed default credit recharge products
+INSERT INTO credit_plans (
+    credit_plan_code, credit_plan_name, price_amount, base_credits,
+    bonus_credits, expires_days, sort_order, status
+)
+VALUES
+    ('credit_25', '25 크레딧', 5000, 25, 0, NULL, 10, 'active'),
+    ('credit_80', '80 크레딧', 15000, 80, 0, NULL, 20, 'active'),
+    ('credit_150', '150 크레딧', 25000, 150, 0, NULL, 30, 'active')
+ON CONFLICT (credit_plan_code) DO UPDATE
+SET
+    credit_plan_name = EXCLUDED.credit_plan_name,
+    price_amount = EXCLUDED.price_amount,
+    base_credits = EXCLUDED.base_credits,
+    bonus_credits = EXCLUDED.bonus_credits,
+    expires_days = EXCLUDED.expires_days,
+    sort_order = EXCLUDED.sort_order,
+    updated_at = NOW();
+
+-- abuse_reports 테이블 확장 (제목, 타겟 작업 ID)
+ALTER TABLE IF EXISTS abuse_reports ADD COLUMN IF NOT EXISTS title VARCHAR(255);
+ALTER TABLE IF EXISTS abuse_reports ADD COLUMN IF NOT EXISTS target_job_id VARCHAR(255);
+
+-- =========================================================
+-- notification_events 테이블 (알림)
+-- =========================================================
+CREATE TABLE IF NOT EXISTS notification_events (
+    notification_event_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    user_id uuid REFERENCES users(user_id),
+    channel varchar(50) DEFAULT 'app',
+    notification_type varchar(50) NOT NULL,
+    title varchar(255),
+    message text NOT NULL,
+    target_type varchar(50),
+    target_id varchar(255),
+    status varchar(30) NOT NULL DEFAULT 'pending',
+    error_message text,
+    created_at timestamp NOT NULL DEFAULT now(),
+    sent_at timestamp,
+    read_at timestamp,
+    CONSTRAINT pk_notification_events PRIMARY KEY (notification_event_id)
+);
+COMMENT ON TABLE notification_events IS '관리자 알림 및 시스템 알림 테이블';
+

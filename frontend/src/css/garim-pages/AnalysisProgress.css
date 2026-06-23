@@ -1,0 +1,194 @@
+.ana-page { padding: 24px; }
+.ana-grid { max-width: 1200px; width: 100%; margin: 0 auto; display: grid; grid-template-columns: 1fr 300px; gap: 20px; align-items: flex-start; }
+.ana-main { background: #fff; border-radius: 4px; box-shadow: var(--mui-elev-1); padding: 24px 32px; }
+.ana-head { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--mui-divider); }
+.ana-head .thumb { width: 100px; aspect-ratio: 16/9; border-radius: 4px; background: #000; overflow: hidden; flex-shrink: 0; position: relative; }
+.ana-head .thumb img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; }
+.ana-head .thumb .pulse { position: absolute; inset: 0; border: 2px solid #1976d2; border-radius: 4px; animation: pulse 1.6s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+.ana-head h1 { font: 500 20px var(--font-sans); margin: 0 0 4px; }
+.ana-head .meta { font: 400 12px var(--font-sans); color: var(--fg-2); }
+.stepper-wrap { padding: 8px 0; }
+.progress-summary { display: flex; align-items: center; gap: 12px; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--mui-divider); }
+.progress-summary .progress { flex: 1; height: 6px; }
+.progress-summary .pct { font: 500 16px var(--font-sans); color: #1976d2; font-variant-numeric: tabular-nums; min-width: 44px; text-align: right; }
+.actions { display: flex; gap: 8px; margin-top: 16px; }
+.sidebar-card { background: #fff; border-radius: 4px; box-shadow: var(--mui-elev-1); padding: 16px; margin-bottom: 16px; }
+.sidebar-card h3 { font: 500 12px var(--font-sans); text-transform: uppercase; letter-spacing: 0.5px; color: var(--fg-2); margin: 0 0 10px; }
+.info-row { display: flex; justify-content: space-between; padding: 4px 0; font: 400 12px var(--font-sans); }
+.info-row .v { color: var(--fg-1); font-weight: 500; }
+.info-row .k { color: var(--fg-2); }
+.models-list { display: flex; flex-direction: column; gap: 4px; }
+.models-list .mui-chip { justify-content: flex-start; }
+
+/* ============================================================
+   Premium Flow Chart Stepper — 럭셔리 리파인 (브랜드 블루→바이올렛)
+   흰 배경에서 또렷하게 보이면서 은은하게 빛나는 고급 애니메이션
+   ============================================================ */
+:root {
+  --fc-blue: #1976d2;
+  --fc-blue-l: #42a5f5;
+  --fc-violet: #9747ff;
+  --fc-violet-l: #b47cff;
+  --fc-green: #2e9e5b;
+  --fc-green-l: #66c98a;
+}
+
+.flow-chart { display: flex; flex-direction: column; align-items: center; padding: 22px 0; font-family: 'Inter', var(--font-sans); background: radial-gradient(120% 90% at 50% -10%, #f3f8ff 0%, #ffffff 55%); border-radius: 16px; margin-top: 8px; }
+
+/* ── 노드(카드) ── */
+.fc-node { width: 222px; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(20, 30, 55, 0.06); border-radius: 14px; padding: 13px 17px; text-align: center; position: relative; z-index: 2; box-shadow: 0 8px 22px rgba(20, 35, 80, 0.05), 0 2px 6px rgba(20, 35, 80, 0.03); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease; }
+.fc-node:hover { transform: translateY(-3px); box-shadow: 0 16px 34px rgba(20, 35, 80, 0.09), 0 5px 12px rgba(20, 35, 80, 0.04); }
+
+/* 활성 노드: 광채 halo + 빛 스윕 + 부드러운 부유 */
+.fc-node.active { background: linear-gradient(160deg, #ffffff 0%, #f3f8ff 100%); border: 1px solid rgba(33, 150, 243, 0.35); box-shadow: 0 14px 40px rgba(33, 110, 235, 0.18), 0 4px 12px rgba(151, 71, 255, 0.10), inset 0 0 0 1px rgba(33, 150, 243, 0.08); z-index: 3; overflow: hidden; animation: fcFloat 4.2s ease-in-out infinite; }
+/* 카드를 비스듬히 가로지르는 빛 스윕 (overflow:hidden 으로 카드 내부만 휩쓸고 지나감) */
+.fc-node.active::after { content: ""; position: absolute; top: 0; left: -70%; width: 55%; height: 100%; background: linear-gradient(105deg, transparent 0%, rgba(151,71,255,0.10) 40%, rgba(33,150,243,0.18) 55%, transparent 100%); transform: skewX(-18deg); pointer-events: none; animation: fcSheen 3.4s ease-in-out infinite; }
+.fc-node.done { background: linear-gradient(160deg, #ffffff, #f1fbf4); border: 1px solid rgba(46, 158, 91, 0.28); box-shadow: 0 8px 20px rgba(46, 158, 91, 0.07); }
+
+/* 부유(float) + 광채(glow) 동시 펄스 — glow 는 box-shadow 라 overflow 에 안 잘림 */
+@keyframes fcFloat {
+  0%, 100% { transform: scale(1.025) translateY(0);    box-shadow: 0 12px 32px rgba(33,110,235,0.14), inset 0 0 0 1px rgba(33,150,243,0.08); }
+  50%      { transform: scale(1.025) translateY(-3px); box-shadow: 0 22px 50px rgba(33,110,235,0.26), 0 6px 18px rgba(151,71,255,0.16), inset 0 0 0 1px rgba(33,150,243,0.10); }
+}
+@keyframes fcSheen { 0% { left: -70%; } 58%, 100% { left: 135%; } }
+
+/* 노드 내부 가로 배치 (스윕보다 위) */
+.fc-node-content-row { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 4px; position: relative; z-index: 1; }
+
+.fc-node-icon { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #f3f4f7; color: #9aa3b2; font-size: 18px; transition: all 0.4s ease; box-shadow: inset 0 1px 3px rgba(0,0,0,0.06); flex-shrink: 0; position: relative; }
+/* 활성 아이콘: 회전하는 conic 광륜 + 글로우 */
+.fc-node.active .fc-node-icon { background: #ffffff; color: var(--fc-blue); box-shadow: 0 0 14px rgba(33, 150, 243, 0.32); animation: pulseIcon 2.2s infinite; }
+.fc-node.active .fc-node-icon::before { content: ""; position: absolute; inset: -3px; border-radius: 50%; z-index: -1; background: conic-gradient(from 0deg, transparent 0%, var(--fc-blue-l) 25%, var(--fc-violet) 55%, transparent 80%); animation: fcSpin 2.6s linear infinite; }
+.fc-node.done .fc-node-icon { background: rgba(46, 158, 91, 0.12); color: var(--fc-green); }
+@keyframes pulseIcon { 0% { box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.4); } 70% { box-shadow: 0 0 0 11px rgba(33, 150, 243, 0); } 100% { box-shadow: 0 0 0 0 rgba(33, 150, 243, 0); } }
+@keyframes fcSpin { to { transform: rotate(360deg); } }
+
+.fc-node-text-wrap { display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
+.fc-node-title { font-size: 14px; font-weight: 700; color: #28324a; letter-spacing: -0.3px; margin: 0; }
+.fc-node.active .fc-node-title { background: linear-gradient(90deg, var(--fc-blue), var(--fc-violet)); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; animation: fcTitleShine 3s linear infinite; }
+@keyframes fcTitleShine { to { background-position: 200% center; } }
+.fc-node-sub { font-size: 11px; color: #6b7a90; line-height: 1.3; word-break: keep-all; margin-top: 2px; }
+
+.fc-node-progress { height: 5px; background: rgba(20, 35, 80, 0.05); border-radius: 3px; margin-top: 9px; overflow: hidden; position: relative; width: 100%; z-index: 1; }
+.fc-node-progress-bar { height: 100%; background: linear-gradient(90deg, var(--fc-blue), var(--fc-violet)); border-radius: 3px; transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; box-shadow: 0 0 8px rgba(33, 110, 235, 0.35); }
+.fc-node-progress-bar::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.65), transparent); animation: shimmer 1.6s infinite; }
+@keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+
+/* ── 연결선 (세로) ── */
+.fc-v-line { width: 2px; height: 26px; background: #e3e7ef; position: relative; z-index: 1; border-radius: 1px; }
+.fc-v-line.done { background: linear-gradient(to bottom, var(--fc-green), var(--fc-green-l)); }
+.fc-v-line.active { background: #e9edf5; overflow: hidden; }
+.fc-v-line.active::after { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent, var(--fc-blue), var(--fc-violet), transparent); animation: flowDown 1.3s ease-in-out infinite; box-shadow: 0 0 8px rgba(33, 150, 243, 0.6); }
+@keyframes flowDown { 0% { top: -100%; opacity: 1; } 100% { top: 100%; opacity: 0; } }
+
+/* ── 연결선 (가로 분기/병합) ── */
+.fc-split-container { display: flex; flex-direction: column; align-items: center; width: 100%; }
+.fc-h-bar { display: flex; width: 260px; height: 2px; position: relative; z-index: 1; border-radius: 1px; }
+.fc-h-half { flex: 1; background: #e3e7ef; position: relative; overflow: hidden; }
+.fc-h-half.done { background: linear-gradient(to right, var(--fc-green), var(--fc-green-l)); }
+
+.split-bar .fc-h-half.left.active::after { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to left, transparent, var(--fc-violet), transparent); animation: flowToLeft 1.3s ease-in-out infinite; }
+.split-bar .fc-h-half.right.active::after { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to right, transparent, var(--fc-blue), transparent); animation: flowToRight 1.3s ease-in-out infinite; }
+.merge-bar .fc-h-half.left.active::after { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to right, transparent, var(--fc-blue), transparent); animation: flowToRight 1.3s ease-in-out infinite; }
+.merge-bar .fc-h-half.right.active::after { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to left, transparent, var(--fc-violet), transparent); animation: flowToLeft 1.3s ease-in-out infinite; }
+@keyframes flowToLeft { 0% { left: 100%; opacity: 1; } 100% { left: -100%; opacity: 0; } }
+@keyframes flowToRight { 0% { left: -100%; opacity: 1; } 100% { left: 100%; opacity: 0; } }
+
+.fc-columns { display: flex; gap: 40px; }
+.fc-col { display: flex; flex-direction: column; align-items: center; }
+
+/* 모션 최소화 선호 사용자 배려 */
+@media (prefers-reduced-motion: reduce) {
+  .fc-node.active, .fc-node.active::before, .fc-node.active::after,
+  .fc-node.active .fc-node-icon, .fc-node.active .fc-node-icon::before,
+  .fc-node.active .fc-node-title, .fc-node-progress-bar::after,
+  .fc-v-line.active::after, .fc-h-half.active::after { animation: none !important; }
+  .fc-node.active { transform: scale(1.025); }
+}
+
+@media (max-width: 900px) {
+    .ana-grid { grid-template-columns: 1fr; }
+}
+
+/* Dark Mode */
+:root[data-theme="dark"] .ana-main,
+:root[data-theme="dark"] .sidebar-card { background: var(--bg-1); }
+:root[data-theme="dark"] .flow-chart { background: radial-gradient(120% 90% at 50% -10%, rgba(25, 118, 210, 0.15) 0%, var(--bg-2) 55%); }
+:root[data-theme="dark"] .fc-node { background: var(--bg-1); border-color: var(--mui-border); box-shadow: var(--mui-elev-2); }
+:root[data-theme="dark"] .fc-node.active { background: linear-gradient(160deg, rgba(33, 150, 243, 0.1) 0%, var(--bg-1) 100%); border-color: rgba(33, 150, 243, 0.4); box-shadow: 0 14px 40px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(33,150,243,0.2); }
+:root[data-theme="dark"] .fc-node.done { background: linear-gradient(160deg, rgba(46, 158, 91, 0.1) 0%, var(--bg-1) 100%); border-color: rgba(46, 158, 91, 0.3); box-shadow: var(--mui-elev-1); }
+:root[data-theme="dark"] .fc-node-title { color: var(--fg-1); }
+:root[data-theme="dark"] .fc-node-sub { color: var(--fg-2); }
+:root[data-theme="dark"] .fc-v-line,
+:root[data-theme="dark"] .fc-h-half { background: var(--mui-border); }
+:root[data-theme="dark"] .fc-v-line.active { background: rgba(255,255,255,0.2); }
+
+/* 썸네일 박스 + 미디어 + 대체 아이콘 */
+.ap-thumb {
+  overflow: hidden;
+  position: relative;
+}
+.ap-thumb-media {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.ap-thumb-ico {
+  position: relative;
+  z-index: 1;
+}
+.ap-pulse {
+  z-index: 2;
+}
+/* 작업 정보 영역 */
+.ap-job-info {
+  flex: 1;
+}
+.ap-tag-row {
+  margin-top: 8px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+/* 에러 알림 하단 여백 */
+.ap-alert-mb {
+  margin-bottom: 16px;
+}
+/* 단계 연결 세로선 높이 */
+.fc-v-line {
+  height: 20px;
+}
+/* 진행/ETA 캡션 */
+.ap-cap-13 {
+  font-size: 13px;
+}
+.ap-eta {
+  font-size: 13px;
+  margin-top: 12px;
+}
+.ap-eta-val {
+  color: var(--fg-1);
+}
+/* 취소 버튼 */
+.ap-cancel {
+  color: #d32f2f;
+}
+/* 액션 영역 여백 채움 */
+.ap-spacer {
+  flex: 1;
+}
+/* 알림 사이드 카드 */
+.ap-notice-card {
+  background: rgba(25, 118, 210, 0.04);
+}
+.ap-notice-title {
+  color: #1976d2;
+}
+.ap-notice-body {
+  font: 400 13px/1.5 var(--font-sans);
+  color: var(--fg-1);
+}

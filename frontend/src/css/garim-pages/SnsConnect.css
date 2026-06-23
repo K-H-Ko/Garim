@@ -1,0 +1,114 @@
+.sns-page {
+  flex: 1;
+  padding: 48px 32px 80px;
+}
+
+
+.sns-shell {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.sns-head {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.sns-head h1 {
+  font: 300 40px/1.2 var(--font-sans);
+  margin: 16px 0 12px;
+}
+
+.sns-head .sub {
+  font: 400 16px/1.6 var(--font-sans);
+  color: var(--fg-2);
+  margin: 0;
+}
+
+.sns-status-card {
+  background: #fff;
+  border: 1px solid var(--mui-divider);
+  border-radius: 4px;
+  box-shadow: var(--mui-elev-1);
+  display: flex;
+  gap: 20px;
+  padding: 28px;
+  margin-bottom: 16px;
+}
+
+.sns-status-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(25, 118, 210, 0.1);
+  color: #1976d2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sns-status-card h2,
+.sns-info-card h3 {
+  font: 500 18px var(--font-sans);
+  margin: 0 0 8px;
+}
+
+.sns-status-card p,
+.sns-info-card p {
+  font: 400 14px/1.6 var(--font-sans);
+  color: var(--fg-2);
+  margin: 0;
+}
+
+.sns-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.sns-info-card {
+  background: #fff;
+  border: 1px solid var(--mui-divider);
+  border-radius: 4px;
+  padding: 24px;
+}
+
+.sns-info-card .material-icons {
+  color: #2e7d32;
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+
+.sns-actions {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+/* ── 다크 모드 보정 ── 상태/안내 카드 흰 배경 → 다크 표면색 */
+:root[data-theme="dark"] .sns-status-card,
+:root[data-theme="dark"] .sns-info-card { background: var(--bg-1); }
+
+@media (max-width: 640px) {
+  .sns-page {
+    padding: 32px 16px 64px;
+  }
+
+  .sns-head h1 {
+    font-size: 32px;
+  }
+
+  .sns-status-card {
+    flex-direction: column;
+  }
+
+  .sns-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sns-actions {
+    flex-direction: column;
+  }
+}

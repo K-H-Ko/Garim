@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>컴플라이언스 로그·감사 · Garim Admin</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="garim.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<style>
+  body { background: #fafafa; }
+  .adm-shell { display: grid; grid-template-columns: 220px 1fr; min-height: calc(100vh - 64px); }
+  .adm-side { background: #212121; padding: 16px 8px; }
+  .adm-side .sec { font: 500 10px var(--font-sans); text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.5); padding: 14px 12px 6px; }
+  .adm-side a { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 4px; font: 400 13px var(--font-sans); color: rgba(255,255,255,0.85); margin-bottom: 2px; }
+  .adm-side a:hover { background: rgba(255,255,255,0.06); }
+  .adm-side a.active { background: rgba(25,118,210,0.15); color: #42a5f5; }
+  .adm-side a .material-icons { font-size: 18px; color: rgba(255,255,255,0.5); }
+  .adm-side a.active .material-icons { color: #42a5f5; }
+  .adm-main { padding: 24px 28px; }
+  .adm-head { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+  .adm-head h1 { font: 500 22px var(--font-sans); margin: 0; }
+
+  .tabs-bar { display: flex; gap: 4px; background: #fff; border-radius: 4px; border: 1px solid var(--mui-border); padding: 4px; margin-bottom: 20px; max-width: max-content; }
+  .tab-btn { padding: 8px 16px; border-radius: 4px; background: transparent; border: none; cursor: pointer; font: 500 13px var(--font-sans); color: var(--fg-2); display: flex; align-items: center; gap: 8px; }
+  .tab-btn.active { background: #1976d2; color: #fff; }
+  .tab-btn .material-icons { font-size: 18px; }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* Tab 1: Auto-delete monitor */
+  .compliance-row { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .adm-card { background: #fff; border-radius: 4px; border: 1px solid var(--mui-border); }
+  .adm-card .head { padding: 14px 18px; border-bottom: 1px solid var(--mui-divider); display: flex; align-items: center; gap: 12px; }
+  .adm-card .head h3 { font: 500 14px var(--font-sans); margin: 0; flex: 1; }
+  .adm-card .body { padding: 18px; }
+
+  .policy-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 16px; padding: 14px 18px; border-bottom: 1px solid var(--mui-divider); align-items: center; }
+  .policy-row.head { background: #fafafa; font: 500 11px var(--font-sans); text-transform: uppercase; letter-spacing: 0.5px; color: var(--fg-2); }
+  .policy-row .data-type { font: 500 13px var(--font-sans); }
+  .policy-row .policy { font: 400 12px var(--font-sans); color: var(--fg-2); font-family: var(--font-mono); }
+  .compliance-pill { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 12px; font: 500 12px var(--font-sans); }
+  .compliance-pill.ok { background: rgba(46,125,50,0.1); color: #1b5e20; }
+  .compliance-pill.warn { background: rgba(237,108,2,0.1); color: #663c00; }
+
+  /* Search bar */
+  .search-block { background: #fff; border: 1px solid var(--mui-border); border-radius: 4px; padding: 20px; margin-bottom: 16px; }
+  .search-block h3 { font: 500 13px var(--font-sans); margin: 0 0 12px; }
+  .search-row { display: flex; gap: 8px; }
+  .search-row input { flex: 1; padding: 10px 14px; border: 1px solid var(--mui-border); border-radius: 4px; font: 400 14px var(--font-sans); font-family: var(--font-mono); }
+  .search-tabs { display: flex; gap: 4px; margin-bottom: 12px; }
+  .search-tabs button { padding: 6px 12px; border: 1px solid var(--mui-border); border-radius: 4px; background: #fff; font: 500 12px var(--font-sans); cursor: pointer; color: var(--fg-2); }
+  .search-tabs button.active { background: #1976d2; color: #fff; border-color: #1976d2; }
+
+  /* Result */
+  .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .meta-card { background: #fff; border: 1px solid var(--mui-border); border-radius: 4px; padding: 18px; }
+  .meta-card h3 { font: 500 13px var(--font-sans); margin: 0 0 12px; }
+  .meta-row { display: flex; justify-content: space-between; padding: 6px 0; font: 400 13px var(--font-sans); border-bottom: 1px dashed var(--mui-divider); }
+  .meta-row:last-child { border-bottom: none; }
+  .meta-row .k { color: var(--fg-2); }
+  .meta-row .v { color: var(--fg-1); font-family: var(--font-mono); font-size: 12px; }
+
+  .deleted-note { background: rgba(151,71,255,0.06); border: 1px solid rgba(151,71,255,0.2); padding: 12px 16px; border-radius: 4px; font: 400 12px/1.5 var(--font-sans); margin-top: 12px; display: flex; gap: 8px; align-items: flex-start; }
+  .deleted-note .material-icons { color: #9747ff; font-size: 18px; }
+
+  .donut-mini { display: flex; align-items: center; gap: 12px; }
+  .donut-mini svg { width: 80px; height: 80px; }
+  .donut-mini .legend { display: flex; flex-direction: column; gap: 4px; font: 400 12px var(--font-sans); }
+  .donut-mini .legend .row { display: flex; align-items: center; gap: 6px; }
+  .donut-mini .legend .dot { width: 8px; height: 8px; border-radius: 1px; }
+</style>
+</head>
+<body data-screen-label="27 Admin compliance">
+<div id="header"></div>
+
+<div class="adm-shell">
+  <aside class="adm-side">
+    <div class="sec">운영</div>
+    <a href="25-admin-abuse.html"><span class="material-icons">shield</span>어뷰징 모니터링</a>
+    <a href="26-admin-queue.html"><span class="material-icons">queue</span>처리 큐</a>
+    <a href="27-admin-compliance.html" class="active"><span class="material-icons">verified_user</span>컴플라이언스</a>
+    <div class="sec">시스템</div>
+    <a href="#"><span class="material-icons">people</span>사용자</a>
+    <a href="#"><span class="material-icons">analytics</span>분석</a>
+    <a href="#"><span class="material-icons">tune</span>정책 설정</a>
+  </aside>
+
+  <main class="adm-main">
+    <div class="adm-head">
+      <h1>컴플라이언스 로그·감사</h1>
+      <span class="caption-k">B-1 자동 삭제 · B-3 워터마크 역추적 · 약관 동의 이력 · 외부 요청 응답</span>
+      <div style="margin-left:auto;display:flex;gap:8px;">
+        <button class="mui-btn mui-btn--outlined mui-btn--sm"><span class="material-icons" style="font-size:16px;">file_download</span>CSV Export</button>
+      </div>
+    </div>
+
+    <div class="tabs-bar">
+      <button class="tab-btn active" data-tab="auto"><span class="material-icons">auto_delete</span>자동 삭제 모니터</button>
+      <button class="tab-btn" data-tab="search"><span class="material-icons">search</span>처리 이력 검색</button>
+      <button class="tab-btn" data-tab="consent"><span class="material-icons">checklist</span>약관 동의 이력</button>
+      <button class="tab-btn" data-tab="report"><span class="material-icons">gavel</span>신고·수사 응답</button>
+    </div>
+
+    <!-- TAB 1: Auto-delete monitor -->
+    <div class="panel active" id="panel-auto">
+      <div class="compliance-row">
+        <div class="adm-card">
+          <div class="head"><h3>데이터 종류별 보존·삭제 정책 (B-1)</h3></div>
+          <div class="policy-row head">
+            <span>데이터 종류</span><span>보존 정책</span><span>현재 잔존</span><span>준수율</span>
+          </div>
+          <div class="policy-row">
+            <div>
+              <div class="data-type">업로드 원본 파일</div>
+              <div class="caption-k" style="font-size:11px;">모든 플랜 공통</div>
+            </div>
+            <div class="policy">처리 후 12h</div>
+            <div>847개</div>
+            <div><span class="compliance-pill ok"><span class="material-icons" style="font-size:14px;">check</span>100.0%</span></div>
+          </div>
+          <div class="policy-row">
+            <div>
+              <div class="data-type">치환 결과 파일 (Free)</div>
+              <div class="caption-k" style="font-size:11px;">Free 플랜</div>
+            </div>
+            <div class="policy">7일</div>
+            <div>14,228개</div>
+            <div><span class="compliance-pill ok"><span class="material-icons" style="font-size:14px;">check</span>100.0%</span></div>
+          </div>
+          <div class="policy-row">
+            <div>
+              <div class="data-type">치환 결과 파일 (1회권)</div>
+              <div class="caption-k" style="font-size:11px;">v1 정식 출시 후</div>
+            </div>
+            <div class="policy">30일</div>
+            <div>—</div>
+            <div><span class="compliance-pill ok">N/A</span></div>
+          </div>
+          <div class="policy-row">
+            <div>
+              <div class="data-type">처리 이력 메타데이터</div>
+              <div class="caption-k" style="font-size:11px;">워터마크 역추적용</div>
+            </div>
+            <div class="policy">90일</div>
+            <div>342,108개</div>
+            <div><span class="compliance-pill warn"><span class="material-icons" style="font-size:14px;">warning</span>99.4%</span></div>
+          </div>
+          <div class="policy-row" style="border-bottom:none;">
+            <div>
+              <div class="data-type">탈퇴 회원 식별 정보</div>
+              <div class="caption-k" style="font-size:11px;">7일 유예 후 영구 삭제</div>
+            </div>
+            <div class="policy">탈퇴 + 7d</div>
+            <div>12개 (유예 중)</div>
+            <div><span class="compliance-pill ok"><span class="material-icons" style="font-size:14px;">check</span>100.0%</span></div>
+          </div>
+        </div>
+
+        <div class="adm-card">
+          <div class="head"><h3>24시간 내 삭제 예정 데이터</h3></div>
+          <div class="body">
+            <div class="donut-mini">
+              <svg viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="40" fill="none" stroke="#e0e0e0" stroke-width="14"/>
+                <circle cx="50" cy="50" r="40" fill="none" stroke="#ed6c02" stroke-width="14" stroke-dasharray="138 251" transform="rotate(-90 50 50)"/>
+                <circle cx="50" cy="50" r="40" fill="none" stroke="#9747ff" stroke-width="14" stroke-dasharray="78 251" stroke-dashoffset="-138" transform="rotate(-90 50 50)"/>
+                <text x="50" y="48" text-anchor="middle" font-family="Pretendard" font-size="15" font-weight="500" fill="#212121">2,847</text>
+                <text x="50" y="62" text-anchor="middle" font-family="Pretendard" font-size="8" fill="#757575">건</text>
+              </svg>
+              <div class="legend">
+                <div class="row"><span class="dot" style="background:#ed6c02;"></span>원본 (12h) — 1,567개</div>
+                <div class="row"><span class="dot" style="background:#9747ff;"></span>결과 (7d) — 892개</div>
+                <div class="row"><span class="dot" style="background:#0288d1;"></span>메타 (90d) — 388개</div>
+              </div>
+            </div>
+            <hr style="margin:16px 0;border:none;border-top:1px dashed var(--mui-divider);">
+            <div style="font:400 12px/1.5 var(--font-sans);color:var(--fg-2);">
+              자동 삭제 잡은 매 시간 정각에 실행됩니다. 다음 실행: <strong style="color:#1976d2;">15:00</strong> (12분 후)
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="adm-card">
+        <div class="head"><h3>최근 자동 삭제 로그</h3><span class="caption-k">최근 24시간</span></div>
+        <div style="padding: 8px 18px; font: 400 12px/1.8 var(--font-sans); font-family: var(--font-mono); color: var(--fg-2);">
+          <div><span style="color:var(--fg-3);">14:00:01</span> [auto-delete] 결과 파일 124개 삭제 (Free 7d 정책) <span style="color:#2e7d32;">✓</span></div>
+          <div><span style="color:var(--fg-3);">14:00:00</span> [auto-delete] 원본 파일 287개 삭제 (12h 정책) <span style="color:#2e7d32;">✓</span></div>
+          <div><span style="color:var(--fg-3);">13:00:02</span> [auto-delete] 메타데이터 58개 삭제 (90d 정책) <span style="color:#2e7d32;">✓</span></div>
+          <div><span style="color:var(--fg-3);">13:00:00</span> [auto-delete] 원본 파일 312개 삭제 (12h 정책) <span style="color:#2e7d32;">✓</span></div>
+          <div><span style="color:#d32f2f;">12:00:04</span> [auto-delete] 메타데이터 1개 삭제 실패 — DB lock contention (재시도 큐로) </div>
+          <div><span style="color:var(--fg-3);">12:00:00</span> [auto-delete] 원본 파일 245개 삭제 (12h 정책) <span style="color:#2e7d32;">✓</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: Search history -->
+    <div class="panel" id="panel-search">
+      <div class="search-block">
+        <h3>처리 이력 검색</h3>
+        <div class="search-tabs">
+          <button class="active">사용자 ID로</button>
+          <button>워터마크 해시로</button>
+          <button>처리 ID로</button>
+        </div>
+        <div class="search-row">
+          <input value="wm_3f4a8b21c9e74a82_5f9b" placeholder="해시값 또는 ID 입력">
+          <button class="mui-btn mui-btn--contained">검색</button>
+        </div>
+        <div class="caption-k" style="font-size:11px;margin-top:8px;">평문 사용자 ID를 입력하면 자동으로 해시화됩니다. 모든 검색은 감사 로그에 기록됩니다.</div>
+      </div>
+
+      <div class="result-grid">
+        <div class="meta-card">
+          <h3>처리 이력 메타데이터</h3>
+          <div class="meta-row"><span class="k">처리 ID</span><span class="v">j_5f9b1c8e4f2a3b87</span></div>
+          <div class="meta-row"><span class="k">사용자 (해시)</span><span class="v">u_3f4a8b21c9e74a82</span></div>
+          <div class="meta-row"><span class="k">처리 시점</span><span class="v">2026.04.21 13:42:18</span></div>
+          <div class="meta-row"><span class="k">파일 유형</span><span class="v">video/mp4</span></div>
+          <div class="meta-row"><span class="k">파일 크기</span><span class="v">847 MB</span></div>
+          <div class="meta-row"><span class="k">영상 길이</span><span class="v">00:02:14</span></div>
+          <div class="meta-row"><span class="k">해상도</span><span class="v">1920×1080</span></div>
+          <div class="meta-row"><span class="k">검출 건수</span><span class="v">17</span></div>
+          <div class="meta-row"><span class="k">치환 완료</span><span class="v">16 (건너뛰기 1)</span></div>
+          <div class="meta-row"><span class="k">워터마크 해시</span><span class="v">wm_3f4a8b21..._5f9b</span></div>
+        </div>
+
+        <div class="meta-card">
+          <h3>처리 옵션 (메타데이터)</h3>
+          <div class="meta-row"><span class="k">자동 치환</span><span class="v">9건</span></div>
+          <div class="meta-row"><span class="k">사용자 지정</span><span class="v">3건</span></div>
+          <div class="meta-row"><span class="k">마스킹</span><span class="v">4건 (블러 중)</span></div>
+          <div class="meta-row"><span class="k">건너뛰기</span><span class="v">1건 (EXIF 일부)</span></div>
+          <div class="meta-row"><span class="k">음성 마스킹</span><span class="v">삐 1000Hz</span></div>
+          <div class="meta-row"><span class="k">얼굴 마스킹</span><span class="v">블러</span></div>
+          <div class="meta-row"><span class="k">학습 동의</span><span class="v">OFF</span></div>
+
+          <div class="deleted-note">
+            <span class="material-icons">visibility_off</span>
+            <div>
+              <strong>원본·결과 영상은 이미 자동 삭제되었습니다.</strong><br>
+              메타데이터만 워터마크 역추적용으로 90일 보존됩니다 (B-1 정책).
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: Consent history -->
+    <div class="panel" id="panel-consent">
+      <div class="search-block">
+        <h3>약관 동의 이력 조회</h3>
+        <div class="search-row">
+          <input value="u_3f4a8b21c9e74a82" placeholder="사용자 해시 입력">
+          <button class="mui-btn mui-btn--contained">검색</button>
+        </div>
+      </div>
+
+      <div class="adm-card">
+        <div class="head"><h3>u_3f4a8b21 · 동의 이력</h3></div>
+        <div style="padding: 8px 18px; font: 400 13px/1.8 var(--font-sans);">
+          <div style="display:flex;gap:16px;padding:10px 0;border-bottom:1px solid var(--mui-divider);">
+            <span class="v" style="font-family:var(--font-mono);font-size:12px;color:var(--fg-2);min-width:160px;">2026.05.14 14:22</span>
+            <span style="flex:1;">가입 · 필수 동의 + 마케팅 OFF + 학습 OFF (약관 버전 v1.0)</span>
+          </div>
+          <div style="display:flex;gap:16px;padding:10px 0;border-bottom:1px solid var(--mui-divider);">
+            <span class="v" style="font-family:var(--font-mono);font-size:12px;color:var(--fg-2);min-width:160px;">2026.05.14 14:24</span>
+            <span style="flex:1;">마케팅 정보 수신 동의 → <strong>ON</strong> (소스: 가입 직후 안내)</span>
+          </div>
+          <div style="display:flex;gap:16px;padding:10px 0;">
+            <span class="v" style="font-family:var(--font-mono);font-size:12px;color:var(--fg-2);min-width:160px;">현재</span>
+            <span style="flex:1;color:var(--fg-2);">변경 사항 없음. 학습 동의 OFF 유지 중.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: External report -->
+    <div class="panel" id="panel-report">
+      <div class="adm-card" style="margin-bottom:16px;">
+        <div class="head"><h3>외부 요청 접수</h3><span class="caption-k">법원 명령·수사 협조·신고 등</span></div>
+        <div class="body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+            <div class="set-field"><label style="font:500 12px var(--font-sans);color:var(--fg-2);margin-bottom:4px;display:block;">요청 유형</label><select style="padding:10px;border:1px solid var(--mui-border);border-radius:4px;font-family:var(--font-sans);"><option>위변조 의심 신고</option><option>법원 명령</option><option>수사 협조 요청</option></select></div>
+            <div class="set-field"><label style="font:500 12px var(--font-sans);color:var(--fg-2);margin-bottom:4px;display:block;">워터마크 해시</label><input style="padding:10px;border:1px solid var(--mui-border);border-radius:4px;font-family:var(--font-mono);" placeholder="wm_..."></div>
+          </div>
+          <button class="mui-btn mui-btn--contained">처리 이력 조회 →</button>
+        </div>
+      </div>
+
+      <div class="adm-card">
+        <div class="head"><h3>응답 이력 — 최근 30일</h3></div>
+        <div class="policy-row head" style="grid-template-columns: 130px 130px 1fr 100px 100px;">
+          <span>요청 일시</span><span>유형</span><span>대상 / 메모</span><span>처리자</span><span>상태</span>
+        </div>
+        <div class="policy-row" style="grid-template-columns: 130px 130px 1fr 100px 100px;">
+          <span class="caption-k" style="font-family:var(--font-mono);">2026.05.10</span>
+          <span><span class="mui-chip mui-chip--soft-info" style="height:20px;font-size:11px;">위변조 신고</span></span>
+          <span class="caption-k">워터마크 wm_3f4a...5f9b 조회 — 처리 이력 확인 후 답변</span>
+          <span class="caption-k">법무팀 P</span>
+          <span><span class="compliance-pill ok">완료</span></span>
+        </div>
+        <div class="policy-row" style="grid-template-columns: 130px 130px 1fr 100px 100px;">
+          <span class="caption-k" style="font-family:var(--font-mono);">2026.05.03</span>
+          <span><span class="mui-chip mui-chip--soft-warning" style="height:20px;font-size:11px;">법원 명령</span></span>
+          <span class="caption-k">서울중앙지법 · 처리 이력 제출 요구 (사건 2026가합1234)</span>
+          <span class="caption-k">법무팀 P</span>
+          <span><span class="compliance-pill ok">완료</span></span>
+        </div>
+        <div class="policy-row" style="grid-template-columns: 130px 130px 1fr 100px 100px;border-bottom:none;">
+          <span class="caption-k" style="font-family:var(--font-mono);">2026.04.28</span>
+          <span><span class="mui-chip mui-chip--soft-info" style="height:20px;font-size:11px;">위변조 신고</span></span>
+          <span class="caption-k">우리 영상이 도용됐다는 신고 — 메타데이터 보존 만료 (90일 경과)로 답변 불가</span>
+          <span class="caption-k">법무팀 P</span>
+          <span><span class="compliance-pill warn">불가</span></span>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="garim-chrome.js"></script>
+<script>
+  document.getElementById('header').innerHTML = gh({ admin: true });
+
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('panel-' + b.dataset.tab).classList.add('active');
+    });
+  });
+  document.querySelectorAll('.search-tabs').forEach(g => {
+    g.querySelectorAll('button').forEach(b => {
+      b.addEventListener('click', () => {
+        g.querySelectorAll('button').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+      });
+    });
+  });
+</script>
+</body></html>

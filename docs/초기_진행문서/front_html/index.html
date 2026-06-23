@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>Garim — 화면설계서 사이트맵</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="garim.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<style>
+  body { background: var(--bg-2); }
+  .sm-page { max-width: 1280px; margin: 0 auto; padding: 48px 32px 96px; }
+  .sm-header { display: flex; align-items: center; gap: 16px; margin-bottom: 8px; }
+  .sm-header img { height: 32px; }
+  .sm-sub { font: 400 16px/1.6 var(--font-sans); color: var(--fg-2); max-width: 720px; margin-bottom: 40px; }
+  .sm-group { margin-top: 48px; }
+  .sm-group__head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 16px; }
+  .sm-group__head h2 { font: 500 24px var(--font-sans); margin: 0; }
+  .sm-group__head .caption-k { font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="sm-page">
+  <div class="sm-header">
+    <img src="logo.svg" alt="Garim">
+    <span class="mui-chip mui-chip--secondary mui-chip--md">화면설계서 v1.0 · MVP1</span>
+  </div>
+  <p class="sm-sub">AI 기반 멀티모달 개인정보 도싱 방지 서비스 Garim의 27개 화면 hi-fi 목업. MUI v5 + Pretendard 디자인 시스템 적용.</p>
+
+  <div class="sm-group">
+    <div class="sm-group__head"><h2>그룹 1 · 공개 영역</h2><span class="caption-k">비방문자 → 가입 깔때기</span></div>
+    <div class="sm-grid">
+      <a class="sm-card" href="01-landing.html"><span class="sm-card__num">PAGE 01</span><span class="sm-card__title">랜딩 페이지</span><span class="sm-card__sub">서비스 가치를 8초 안에 전달, 무료 검출 가입 유도</span><span class="sm-card__badges"><span class="mui-chip mui-chip--soft-info">MVP1</span></span></a>
+      <a class="sm-card" href="02-pricing.html"><span class="sm-card__num">PAGE 02</span><span class="sm-card__title">서비스 소개·요금제</span><span class="sm-card__sub">기능·플랜 차이 정리, 결제 결정 지원</span><span class="sm-card__badges"><span class="mui-chip mui-chip--soft-info">MVP1</span></span></a>
+      <a class="sm-card" href="03-faq.html"><span class="sm-card__num">PAGE 03</span><span class="sm-card__title">FAQ·도움말</span><span class="sm-card__sub">의문 해소로 CS 부담 절감 + 이탈 방지</span><span class="sm-card__badges"><span class="mui-chip mui-chip--soft-info">MVP1</span></span></a>
+      <a class="sm-card" href="04-terms.html"><span class="sm-card__num">PAGE 04</span><span class="sm-card__title">약관·개인정보처리방침</span><span class="sm-card__sub">법적 고지 + 사용자 권리 안내</span><span class="sm-card__badges"><span class="mui-chip mui-chip--soft-info">MVP1</span></span></a>
+    </div>
+  </div>
+
+  <div class="sm-group">
+    <div class="sm-group__head"><h2>그룹 2 · 계정</h2></div>
+    <div class="sm-grid">
+      <a class="sm-card" href="05-signup.html"><span class="sm-card__num">PAGE 05</span><span class="sm-card__title">회원가입</span><span class="sm-card__sub">B-1 최소 수집 원칙. 이메일 / 카카오 SSO</span><span class="sm-card__badges"><span class="mui-chip mui-chip--soft-info">MVP1</span></span></a>
+      <a class="sm-card" href="06-login.html"><span class="sm-card__num">PAGE 06</span><span class="sm-card__title">로그인</span><span class="sm-card__sub">기존 사용자 인증 + 의도된 페이지 진입</span><span class="sm-card__badges"><span class="mui-chip mui-chip--soft-info">MVP1</span></span></a>
+      <a class="sm-card" href="07-password-reset.html"><span class="sm-card__num">PAGE 07</span><span class="sm-card__title">비밀번호 재설정</span><span class="sm-card__sub">3단계 분리 (이메일 → 발송 → 새 비밀번호)</span><span class="sm-card__badges"><span class="mui-chip mui-chip--soft-info">MVP1</span></span></a>
+    </div>
+  </div>
+
+  <div class="sm-group">
+    <div class="sm-group__head"><h2>그룹 3 · 검출 플로우</h2><span class="caption-k">핵심 가치 — 북극성 지표 화면</span></div>
+    <div class="sm-grid">
+      <a class="sm-card" href="08-upload.html"><span class="sm-card__num">PAGE 08</span><span class="sm-card__title">파일 업로드</span><span class="sm-card__sub">첫 가치 체험 진입점, 진입 마찰 최소화</span><span class="sm-card__badges"><span class="mui-chip mui-chip--soft-info">MVP1</span></span></a>
+      <a class="sm-card" href="09-analysis-progress.html"><span class="sm-card__num">PAGE 09</span><span class="sm-card__title">분석 처리 진행</span><span class="sm-card__sub">5단계 stepper. 백그라운드 처리·알림</span><span class="sm-card__badges"><span class="mui-chip mui-chip--soft-info">MVP1</span></span></a>
+      <a class="sm-card" href="10-analysis-report.html" style="border-color:#9747ff;"><span class="sm-card__num">PAGE 10 ★</span><span class="sm-card__title">분석 리포트</span><span class="sm-card__sub">검출→치환 전환의 결정적 화면. 충격 전달 + CTA</span><span class="sm-card__badges"><span class="mui-chip mui-chip--secondary">최우선</span></span></a>
+    </div>
+  </div>
+
+  <div class="sm-group">
+    <div class="sm-group__head"><h2>그룹 4 · SNS 셀프 점검</h2></div>
+    <div class="sm-grid">
+      <a class="sm-card" href="11-sns-connect.html"><span class="sm-card__num">PAGE 11</span><span class="sm-card__title">SNS 연결 (Instagram OAuth)</span><span class="sm-card__sub">권한 범위·데이터 흐름 투명 표시</span><span class="sm-card__badges"><span class="mui-chip mui-chip--soft-info">MVP1</span></span></a>
+      <a class="sm-card" href="12-sns-results.html"><span class="sm-card__num">PAGE 12</span><span class="sm-card__title">SNS 진단 결과</span><span class="sm-card__sub">게시물별 위험 일목요연 표시</span><span class="sm-card__badges"><span class="mui-chip mui-chip--soft-info">MVP1</span></span></a>
+    </div>
+  </div>
+
+  <div class="sm-group">
+    <div class="sm-group__head"><h2>그룹 5 · 치환 플로우</h2></div>
+    <div class="sm-grid">
+      <a class="sm-card" href="13-payment-gate.html"><span class="sm-card__num">PAGE 13</span><span class="sm-card__title">결제 게이트·플랜 선택</span><span class="sm-card__sub">MVP1 비활성 — v1 정식 출시 후</span><span class="sm-card__badges"><span class="mui-chip">v1 정식</span></span></a>
+      <a class="sm-card" href="14-payment.html"><span class="sm-card__num">PAGE 14</span><span class="sm-card__title">결제 페이지</span><span class="sm-card__sub">PG사 위탁. B-1 카드 정보 비경유</span><span class="sm-card__badges"><span class="mui-chip">v1 정식</span></span></a>
+      <a class="sm-card" href="15-replace-options.html" style="border-color:#9747ff;"><span class="sm-card__num">PAGE 15 ★</span><span class="sm-card__title">치환 옵션 설정</span><span class="sm-card__sub">사용자 제어권 보장 — Garim 핵심 가치</span><span class="sm-card__badges"><span class="mui-chip mui-chip--secondary">최우선</span></span></a>
+      <a class="sm-card" href="16-preview.html"><span class="sm-card__num">PAGE 16</span><span class="sm-card__title">처리 전 미리보기</span><span class="sm-card__sub">Before/After 슬라이더. STE 자연스러움 확인</span><span class="sm-card__badges"><span class="mui-chip mui-chip--soft-info">MVP1</span></span></a>
+      <a class="sm-card" href="17-processing.html"><span class="sm-card__num">PAGE 17</span><span class="sm-card__title">처리 진행 (본 처리)</span><span class="sm-card__sub">5단계 stepper. 워터마크 항상 적용 (B-3)</span><span class="sm-card__badges"><span class="mui-chip mui-chip--soft-info">MVP1</span></span></a>
+      <a class="sm-card" href="18-download.html"><span class="sm-card__num">PAGE 18</span><span class="sm-card__title">다운로드</span><span class="sm-card__sub">전체·구간 다운로드 + 자동 삭제 안내</span><span class="sm-card__badges"><span class="mui-chip mui-chip--soft-info">MVP1</span></span></a>
+    </div>
+  </div>
+
+  <div class="sm-group">
+    <div class="sm-group__head"><h2>그룹 6 · 마이페이지</h2></div>
+    <div class="sm-grid">
+      <a class="sm-card" href="19-dashboard.html"><span class="sm-card__num">PAGE 19</span><span class="sm-card__title">마이 대시보드</span><span class="sm-card__sub">로그인 후 홈. 활동 요약 + 진입점</span><span class="sm-card__badges"><span class="mui-chip mui-chip--soft-info">MVP1</span></span></a>
+      <a class="sm-card" href="20-history.html"><span class="sm-card__num">PAGE 20</span><span class="sm-card__title">처리 이력</span><span class="sm-card__sub">과거 작업 리스트. 다시 보기·다운로드</span><span class="sm-card__badges"><span class="mui-chip mui-chip--soft-info">MVP1</span></span></a>
+      <a class="sm-card" href="21-billing.html"><span class="sm-card__num">PAGE 21</span><span class="sm-card__title">결제·구독 관리</span><span class="sm-card__sub">MVP1 비활성 — v1 정식 출시 후</span><span class="sm-card__badges"><span class="mui-chip">v1 정식</span></span></a>
+      <a class="sm-card" href="22-settings.html"><span class="sm-card__num">PAGE 22</span><span class="sm-card__title">프로필·환경 설정</span><span class="sm-card__sub">계정·알림·보안·데이터 통합 관리</span><span class="sm-card__badges"><span class="mui-chip mui-chip--soft-info">MVP1</span></span></a>
+      <a class="sm-card" href="23-learning-consent.html"><span class="sm-card__num">PAGE 23</span><span class="sm-card__title">학습 데이터 동의 토글</span><span class="sm-card__sub">B-1 동의 분리. ON/OFF + 변경 이력</span><span class="sm-card__badges"><span class="mui-chip mui-chip--soft-info">MVP1</span></span></a>
+      <a class="sm-card" href="24-face-whitelist.html"><span class="sm-card__num">PAGE 24</span><span class="sm-card__title">본인 얼굴 화이트리스트</span><span class="sm-card__sub">MVP1·v1 정식 비활성. v2 예정</span><span class="sm-card__badges"><span class="mui-chip">v2 예정</span></span></a>
+    </div>
+  </div>
+
+  <div class="sm-group">
+    <div class="sm-group__head"><h2>그룹 7 · 관리자 영역</h2><span class="caption-k">별도 도메인 admin.garim.kr</span></div>
+    <div class="sm-grid">
+      <a class="sm-card" href="25-admin-abuse.html"><span class="sm-card__num">PAGE 25</span><span class="sm-card__title">어뷰징 모니터링</span><span class="sm-card__sub">봇·스크립트·반복 자동 감지 + 차단</span><span class="sm-card__badges"><span class="mui-chip mui-chip--soft-info">MVP1</span></span></a>
+      <a class="sm-card" href="26-admin-queue.html"><span class="sm-card__num">PAGE 26</span><span class="sm-card__title">처리 큐 관리</span><span class="sm-card__sub">실시간 처리·GPU 인프라 모니터링</span><span class="sm-card__badges"><span class="mui-chip mui-chip--soft-info">MVP1</span></span></a>
+      <a class="sm-card" href="27-admin-compliance.html"><span class="sm-card__num">PAGE 27</span><span class="sm-card__title">컴플라이언스 로그·감사</span><span class="sm-card__sub">자동 삭제 모니터 + 워터마크 역추적</span><span class="sm-card__badges"><span class="mui-chip mui-chip--soft-info">MVP1</span></span></a>
+    </div>
+  </div>
+</div>
+</body></html>

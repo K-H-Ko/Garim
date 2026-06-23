@@ -1,0 +1,66 @@
+
+        .auth-card {
+          width: min(440px, calc(100vw - 32px));
+          background: #fff;
+          border-radius: 4px;
+          box-shadow: var(--mui-elev-2);
+          padding: 40px;
+        }
+        .auth-card h1 {
+          font: 500 24px var(--font-sans);
+          margin: 0 0 8px;
+        }
+        .auth-card .sub {
+          font: 400 14px var(--font-sans);
+          color: var(--fg-2);
+          margin: 0 0 28px;
+        }
+        .social-stack {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+        .login-social {
+          width: 100%;
+          height: 48px;
+          border-radius: 4px;
+          border: 1px solid var(--mui-border);
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          font: 500 14px var(--font-sans);
+          letter-spacing: 0.1px;
+          background: #fff;
+          color: var(--fg-1);
+        }
+        .login-social:hover {
+          box-shadow: var(--mui-elev-1);
+        }
+        .login-social--kakao {
+          background: #FEE500;
+          border-color: #FEE500;
+          color: rgba(0,0,0,0.85);
+        }
+        .login-social--naver {
+          background: #03C75A;
+          border-color: #03C75A;
+          color: #fff;
+        }
+        /* 구글 버튼은 다크/라이트 모드 관계없이 텍스트 항상 검정 고정 */
+        .login-social--google {
+          color: rgba(0, 0, 0, 0.87) !important;
+        }
+        .login-terms-action {
+          margin-top: 14px;
+        }
+
+/* 재가입 버튼 상단 여백 */
+.login-reregister-btn {
+  margin-top: 16px;
+}
+/* 약관 액션 영역 추가 여백(재가입 화면) */
+.login-terms-action--gap {
+  margin-top: 12px;
+}

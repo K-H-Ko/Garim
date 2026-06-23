@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>학습 데이터 동의 · Garim</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="garim.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<style>
+  .lc-page { padding: 48px 32px 80px; max-width: 720px; margin: 0 auto; }
+  .lc-back { display: inline-flex; align-items: center; gap: 6px; color: var(--fg-2); font: 400 13px var(--font-sans); margin-bottom: 16px; }
+  .lc-page h1 { font: 300 36px/1.2 var(--font-sans); margin: 0 0 12px; letter-spacing: -0.5px; }
+  .lc-page .sub { font: 400 16px/1.6 var(--font-sans); color: var(--fg-2); margin: 0 0 32px; }
+  .toggle-card {
+    background: #fff; border-radius: 4px; box-shadow: var(--mui-elev-2);
+    padding: 32px; margin-bottom: 24px;
+    display: flex; align-items: center; gap: 24px;
+  }
+  .big-switch { width: 64px; height: 36px; background: rgba(0,0,0,0.38); border-radius: 18px; position: relative; cursor: pointer; flex-shrink: 0; transition: background 200ms; }
+  .big-switch .knob { position: absolute; top: -2px; left: -2px; width: 40px; height: 40px; background: #fff; border-radius: 50%; box-shadow: var(--mui-elev-3); transition: left 200ms, background 200ms; display: flex; align-items: center; justify-content: center; color: var(--fg-2); }
+  .big-switch.on { background: rgba(25,118,210,0.5); }
+  .big-switch.on .knob { left: 26px; background: #1976d2; color: #fff; }
+  .toggle-card .title { font: 500 22px var(--font-sans); margin-bottom: 4px; }
+  .toggle-card .state { font: 400 14px var(--font-sans); color: var(--fg-2); }
+  .toggle-card .state.on { color: #2e7d32; font-weight: 500; }
+  .info-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  .info-card { padding: 24px; border-radius: 4px; border: 1px solid; }
+  .info-card.on { background: rgba(46,125,50,0.04); border-color: rgba(46,125,50,0.25); }
+  .info-card.off { background: rgba(25,118,210,0.04); border-color: rgba(25,118,210,0.25); }
+  .info-card h3 { font: 500 16px var(--font-sans); margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
+  .info-card.on h3 { color: #1b5e20; }
+  .info-card.off h3 { color: #014361; }
+  .info-card ul { list-style: none; padding: 0; margin: 0; }
+  .info-card li { font: 400 13px/1.6 var(--font-sans); padding-left: 24px; position: relative; margin-bottom: 6px; }
+  .info-card li::before { position: absolute; left: 0; top: 2px; font-family: "Material Icons"; font-size: 16px; }
+  .info-card.on li::before { content: "check_circle"; color: #2e7d32; }
+  .info-card.off li::before { content: "block"; color: #0288d1; }
+  .credit-card {
+    background: linear-gradient(135deg, rgba(151,71,255,0.06), rgba(25,118,210,0.04));
+    border: 1px solid rgba(151,71,255,0.25); border-radius: 4px; padding: 20px;
+    margin-bottom: 24px; display: flex; gap: 16px; align-items: center;
+  }
+  .credit-card .icon-box { width: 48px; height: 48px; border-radius: 4px; background: rgba(151,71,255,0.12); color: #9747ff; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .credit-card h3 { font: 500 15px var(--font-sans); margin: 0; color: #7b1fa2; }
+  .credit-card p { font: 400 13px/1.5 var(--font-sans); color: var(--fg-2); margin: 4px 0 0; }
+  .changelog { background: #fff; border-radius: 4px; box-shadow: var(--mui-elev-1); padding: 24px; }
+  .changelog h3 { font: 500 14px var(--font-sans); margin: 0 0 16px; }
+  .change-row { display: flex; gap: 16px; padding: 8px 0; border-bottom: 1px dashed var(--mui-divider); font: 400 13px var(--font-sans); }
+  .change-row:last-child { border-bottom: none; }
+  .change-row .date { color: var(--fg-2); font-family: var(--font-mono); font-size: 12px; min-width: 140px; }
+  .legal-note {
+    margin-top: 24px; padding: 16px 20px;
+    background: rgba(237,108,2,0.05); border-left: 3px solid #ed6c02;
+    border-radius: 2px; font: 400 13px/1.6 var(--font-sans); color: var(--fg-1);
+  }
+  .legal-note strong { color: #c62828; }
+</style>
+</head>
+<body class="page-app" data-screen-label="23 Learning consent">
+<div id="header"></div>
+
+<div class="lc-page">
+  <a href="22-settings.html" class="lc-back"><span class="material-icons" style="font-size:18px;">arrow_back</span>설정으로 돌아가기</a>
+  <h1>AI 학습 데이터 활용 동의</h1>
+  <p class="sub">내 처리 데이터를 모델 개선에 활용할지 결정하세요. 언제든 변경할 수 있습니다 (B-1 동의 분리 원칙).</p>
+
+  <div class="toggle-card">
+    <div class="big-switch" id="consent-switch"><div class="knob"><span class="material-icons" id="knob-icon">close</span></div></div>
+    <div style="flex:1;">
+      <div class="title">AI 학습 데이터 활용</div>
+      <div class="state" id="state-text">현재 <strong>비활성화</strong>되어 있습니다 — 내 데이터는 학습에 사용되지 않습니다.</div>
+    </div>
+  </div>
+
+  <div class="info-cards">
+    <div class="info-card on">
+      <h3><span class="material-icons">check_circle</span>동의 시 — 활성화하면</h3>
+      <ul>
+        <li>내 처리 데이터(메타데이터·미리보기 평가)가 한국어 모델 개선에 활용됩니다</li>
+        <li>월 처리량 <strong>10% 환원 크레딧</strong> 제공 (v1 정식 출시 후)</li>
+        <li>원본 파일·결과 영상은 학습에 사용되지 않습니다 (메타데이터·평가만)</li>
+        <li>익명화 후 처리됩니다</li>
+      </ul>
+    </div>
+    <div class="info-card off">
+      <h3><span class="material-icons">shield</span>비동의 시 — 비활성 상태</h3>
+      <ul>
+        <li>내 데이터는 절대 모델 학습에 사용되지 않습니다</li>
+        <li>처리 메타데이터는 워터마크 역추적용으로만 90일 보관</li>
+        <li>환원 크레딧 없음</li>
+        <li>서비스 이용에는 차이 없습니다</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="credit-card">
+    <div class="icon-box"><span class="material-icons">redeem</span></div>
+    <div>
+      <h3>환원 크레딧 — v1 정식 출시 후</h3>
+      <p>학습 동의 활성 사용자는 매월 처리량의 10%가 추가 적립됩니다. Pro 플랜(월 50회) 기준 +5회 = 월 55회.</p>
+    </div>
+  </div>
+
+  <div class="changelog">
+    <h3>변경 이력</h3>
+    <div class="change-row"><span class="date">2026.05.14 14:22</span><span style="flex:1;">가입 시점 · 기본값 <strong>OFF</strong>로 설정</span></div>
+  </div>
+
+  <div class="legal-note">
+    <strong>중요 안내</strong><br>
+    동의 ON → OFF로 변경하더라도, 이미 학습된 모델의 가중치에서 사용자별 기여 분을 기술적으로 분리하는 것은 어렵습니다. OFF 변경 시점부터 향후 학습에서만 제외됩니다. 자세한 내용은 <a href="04-terms.html" style="color:#1976d2;">AI 학습 데이터 활용 약관</a>을 확인하세요.
+  </div>
+</div>
+
+<div id="footer"></div>
+
+<script src="garim-chrome.js"></script>
+<script>
+  document.getElementById('header').innerHTML = gh({ variant: 'app', current: '', authed: true });
+  document.getElementById('footer').innerHTML = gf();
+
+  const sw = document.getElementById('consent-switch');
+  const stateText = document.getElementById('state-text');
+  const knobIcon = document.getElementById('knob-icon');
+  sw.addEventListener('click', () => {
+    const wasOn = sw.classList.contains('on');
+    if (wasOn) {
+      if (!confirm('학습 동의를 OFF로 변경합니다.\n\n이미 학습된 모델에서 기술적 분리는 어렵습니다. 향후 학습부터 제외됩니다. 계속하시겠습니까?')) return;
+      sw.classList.remove('on');
+      stateText.innerHTML = '현재 <strong>비활성화</strong>되어 있습니다 — 내 데이터는 학습에 사용되지 않습니다.';
+      knobIcon.textContent = 'close';
+    } else {
+      if (!confirm('AI 학습 데이터 활용에 동의합니다.\n\n내 처리 데이터(메타데이터)가 모델 개선에 활용됩니다. 원본/결과 파일은 사용되지 않습니다. 계속하시겠습니까?')) return;
+      sw.classList.add('on');
+      stateText.innerHTML = '현재 <strong style="color:#2e7d32;">활성화</strong>되어 있습니다 — 처리 메타데이터가 모델 개선에 활용됩니다.';
+      stateText.classList.add('on');
+      knobIcon.textContent = 'check';
+    }
+  });
+</script>
+</body></html>

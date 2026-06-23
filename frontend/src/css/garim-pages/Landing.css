@@ -1,0 +1,263 @@
+.hero-vis {
+  max-width: 920px;
+  margin: 56px auto 0;
+  aspect-ratio: 16/9;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: var(--mui-elev-12);
+  background: #000;
+}
+
+.hero-vis img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ── 가림바 비교 데모 (좌: 카드 / 우: 우편) ── */
+.demo-compare-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+  max-width: 1100px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+.demo-compare-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.demo-compare-title {
+  font: 600 18px var(--font-sans);
+  color: var(--fg-1);
+  margin: 0;
+}
+
+/* 슬라이더가 칼럼 폭에 맞춰 늘어나고, 이미지는 비율 유지하며 칼럼 폭에 맞도록 */
+.demo-compare-item .cs-container {
+  width: 100%;
+}
+
+.demo-compare-item .cs-layer img {
+  width: 100%;
+  max-height: 420px;
+  object-fit: contain;
+}
+
+@media (max-width: 900px) {
+  .demo-compare-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hero-vis .badge-overlay {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font: 500 13px var(--font-sans);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hero-vis .badge-overlay .material-icons {
+  font-size: 16px;
+  color: #4caf50;
+}
+
+.problem-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.problem-card {
+  background: var(--bg-1);
+  border: 1px solid var(--mui-border);
+  border-radius: 4px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.problem-card .material-icons {
+  color: #d32f2f;
+  font-size: 28px;
+}
+
+.problem-card h4 {
+  font: 500 16px var(--font-sans);
+  margin: 0;
+}
+
+.problem-card p {
+  font: 400 13px/1.5 var(--font-sans);
+  color: var(--fg-2);
+  margin: 0;
+}
+
+/* 마지막 CTA — 기본(라이트 모드) 파란 배경, 다크 모드는 어두운 배경 */
+.closing-cta {
+  background: #1976d2;
+  color: #fff;
+  padding: 96px 32px;
+  text-align: center;
+  transition: background 0.3s ease;
+}
+
+:root[data-theme="dark"] .closing-cta {
+  background: linear-gradient(180deg, #1d1d20 0%, #141417 100%);
+}
+
+.closing-cta h2 {
+  font: 300 48px/1.2 var(--font-sans);
+  color: #fff;
+  margin: 0 0 16px;
+  letter-spacing: -0.5px;
+}
+
+.closing-cta p {
+  font: 400 18px/1.6 var(--font-sans);
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 540px;
+  margin: 0 auto 32px;
+}
+
+/* 상단/하단 버튼 가로 정렬 및 중앙 배치 */
+.hero__cta,
+.closing-cta__actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* --- 상단(hero__cta) 버튼 스타일 --- */
+/* 무료 시작(파란색)은 라이트/다크 공통 */
+.hero__cta .mui-btn--contained {
+  background: #1976d2;
+  color: #fff;
+}
+
+.hero__cta .mui-btn--contained:hover {
+  background: #1565c0;
+}
+
+/* 요금제 보기(outlined) - 라이트 모드에서는 검은색, 마우스 오버 시 골드 채움 효과 */
+.hero__cta .mui-btn--outlined {
+  border-color: #333;
+  color: #333;
+  background: transparent;
+  transition: all 0.3s ease;
+}
+
+.hero__cta .mui-btn--outlined:hover {
+  background: #c9a24b;
+  color: #fff;
+  border-color: #c9a24b;
+  box-shadow: 0 4px 10px rgba(201, 162, 75, 0.3);
+}
+
+/* 요금제 보기(outlined) - 다크 모드에서는 처음부터 골드 버전 */
+:root[data-theme="dark"] .hero__cta .mui-btn--outlined {
+  border-color: #c9a24b;
+  color: #e9c878;
+  background: transparent;
+}
+
+:root[data-theme="dark"] .hero__cta .mui-btn--outlined:hover {
+  background: #c9a24b;
+  color: #1a1407;
+  border-color: #c9a24b;
+}
+
+/* --- 하단(closing-cta) 버튼 스타일 (라이트 모드) --- */
+/* 배경이 파란색이므로 버튼은 흰색 계열로 대비를 줌 */
+.closing-cta .mui-btn--contained {
+  background: #fff;
+  color: #1976d2;
+}
+
+.closing-cta .mui-btn--contained:hover {
+  background: #f0f0f0;
+}
+
+.closing-cta .mui-btn--outlined {
+  border-color: rgba(255, 255, 255, 0.7);
+  color: #fff;
+  background: transparent;
+}
+
+.closing-cta .mui-btn--outlined:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #fff;
+}
+
+/* --- 하단(closing-cta) 버튼 스타일 (다크 모드) --- */
+/* 다크 모드에서는 상단과 동일한 스타일로 복귀 */
+:root[data-theme="dark"] .closing-cta .mui-btn--contained {
+  background: #1976d2;
+  color: #fff;
+}
+
+:root[data-theme="dark"] .closing-cta .mui-btn--contained:hover {
+  background: #1565c0;
+}
+
+:root[data-theme="dark"] .closing-cta .mui-btn--outlined {
+  border-color: #c9a24b;
+  color: #e9c878;
+  background: transparent;
+}
+
+:root[data-theme="dark"] .closing-cta .mui-btn--outlined:hover {
+  background: #c9a24b;
+  color: #1a1407;
+  border-color: #c9a24b;
+}
+
+/* 히어로 통계 그리드 하단 여백 */
+.landing-stats {
+  margin-bottom: 48px;
+}
+
+/* 통계 카드 단위 기호(%) 크기 */
+.landing-stat-unit {
+  font-size: 32px;
+}
+
+/* 기능 소개 칩 — 좌측 정렬 */
+.landing-feat-chip {
+  align-self: flex-start;
+}
+
+/* PC 최적화 안내 문구 (하단 CTA의 p 태그 전역 속성 덮어쓰기 위해 상세 선택자 사용) */
+.pc-optimized-notice,
+.closing-cta p.pc-optimized-notice {
+  margin: 16px auto 0;
+  font-size: 14px;
+  color: var(--fg-2);
+  line-height: 1.5;
+  max-width: none;
+}
+
+/* 하단 CTA 배경에 맞춘 밝은 색상 (라이트 모드는 파란 배경이므로 흰색 계열, 다크 모드는 어두운 배경이므로 일반 텍스트 색상) */
+.closing-cta p.pc-optimized-notice.alt {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+:root[data-theme="dark"] .closing-cta p.pc-optimized-notice.alt {
+  color: var(--fg-2);
+}

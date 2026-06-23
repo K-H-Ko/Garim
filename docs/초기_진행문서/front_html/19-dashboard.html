@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>마이 대시보드 · Garim</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="garim.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<style>
+  .dash-page { padding: 32px; max-width: 1200px; margin: 0 auto; }
+  .dash-hero { display: flex; align-items: center; gap: 24px; margin-bottom: 32px; }
+  .dash-hero h1 { font: 300 36px var(--font-sans); margin: 0 0 4px; letter-spacing: -0.5px; }
+  .dash-hero p { font: 400 15px var(--font-sans); color: var(--fg-2); margin: 0; }
+  .dash-hero .cta-stack { margin-left: auto; display: flex; gap: 8px; }
+  .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .stat { background: #fff; border-radius: 4px; box-shadow: var(--mui-elev-1); padding: 24px; }
+  .stat .lbl { font: 500 12px var(--font-sans); text-transform: uppercase; letter-spacing: 0.5px; color: var(--fg-2); }
+  .stat .num { font: 300 36px var(--font-sans); margin-top: 8px; letter-spacing: -0.5px; }
+  .stat .delta { font: 400 13px var(--font-sans); color: #2e7d32; margin-top: 4px; }
+  .stat .delta.warn { color: #ed6c02; }
+  .stat .ico { float: right; opacity: 0.4; }
+  .stat .ico .material-icons { font-size: 28px; color: #1976d2; }
+
+  .dash-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; align-items: flex-start; }
+  .card-block { background: #fff; border-radius: 4px; box-shadow: var(--mui-elev-1); padding: 24px; margin-bottom: 16px; }
+  .card-block h2 { font: 500 18px var(--font-sans); margin: 0 0 16px; display: flex; align-items: center; gap: 8px; }
+  .card-block h2 .spacer { flex: 1; }
+  .card-block h2 a { font: 400 13px var(--font-sans); color: #1976d2; }
+
+  .progress-row { display: flex; align-items: center; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--mui-divider); }
+  .progress-row:last-child { border-bottom: none; }
+  .progress-row .thumb { width: 64px; aspect-ratio: 16/9; border-radius: 4px; background: #000; overflow: hidden; flex-shrink: 0; position: relative; }
+  .progress-row .thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .progress-row .body { flex: 1; }
+  .progress-row .name { font: 500 14px var(--font-sans); }
+  .progress-row .meta { font: 400 12px var(--font-sans); color: var(--fg-2); margin-top: 2px; }
+  .progress-row .progress { height: 4px; margin-top: 8px; max-width: 280px; }
+
+  .hist-row { display: flex; align-items: center; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--mui-divider); }
+  .hist-row:last-child { border-bottom: none; }
+  .hist-row .thumb { width: 56px; aspect-ratio: 16/9; border-radius: 4px; overflow: hidden; background: #000; flex-shrink: 0; }
+  .hist-row .thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .hist-row .body { flex: 1; min-width: 0; }
+  .hist-row .name { font: 500 14px var(--font-sans); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .hist-row .meta { font: 400 12px var(--font-sans); color: var(--fg-2); margin-top: 2px; }
+  .hist-row .right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+
+  .sns-widget { background: linear-gradient(135deg, rgba(151,71,255,0.06), rgba(25,118,210,0.04)); border: 1px solid rgba(151,71,255,0.2); }
+  .sns-widget h2 { color: #9747ff; }
+  .sns-widget .big-num { font: 300 48px var(--font-sans); color: #9747ff; line-height: 1; }
+  .sns-widget .desc { font: 400 13px/1.5 var(--font-sans); color: var(--fg-2); margin: 8px 0 16px; }
+
+  .tip-card { background: rgba(25,118,210,0.04); border-radius: 4px; padding: 16px; }
+  .tip-card h3 { font: 500 13px var(--font-sans); margin: 0 0 6px; }
+  .tip-card p { font: 400 12px/1.5 var(--font-sans); color: var(--fg-2); margin: 0; }
+</style>
+</head>
+<body class="page-app" data-screen-label="19 Dashboard">
+<div id="header"></div>
+
+<div class="dash-page">
+
+  <div class="dash-hero">
+    <div>
+      <h1>안녕하세요, 민지님 👋</h1>
+      <p>지난주 검출한 영상은 안전하게 가려졌어요. 오늘은 어떤 영상을 점검해볼까요?</p>
+    </div>
+    <div class="cta-stack">
+      <a href="11-sns-connect.html" class="mui-btn mui-btn--outlined mui-btn--lg"><span class="material-icons" style="font-size:20px;">share</span>인스타 점검</a>
+      <a href="08-upload.html" class="mui-btn mui-btn--contained mui-btn--lg"><span class="material-icons" style="font-size:20px;">cloud_upload</span>새 검출 시작</a>
+    </div>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat">
+      <span class="ico"><span class="material-icons">visibility</span></span>
+      <div class="lbl">누적 검출</div>
+      <div class="num">24<small style="font-size:18px;color:var(--fg-3);">건</small></div>
+      <div class="delta">+5 이번 달</div>
+    </div>
+    <div class="stat">
+      <span class="ico"><span class="material-icons" style="color:#9747ff;">visibility_off</span></span>
+      <div class="lbl">치환 완료</div>
+      <div class="num">19<small style="font-size:18px;color:var(--fg-3);">건</small></div>
+      <div class="delta">+4 이번 달</div>
+    </div>
+    <div class="stat">
+      <span class="ico"><span class="material-icons" style="color:#d32f2f;">shield</span></span>
+      <div class="lbl">발견된 개인정보</div>
+      <div class="num">147<small style="font-size:18px;color:var(--fg-3);">건</small></div>
+      <div class="delta warn">평균 6.1건/영상</div>
+    </div>
+    <div class="stat">
+      <span class="ico"><span class="material-icons" style="color:#2e7d32;">savings</span></span>
+      <div class="lbl">남은 무료 처리</div>
+      <div class="num">3<small style="font-size:18px;color:var(--fg-3);">/5회</small></div>
+      <div class="delta">월 1일 초기화</div>
+    </div>
+  </div>
+
+  <div class="dash-grid">
+    <div>
+      <!-- In progress -->
+      <div class="card-block">
+        <h2>진행 중인 작업 <span class="mui-chip mui-chip--soft-info">2</span><span class="spacer"></span></h2>
+        <div class="progress-row">
+          <div class="thumb"><img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=200&q=60" alt=""></div>
+          <div class="body">
+            <div class="name">family_picnic_2026.mp4</div>
+            <div class="meta">처리 진행 중 · 47% · 약 32초 남음</div>
+            <div class="progress"><div class="progress__bar" style="width:47%"></div></div>
+          </div>
+          <a href="17-processing.html" class="mui-btn mui-btn--text mui-btn--sm">상세 →</a>
+        </div>
+        <div class="progress-row">
+          <div class="thumb" style="background:linear-gradient(135deg,#9c27b0,#7b1fa2);display:flex;align-items:center;justify-content:center;"><span class="material-icons" style="color:#fff;font-size:24px;">photo_library</span></div>
+          <div class="body">
+            <div class="name">2026_birthday_album/ — 12장</div>
+            <div class="meta">분석 진행 중 · 큐 대기 · 평균 38초</div>
+          </div>
+          <a href="09-analysis-progress.html" class="mui-btn mui-btn--text mui-btn--sm">상세 →</a>
+        </div>
+      </div>
+
+      <!-- Recent -->
+      <div class="card-block">
+        <h2>최근 처리 이력 <span class="spacer"></span><a href="20-history.html">전체 보기 →</a></h2>
+        <div class="hist-row">
+          <div class="thumb"><img src="https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=200&q=60" alt=""></div>
+          <div class="body">
+            <div class="name">new_desk_unboxing.mp4</div>
+            <div class="meta">2026.05.12 · 처리 완료 · 5건 치환</div>
+          </div>
+          <div class="right">
+            <span class="mui-chip mui-chip--soft-success">완료</span>
+            <span class="caption-k" style="font-size:11px;">6일 후 자동 삭제</span>
+          </div>
+        </div>
+        <div class="hist-row">
+          <div class="thumb"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=60" alt=""></div>
+          <div class="body">
+            <div class="name">cafe_date_2026.jpg</div>
+            <div class="meta">2026.05.08 · 처리 완료 · 2건 치환</div>
+          </div>
+          <div class="right">
+            <span class="mui-chip mui-chip--soft-success">완료</span>
+            <span class="caption-k" style="font-size:11px;">2일 후 자동 삭제</span>
+          </div>
+        </div>
+        <div class="hist-row">
+          <div class="thumb" style="background:linear-gradient(135deg,#0288d1,#01579b);display:flex;align-items:center;justify-content:center;"><span class="material-icons" style="color:#fff;">graphic_eq</span></div>
+          <div class="body">
+            <div class="name">interview_recording.mp3</div>
+            <div class="meta">2026.05.05 · 처리 완료 · 3건 음성 치환</div>
+          </div>
+          <div class="right">
+            <span class="mui-chip mui-chip--soft-success">완료</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <aside>
+      <div class="card-block sns-widget">
+        <h2>SNS 셀프 점검</h2>
+        <div class="big-num">9<small style="font-size:18px;color:var(--fg-2);"> 건</small></div>
+        <p class="desc">최근 스캔에서 위험 게시물 9건이 발견됐어요. 1주일 전 점검 결과입니다.</p>
+        <a href="12-sns-results.html" class="mui-btn mui-btn--contained mui-btn--block" style="background:#9747ff;">결과 다시 보기 →</a>
+      </div>
+
+      <div class="card-block">
+        <h2>알림</h2>
+        <div style="font:400 13px/1.6 var(--font-sans);color:var(--fg-1);padding:8px 0;border-bottom:1px solid var(--mui-divider);">
+          <strong>family_picnic_2026.mp4</strong> 분석이 완료되었습니다.
+          <div class="caption-k" style="font-size:11px;">3분 전</div>
+        </div>
+        <div style="font:400 13px/1.6 var(--font-sans);color:var(--fg-2);padding:8px 0;">
+          처리 결과 영상 <strong>2026_summer.mp4</strong>가 24시간 후 자동 삭제됩니다.
+          <div class="caption-k" style="font-size:11px;">2시간 전</div>
+        </div>
+      </div>
+
+      <div class="card-block tip-card">
+        <h3>💡 팁 — Pro 플랜 전환</h3>
+        <p>지난 30일간 무료 한도(월 5회)에 가까웠어요. v1 정식 출시 시 Pro 플랜으로 월 50회까지 처리할 수 있어요.</p>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div id="footer"></div>
+
+<script src="garim-chrome.js"></script>
+<script>
+  document.getElementById('header').innerHTML = gh({ variant: 'app', current: '', authed: true });
+  document.getElementById('footer').innerHTML = gf();
+</script>
+</body></html>

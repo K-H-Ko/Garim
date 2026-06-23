@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>본인 얼굴 화이트리스트 · Garim [v2]</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="garim.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<style>
+  .wl-page { padding: 48px 32px 80px; max-width: 800px; margin: 0 auto; }
+  .wl-back { display: inline-flex; align-items: center; gap: 6px; color: var(--fg-2); font: 400 13px var(--font-sans); margin-bottom: 16px; }
+  .wl-page h1 { font: 300 36px/1.2 var(--font-sans); margin: 0 0 8px; letter-spacing: -0.5px; }
+  .wl-page .sub { font: 400 16px/1.6 var(--font-sans); color: var(--fg-2); margin: 0 0 24px; }
+  .v2-banner {
+    background: linear-gradient(135deg, rgba(151,71,255,0.06), rgba(25,118,210,0.04));
+    border: 1px solid rgba(151,71,255,0.25); border-radius: 8px;
+    padding: 24px 28px; margin-bottom: 32px; display: flex; align-items: center; gap: 20px;
+  }
+  .v2-banner .badge { background: #9747ff; color: #fff; padding: 4px 10px; border-radius: 4px; font: 500 11px var(--font-sans); letter-spacing: 1px; text-transform: uppercase; }
+  .v2-banner h3 { font: 500 16px var(--font-sans); margin: 8px 0 4px; }
+  .v2-banner p { font: 400 13px/1.5 var(--font-sans); color: var(--fg-2); margin: 0; }
+  .preview-section { opacity: 0.6; pointer-events: none; }
+  .empty-state { background: #fff; border-radius: 4px; box-shadow: var(--mui-elev-1); padding: 64px 32px; text-align: center; }
+  .empty-state .ico-box { width: 96px; height: 96px; border-radius: 50%; background: rgba(0,0,0,0.04); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+  .empty-state .ico-box .material-icons { font-size: 48px; color: var(--fg-3); }
+  .empty-state h2 { font: 500 22px var(--font-sans); margin: 0 0 8px; }
+  .empty-state p { font: 400 14px/1.6 var(--font-sans); color: var(--fg-2); max-width: 480px; margin: 0 auto 24px; }
+  .perm-card { background: #fff; border-radius: 4px; box-shadow: var(--mui-elev-1); padding: 24px; margin-top: 16px; }
+  .perm-card h3 { font: 500 14px var(--font-sans); margin: 0 0 12px; }
+  .perm-card ul { list-style: none; padding: 0; margin: 0; }
+  .perm-card li { font: 400 13px/1.6 var(--font-sans); color: var(--fg-1); padding-left: 24px; position: relative; margin-bottom: 8px; }
+  .perm-card li::before { content: "check_circle"; font-family: "Material Icons"; font-size: 16px; position: absolute; left: 0; top: 2px; color: #2e7d32; }
+</style>
+</head>
+<body class="page-app" data-screen-label="24 Face whitelist (v2)">
+<div id="header"></div>
+
+<div class="wl-page">
+  <a href="22-settings.html" class="wl-back"><span class="material-icons" style="font-size:18px;">arrow_back</span>설정으로 돌아가기</a>
+  <h1>본인 얼굴 화이트리스트</h1>
+  <p class="sub">본인 얼굴을 등록하면 자동 마스킹에서 제외됩니다. 내가 등장하는 영상에서 내가 가려지는 어색함을 해결합니다.</p>
+
+  <div class="v2-banner">
+    <span class="material-icons" style="font-size:48px;color:#9747ff;">schedule</span>
+    <div style="flex:1;">
+      <span class="badge">v2 예정</span>
+      <h3>이 기능은 v2에 출시됩니다</h3>
+      <p>MVP1·v1 정식 단계에서는 비활성화되어 있어요. 출시되면 이메일로 알려드릴게요. 아래는 출시 후 예상 UI입니다.</p>
+    </div>
+  </div>
+
+  <div class="preview-section">
+    <div class="empty-state">
+      <div class="ico-box"><span class="material-icons">face_retouching_natural</span></div>
+      <h2>등록된 얼굴이 없습니다</h2>
+      <p>본인 얼굴 사진 3~5장을 업로드하면, 얼굴 임베딩 벡터로 변환 후 원본 사진은 삭제됩니다. 등록 후 마스킹 처리 시 본인 얼굴은 자동으로 제외됩니다.</p>
+      <button class="mui-btn mui-btn--contained">사진 업로드해서 등록 →</button>
+    </div>
+
+    <div class="perm-card">
+      <h3>권한·보안 정책</h3>
+      <ul>
+        <li>업로드한 얼굴 사진은 임베딩 벡터로 변환 후 <strong>원본 사진은 즉시 삭제</strong>됩니다</li>
+        <li>임베딩 벡터는 본인 식별 용도로만 사용, <strong>외부 전송 없음</strong></li>
+        <li>등록 해제 시 임베딩이 <strong>즉시 영구 삭제</strong>됩니다</li>
+        <li>법적 분쟁 시 본인 식별 확인 외 용도로 사용되지 않습니다</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div id="footer"></div>
+
+<script src="garim-chrome.js"></script>
+<script>
+  document.getElementById('header').innerHTML = gh({ variant: 'app', current: '', authed: true });
+  document.getElementById('footer').innerHTML = gf();
+</script>
+</body></html>

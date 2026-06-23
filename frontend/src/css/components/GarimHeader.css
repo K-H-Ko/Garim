@@ -1,0 +1,400 @@
+/*
+코드 설명:
+Garim 공통 헤더(GarimHeader) 전용 스타일. 일반/앱/어드민/인증(minimal) 레이아웃, 네비게이션,
+알림 드롭다운, 헤더 사용자 정보 블록의 라이트/다크 표현을 정의한다.
+*/
+
+/* 다크 모드 헤더 보정 — hover 배경이 흰색 기준이라 다크에서만 교정 */
+:root[data-theme="dark"] .gh__nav a:hover,
+:root[data-theme="dark"] .gh__icon:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ----- Header ------------------------------------------- */
+.gh {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 64px;
+  /* 헤더 표면색 — 라이트 기본 #fff, 다크에서 변수 오버라이드 */
+  background: var(--header-bg, #fff);
+  border-bottom: 1px solid var(--mui-divider);
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+}
+
+.gh--app {
+  box-shadow: var(--mui-elev-1);
+  border-bottom: none;
+}
+
+.gh--landing {
+  background: var(--header-bg-landing, rgba(255, 255, 255, 0.94));
+  backdrop-filter: blur(8px);
+}
+
+.gh__logo {
+  display: flex;
+  align-items: center;
+  margin-right: 40px;
+}
+
+.gh__logo img {
+  height: 28px;
+  width: auto;
+}
+
+.gh__nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+}
+
+.gh__nav a {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.1px;
+  color: var(--fg-2);
+  padding: 8px 14px;
+  border-radius: 4px;
+  transition:
+    background 150ms,
+    color 150ms;
+}
+
+.gh__nav a:hover {
+  background: rgba(0, 0, 0, 0.04);
+  color: var(--fg-1);
+}
+
+.gh__nav a.active {
+  color: #1976d2;
+}
+
+.gh__right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.gh__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--fg-2);
+  cursor: pointer;
+  background: transparent;
+  border: none;
+}
+
+.gh__icon:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.gh__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #9c27b0;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font: 500 14px var(--font-sans);
+  cursor: pointer;
+}
+
+/* 어드민 아바타 색상 */
+.gh__avatar--admin {
+  background: #1976d2;
+}
+
+.gh__badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: #d32f2f;
+  color: #fff;
+  font: 500 10px/16px var(--font-sans);
+  text-align: center;
+}
+
+/* 관리자 알림 존재 시 배지 강조색 */
+.gh__badge--admin {
+  background: #ffb300;
+  color: #000;
+}
+
+.gh__icon-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+/* 헤더 내 관리자 페이지 이동 버튼 크기 */
+.gh__admin-btn {
+  font-size: 12px;
+}
+
+/* ── 알림 드롭다운 풍선 ── */
+.gh__notif-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 320px;
+  background: var(--bg-1);
+  border: 1px solid var(--mui-divider);
+  border-radius: 12px;
+  box-shadow: var(--mui-elev-12);
+  z-index: 9999;
+  overflow: hidden;
+  animation: notif-fade-in 0.15s ease;
+}
+
+@keyframes notif-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.gh__notif-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px 10px;
+  border-bottom: 1px solid var(--mui-divider);
+  font: 600 13px/1 var(--font-sans);
+  color: var(--fg-1);
+}
+
+.gh__notif-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--fg-3);
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.gh__notif-close:hover {
+  color: var(--fg-1);
+}
+
+/* 알림 닫기 아이콘 크기 */
+.gh__notif-close .material-icons {
+  font-size: 18px;
+}
+
+.gh__notif-empty {
+  padding: 20px 16px;
+  font: 400 13px/1.5 var(--font-sans);
+  color: var(--fg-3);
+  text-align: center;
+}
+
+.gh__notif-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.gh__notif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--mui-divider);
+  transition: background 0.12s;
+}
+
+.gh__notif-item:last-child {
+  border-bottom: none;
+}
+
+.gh__notif-item:hover {
+  background: rgba(128, 128, 128, 0.08);
+}
+
+.gh__notif-icon {
+  font-size: 20px !important;
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+
+.gh__notif-item--analysis_complete .gh__notif-icon {
+  color: #9747ff;
+}
+
+.gh__notif-item--mask_complete .gh__notif-icon {
+  color: #2e7d32;
+}
+
+.gh__notif-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.gh__notif-msg {
+  margin: 0 0 4px;
+  font: 400 13px/1.5 var(--font-sans);
+  color: var(--fg-1);
+  word-break: break-all;
+}
+
+/* 알림 제목 (msg 내부 강조 줄) */
+.gh__notif-title {
+  display: block;
+  margin-bottom: 2px;
+}
+
+.gh__notif-time {
+  font: 400 11px/1 var(--font-sans);
+  color: var(--fg-3);
+}
+
+/* ----- 헤더 사용자 정보 블록 (로그인 계정 | 플랜 | 현재 크레딧) ---- */
+.gh__user-info {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.gh__user-cols {
+  display: flex;
+  gap: 0;
+  text-align: center;
+}
+
+/* 개별 컬럼 */
+.gh__user-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 14px;
+}
+
+.gh__user-col+.gh__user-col {
+  border-left: 1px solid var(--mui-divider);
+}
+
+/* 레이블 (위 줄) */
+.gh__user-label {
+  font: 600 13px/1.2 var(--font-sans);
+  color: var(--fg-3);
+  letter-spacing: 0.5px;
+  margin-bottom: 3px;
+}
+
+/* 값 (아래 줄) — 계정 */
+.gh__user-account {
+  font: 500 12px/1.2 var(--font-sans);
+  color: var(--fg-1);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* 값 (아래 줄) — 플랜 / 크레딧 숫자 */
+.gh__user-plan,
+.gh__user-credit {
+  font: 600 12px/1.2 var(--font-sans);
+  color: var(--primary);
+}
+
+/* 크레딧 단위 "개" */
+.gh__user-credit-unit {
+  font: 400 11px var(--font-sans);
+  color: var(--fg-2);
+  margin-left: 2px;
+}
+
+/* 로그인 온라인 표시 녹색 점 */
+.gh__online-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22d62b;
+  box-shadow: 0 0 4px #239e29b3;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+/* Minimal header (auth screens) — 로고 왼쪽 정렬, 테마 토글 오른쪽 */
+.gh--minimal {
+  justify-content: flex-start;
+  box-shadow: none;
+  border-bottom: 1px solid var(--mui-divider);
+}
+
+.gh--minimal .gh__logo {
+  margin: 0;
+}
+
+.gh--minimal .spacer {
+  flex: 1;
+}
+
+/* ----- Admin header variant ----------------------------- */
+.gh--admin {
+  background: #212121;
+  color: #fff;
+}
+
+.gh--admin .gh__nav a {
+  color: rgba(255, 255, 255, 0.87);
+}
+
+.gh--admin .gh__icon {
+  color: #fff;
+}
+
+/* 어드민 헤더 'ADMIN' 텍스트 링크 */
+.gh__admin-link {
+  color: rgba(255, 255, 255, 0.5);
+  margin-left: 12px;
+  letter-spacing: 1.5px;
+  text-decoration: none;
+  cursor: pointer;
+  position: relative;
+  z-index: 10;
+  display: inline-block;
+}
+
+/* ----- 반응형 (≤900px) ---------------------------------- */
+@media (max-width: 900px) {
+  .gh {
+    height: auto;
+    min-height: 64px;
+    padding: 12px 16px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .gh__logo {
+    margin-right: 16px;
+  }
+
+  .gh__nav {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+  }
+}

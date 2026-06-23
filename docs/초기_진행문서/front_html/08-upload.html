@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>파일 업로드 · Garim</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="garim.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<style>
+  .upload-page { padding: 32px 32px 64px; }
+  .upload-head { max-width: 1100px; margin: 0 auto 24px; }
+  .upload-head h1 { font: 500 28px var(--font-sans); margin: 0 0 4px; letter-spacing: -0.25px; }
+  .upload-head .sub { font: 400 14px var(--font-sans); color: var(--fg-2); }
+  .upload-banner {
+    max-width: 1100px; margin: 0 auto 24px;
+  }
+  .upload-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 320px; gap: 24px; align-items: flex-start; }
+  .dropzone-card { background: #fff; border-radius: 4px; box-shadow: var(--mui-elev-1); padding: 24px; }
+  .dropzone-card .dropzone { padding: 64px 32px; cursor: pointer; }
+  .dropzone-card .dropzone h2 { font: 500 22px var(--font-sans); margin: 0 0 8px; }
+  .dropzone-card .dropzone p { font: 400 14px/1.5 var(--font-sans); color: var(--fg-2); margin: 0 0 16px; }
+  .file-types { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 16px; }
+  .file-types .mui-chip { background: rgba(0,0,0,0.05); }
+  .or-sample { text-align: center; margin-top: 24px; font: 400 13px var(--font-sans); color: var(--fg-2); }
+  .or-sample a { color: #1976d2; font-weight: 500; }
+  .sidebar-card { background: #fff; border-radius: 4px; box-shadow: var(--mui-elev-1); padding: 20px; margin-bottom: 16px; }
+  .sidebar-card h3 { font: 500 14px var(--font-sans); text-transform: uppercase; letter-spacing: 0.5px; color: var(--fg-2); margin: 0 0 12px; }
+  .spec-row { display: flex; justify-content: space-between; padding: 6px 0; font: 400 13px var(--font-sans); border-bottom: 1px dashed var(--mui-divider); }
+  .spec-row:last-child { border-bottom: none; }
+  .spec-row .v { color: var(--fg-1); font-weight: 500; }
+  .spec-row .k { color: var(--fg-2); }
+  .queue-card { background: rgba(151,71,255,0.04); border: 1px solid rgba(151,71,255,0.2); }
+  .queue-card h3 { color: #9747ff; }
+  .queue-num { font: 300 36px var(--font-sans); color: #9747ff; line-height: 1; }
+  .progress-state { display: none; }
+  .progress-state.show { display: block; }
+  .progress-state .file-info { display: flex; align-items: center; gap: 16px; padding: 12px 0; }
+  .progress-state .file-info .material-icons { font-size: 40px; color: #1976d2; }
+  .progress-state .file-info .name { font: 500 15px var(--font-sans); }
+  .progress-state .file-info .meta { font: 400 12px var(--font-sans); color: var(--fg-2); }
+</style>
+</head>
+<body class="page-app" data-screen-label="08 Upload">
+<div id="header"></div>
+
+<div class="upload-page">
+  <div class="upload-head">
+    <h1>새 검출 시작</h1>
+    <div class="sub">영상·이미지·음성 파일을 업로드하면 30초 안에 개인정보 위험 리포트를 받을 수 있어요.</div>
+  </div>
+
+  <div class="upload-banner">
+    <div class="mui-alert mui-alert--info">
+      <span class="material-icons">verified_user</span>
+      <div class="mui-alert__body">
+        업로드된 원본은 처리 완료 12시간 후 자동 삭제됩니다. 검출은 무료, 결제는 가릴 때만 발생합니다.
+        <span class="mui-chip mui-chip--soft-info" style="margin-left:8px;">MVP1 · 모두 무료</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="upload-grid">
+    <div class="dropzone-card">
+      <!-- Idle state -->
+      <div class="dropzone" id="dropzone">
+        <span class="material-icons">cloud_upload</span>
+        <h2>여기에 파일을 드롭하세요</h2>
+        <p>또는 클릭해서 파일 선택. 한 번에 최대 5개까지.</p>
+        <button class="mui-btn mui-btn--contained">파일 선택</button>
+        <div class="file-types">
+          <span class="mui-chip">MP4</span>
+          <span class="mui-chip">MOV</span>
+          <span class="mui-chip">MKV</span>
+          <span class="mui-chip">JPG</span>
+          <span class="mui-chip">PNG</span>
+          <span class="mui-chip">HEIC</span>
+          <span class="mui-chip">MP3</span>
+          <span class="mui-chip">WAV</span>
+        </div>
+        <div class="or-sample">
+          처음이신가요? <a href="#" id="sample-link">샘플 영상으로 체험하기</a>
+        </div>
+      </div>
+
+      <!-- Progress state -->
+      <div class="progress-state" id="progress">
+        <div class="file-info">
+          <span class="material-icons">videocam</span>
+          <div style="flex:1;">
+            <div class="name">family_picnic_2026.mp4</div>
+            <div class="meta">847 MB · 1920×1080 · 2분 14초</div>
+          </div>
+          <button class="mui-btn mui-btn--text" id="cancel-upload">취소</button>
+        </div>
+        <div class="progress" style="margin:16px 0 8px;"><div class="progress__bar" id="bar" style="width:0%"></div></div>
+        <div style="display:flex;justify-content:space-between;font:400 13px var(--font-sans);color:var(--fg-2);">
+          <span id="up-status">업로드 중...</span>
+          <span><span id="up-pct">0</span>% · 잔여 약 12초</span>
+        </div>
+      </div>
+    </div>
+
+    <aside>
+      <div class="sidebar-card">
+        <h3>지원 사양</h3>
+        <div class="spec-row"><span class="k">최대 파일 크기</span><span class="v">2 GB</span></div>
+        <div class="spec-row"><span class="k">최대 길이 (영상)</span><span class="v">30분</span></div>
+        <div class="spec-row"><span class="k">최대 해상도</span><span class="v">1080p (FHD)</span></div>
+        <div class="spec-row"><span class="k">동시 업로드</span><span class="v">5개</span></div>
+        <div class="spec-row"><span class="k">처리 출력</span><span class="v">원본 포맷 유지</span></div>
+        <div style="font: 400 12px/1.5 var(--font-sans); color: var(--fg-3); margin-top: 12px;">
+          Pro 이상에서 4K·60분까지 확장됩니다.
+        </div>
+      </div>
+
+      <div class="sidebar-card queue-card">
+        <h3>처리 큐 현황</h3>
+        <div class="row" style="align-items:baseline;">
+          <span class="queue-num">12</span>
+          <span class="caption-k">명 대기 중</span>
+        </div>
+        <div style="font: 400 13px/1.5 var(--font-sans); color: var(--fg-2); margin-top: 8px;">
+          평균 대기 시간: <strong style="color:var(--fg-1);">38초</strong><br>
+          Free 플랜은 표준 큐로 처리됩니다.
+        </div>
+        <a href="02-pricing.html" class="mui-btn mui-btn--text mui-btn--sm" style="margin-top:8px;padding:0;">우선 처리 보기 →</a>
+      </div>
+
+      <div class="sidebar-card">
+        <h3>거부되는 콘텐츠</h3>
+        <div style="font: 400 13px/1.6 var(--font-sans); color: var(--fg-2);">
+          명백히 타인의 동의 없이 촬영된 콘텐츠(불법촬영물 등)는 처리 거부됩니다 (B-3 정책).
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div id="footer"></div>
+
+<script src="garim-chrome.js"></script>
+<script>
+  document.getElementById('header').innerHTML = gh({ variant: 'app', current: 'detect', authed: true });
+  document.getElementById('footer').innerHTML = gf();
+
+  function startUpload() {
+    document.getElementById('dropzone').style.display = 'none';
+    document.getElementById('progress').classList.add('show');
+    let pct = 0;
+    const stages = ['업로드 중...', '검증 중...', '큐에 추가 중...'];
+    const interval = setInterval(() => {
+      pct += Math.random() * 8 + 3;
+      if (pct >= 100) {
+        pct = 100;
+        document.getElementById('bar').style.width = '100%';
+        document.getElementById('up-pct').textContent = '100';
+        document.getElementById('up-status').textContent = '완료 — 분석 페이지로 이동합니다';
+        clearInterval(interval);
+        setTimeout(() => { window.location.href = '09-analysis-progress.html'; }, 800);
+        return;
+      }
+      document.getElementById('bar').style.width = pct + '%';
+      document.getElementById('up-pct').textContent = Math.floor(pct);
+      if (pct > 80) document.getElementById('up-status').textContent = stages[2];
+      else if (pct > 50) document.getElementById('up-status').textContent = stages[1];
+    }, 200);
+  }
+
+  document.getElementById('dropzone').addEventListener('click', startUpload);
+  document.getElementById('sample-link').addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    startUpload();
+  });
+  document.getElementById('cancel-upload').addEventListener('click', () => location.reload());
+</script>
+</body></html>

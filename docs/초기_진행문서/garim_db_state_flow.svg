@@ -1,0 +1,174 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1120" viewBox="0 0 1500 1120" role="img" aria-labelledby="title desc">
+  <title id="title">GARIM DB State Flow</title>
+  <desc id="desc">Database state flow for GARIM uploads, analysis jobs, progress logs, worker heartbeats, queue history, detections, replacement actions, processed files, and artifacts.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#334155"/>
+    </marker>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 34px 'Segoe UI', Arial, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 16px 'Segoe UI', Arial, sans-serif; fill: #475569; }
+      .box { stroke-width: 2; rx: 12; }
+      .table { fill: #ffffff; stroke: #64748b; }
+      .upload { fill: #e0f2fe; stroke: #0284c7; }
+      .job { fill: #dcfce7; stroke: #16a34a; }
+      .log { fill: #fef3c7; stroke: #d97706; }
+      .result { fill: #ede9fe; stroke: #7c3aed; }
+      .file { fill: #f1f5f9; stroke: #475569; }
+      .danger { fill: #fee2e2; stroke: #dc2626; }
+      .box-title { font: 700 19px 'Segoe UI', Arial, sans-serif; fill: #0f172a; }
+      .box-text { font: 400 14px 'Segoe UI', Arial, sans-serif; fill: #334155; }
+      .small { font: 400 13px 'Segoe UI', Arial, sans-serif; fill: #475569; }
+      .state { font: 600 13px 'Segoe UI', Arial, sans-serif; fill: #0f172a; }
+      .label { font: 600 13px 'Segoe UI', Arial, sans-serif; fill: #334155; }
+      .arrow { stroke: #334155; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+      .arrow-muted { stroke: #64748b; stroke-width: 2; fill: none; marker-end: url(#arrow); stroke-dasharray: 8 6; }
+      .chip { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.4; rx: 14; }
+      .chip-active { fill: #ecfeff; stroke: #0891b2; stroke-width: 1.6; rx: 14; }
+      .chip-done { fill: #f0fdf4; stroke: #16a34a; stroke-width: 1.6; rx: 14; }
+      .chip-error { fill: #fef2f2; stroke: #dc2626; stroke-width: 1.6; rx: 14; }
+      .section { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; rx: 12; }
+      .section-title { font: 700 16px 'Segoe UI', Arial, sans-serif; fill: #334155; }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1500" height="1120"/>
+  <text class="title" x="70" y="60">GARIM DB State Flow</text>
+  <text class="subtitle" x="70" y="92">업로드와 분석 진행률을 DB에서 어떻게 관리하는지 보는 상태 흐름도</text>
+
+  <rect class="box table" x="65" y="135" width="250" height="125"/>
+  <text class="box-title" x="94" y="172">users</text>
+  <text class="box-text" x="94" y="202">user_id PK</text>
+  <text class="box-text" x="94" y="226">OAuth 로그인 사용자</text>
+
+  <rect class="box upload" x="390" y="115" width="330" height="205"/>
+  <text class="box-title" x="425" y="154">uploads</text>
+  <text class="box-text" x="425" y="184">upload_id PK</text>
+  <text class="box-text" x="425" y="208">user_id FK → users</text>
+  <text class="box-text" x="425" y="232">uploaded_chunks / total_chunks</text>
+  <text class="box-text" x="425" y="256">stored_path / merged_file_path</text>
+  <text class="box-text" x="425" y="280">status: upload lifecycle</text>
+
+  <rect class="box file" x="390" y="380" width="330" height="130"/>
+  <text class="box-title" x="425" y="418">upload_chunks</text>
+  <text class="box-text" x="425" y="448">upload_chunk_id PK</text>
+  <text class="box-text" x="425" y="472">upload_id FK → uploads</text>
+  <text class="box-text" x="425" y="496">chunk_index / storage_path / status</text>
+
+  <rect class="box job" x="805" y="115" width="360" height="245"/>
+  <text class="box-title" x="842" y="154">analysis_jobs</text>
+  <text class="box-text" x="842" y="184">job_id PK</text>
+  <text class="box-text" x="842" y="208">user_id FK → users</text>
+  <text class="box-text" x="842" y="232">upload_id FK → uploads</text>
+  <text class="box-text" x="842" y="256">job_type: analysis / preview / render / sns_scan</text>
+  <text class="box-text" x="842" y="280">current_stage / stage_progress / total_progress</text>
+  <text class="box-text" x="842" y="304">cancel_requested / error_code / result_file_path</text>
+  <text class="box-text" x="842" y="328">status: worker-visible job lifecycle</text>
+
+  <rect class="box log" x="805" y="430" width="270" height="135"/>
+  <text class="box-title" x="835" y="468">job_stage_logs</text>
+  <text class="box-text" x="835" y="498">job_id FK → analysis_jobs</text>
+  <text class="box-text" x="835" y="522">stage_name / progress</text>
+  <text class="box-text" x="835" y="546">status snapshot / message</text>
+
+  <rect class="box log" x="1125" y="430" width="295" height="135"/>
+  <text class="box-title" x="1155" y="468">job_worker_heartbeats</text>
+  <text class="box-text" x="1155" y="498">job_id FK → analysis_jobs</text>
+  <text class="box-text" x="1155" y="522">worker_id / worker_type</text>
+  <text class="box-text" x="1155" y="546">current_stage / progress / heartbeat_at</text>
+
+  <rect class="box log" x="805" y="620" width="270" height="120"/>
+  <text class="box-title" x="835" y="658">job_queue_history</text>
+  <text class="box-text" x="835" y="688">job_id FK → analysis_jobs</text>
+  <text class="box-text" x="835" y="712">entered / dequeued / failed</text>
+
+  <rect class="box log" x="1125" y="620" width="295" height="120"/>
+  <text class="box-title" x="1155" y="658">worker_tasks</text>
+  <text class="box-text" x="1155" y="688">job_id FK → analysis_jobs</text>
+  <text class="box-text" x="1155" y="712">task_type / queue / worker / retry</text>
+
+  <rect class="box result" x="120" y="805" width="285" height="130"/>
+  <text class="box-title" x="150" y="843">detections</text>
+  <text class="box-text" x="150" y="873">job_id FK → analysis_jobs</text>
+  <text class="box-text" x="150" y="897">detection_type / label / confidence</text>
+  <text class="box-text" x="150" y="921">time range / bbox / detected_text</text>
+
+  <rect class="box result" x="455" y="805" width="305" height="130"/>
+  <text class="box-title" x="485" y="843">replacement_actions</text>
+  <text class="box-text" x="485" y="873">detection_id FK → detections</text>
+  <text class="box-text" x="485" y="897">job_id FK → analysis_jobs</text>
+  <text class="box-text" x="485" y="921">blur / mask / skip action state</text>
+
+  <rect class="box result" x="810" y="805" width="290" height="130"/>
+  <text class="box-title" x="840" y="843">processed_files</text>
+  <text class="box-text" x="840" y="873">job_id FK → analysis_jobs</text>
+  <text class="box-text" x="840" y="897">output file metadata</text>
+  <text class="box-text" x="840" y="921">download-ready result file</text>
+
+  <rect class="box result" x="1150" y="805" width="290" height="130"/>
+  <text class="box-title" x="1180" y="843">analysis_artifacts</text>
+  <text class="box-text" x="1180" y="873">job_id FK → analysis_jobs</text>
+  <text class="box-text" x="1180" y="897">artifact_type / stored_path</text>
+  <text class="box-text" x="1180" y="921">STT / PII / beep outputs</text>
+
+  <path class="arrow" d="M315 198 C345 198, 360 198, 390 198"/>
+  <text class="label" x="332" y="185">1:N</text>
+  <path class="arrow" d="M720 228 C755 228, 772 228, 805 228"/>
+  <text class="label" x="742" y="215">complete 후 job 생성</text>
+  <path class="arrow" d="M555 320 L555 380"/>
+  <text class="label" x="570" y="354">chunk rows</text>
+  <path class="arrow" d="M985 360 L940 430"/>
+  <path class="arrow" d="M1030 360 L1240 430"/>
+  <path class="arrow" d="M970 360 L940 620"/>
+  <path class="arrow" d="M1055 360 L1240 620"/>
+  <path class="arrow" d="M885 360 C650 515, 375 650, 262 805"/>
+  <path class="arrow" d="M910 360 C760 520, 650 650, 607 805"/>
+  <path class="arrow" d="M980 360 L955 805"/>
+  <path class="arrow" d="M1065 360 C1160 530, 1245 660, 1295 805"/>
+
+  <rect class="section" x="65" y="555" width="660" height="190"/>
+  <text class="section-title" x="92" y="588">uploads.status</text>
+  <rect class="chip-active" x="95" y="620" width="110" height="34"/>
+  <text class="state" x="123" y="642">initialized</text>
+  <path class="arrow" d="M205 637 L245 637"/>
+  <rect class="chip-active" x="245" y="620" width="95" height="34"/>
+  <text class="state" x="268" y="642">uploading</text>
+  <path class="arrow" d="M340 637 L380 637"/>
+  <rect class="chip-done" x="380" y="620" width="90" height="34"/>
+  <text class="state" x="404" y="642">uploaded</text>
+  <path class="arrow" d="M470 637 L510 637"/>
+  <rect class="chip-done" x="510" y="620" width="145" height="34"/>
+  <text class="state" x="532" y="642">analysis job queued</text>
+
+  <rect class="chip-error" x="95" y="690" width="78" height="34"/>
+  <text class="state" x="113" y="712">failed</text>
+  <rect class="chip-error" x="195" y="690" width="100" height="34"/>
+  <text class="state" x="216" y="712">expired</text>
+  <rect class="chip-error" x="318" y="690" width="112" height="34"/>
+  <text class="state" x="338" y="712">cancelled</text>
+  <rect class="chip" x="455" y="690" width="95" height="34"/>
+  <text class="state" x="480" y="712">deleted</text>
+  <text class="small" x="575" y="712">실패/만료/취소/삭제는 분석 job 생성 전후 정리 상태</text>
+
+  <rect class="section" x="790" y="965" width="635" height="115"/>
+  <text class="section-title" x="818" y="998">analysis_jobs.status</text>
+  <rect class="chip-active" x="820" y="1025" width="78" height="34"/>
+  <text class="state" x="842" y="1047">queued</text>
+  <path class="arrow" d="M898 1042 L932 1042"/>
+  <rect class="chip-active" x="932" y="1025" width="105" height="34"/>
+  <text class="state" x="956" y="1047">processing</text>
+  <path class="arrow" d="M1037 1042 L1070 1042"/>
+  <rect class="chip-done" x="1070" y="1025" width="112" height="34"/>
+  <text class="state" x="1094" y="1047">completed</text>
+  <rect class="chip-error" x="1210" y="1025" width="75" height="34"/>
+  <text class="state" x="1228" y="1047">failed</text>
+  <rect class="chip-error" x="1305" y="1025" width="95" height="34"/>
+  <text class="state" x="1323" y="1047">cancelled</text>
+
+  <rect class="section" x="65" y="965" width="655" height="115"/>
+  <text class="section-title" x="92" y="998">진행률 저장 위치</text>
+  <text class="small" x="92" y="1027">현재 화면용 최신값: analysis_jobs.current_stage / stage_progress / total_progress / message</text>
+  <text class="small" x="92" y="1053">히스토리: job_stage_logs에 stage별 변경 이력 저장</text>
+  <text class="small" x="92" y="1079">worker 생존 확인: job_worker_heartbeats에 heartbeat_at 기준 저장</text>
+</svg>

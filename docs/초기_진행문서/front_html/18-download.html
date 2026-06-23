@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>다운로드 · Garim</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="garim.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<style>
+  .dl-page { padding: 32px 32px 80px; }
+  .dl-shell { max-width: 1100px; margin: 0 auto; }
+  .dl-success { background: linear-gradient(135deg, rgba(46,125,50,0.08) 0%, rgba(25,118,210,0.04) 100%); border: 1px solid rgba(46,125,50,0.25); border-radius: 8px; padding: 32px; display: flex; align-items: center; gap: 24px; margin-bottom: 24px; }
+  .dl-success .check-circle { width: 64px; height: 64px; border-radius: 50%; background: #2e7d32; color: #fff; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .dl-success .check-circle .material-icons { font-size: 36px; }
+  .dl-success h1 { font: 300 32px/1.2 var(--font-sans); margin: 0 0 4px; letter-spacing: -0.25px; }
+  .dl-success .sub { font: 400 14px var(--font-sans); color: var(--fg-2); }
+
+  .dl-grid { display: grid; grid-template-columns: 1fr 360px; gap: 24px; align-items: flex-start; }
+  .dl-main { background: #fff; border-radius: 4px; box-shadow: var(--mui-elev-1); padding: 28px; }
+  .video-result { aspect-ratio: 16/9; background: #000; border-radius: 4px; overflow: hidden; position: relative; margin-bottom: 24px; }
+  .video-result img { width: 100%; height: 100%; object-fit: cover; }
+  .video-result .play { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 64px; height: 64px; border-radius: 50%; background: rgba(255,255,255,0.92); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .video-result .play .material-icons { font-size: 36px; color: var(--fg-1); }
+  .video-result .wmk { position: absolute; right: 12px; bottom: 8px; font: 600 13px var(--font-sans); color: rgba(151,71,255,0.8); pointer-events: none; }
+
+  .dl-options { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; }
+  .dl-card { background: #fff; border: 1px solid var(--mui-border); border-radius: 4px; padding: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .dl-card h3 { font: 500 16px var(--font-sans); margin: 0; display: flex; align-items: center; gap: 8px; }
+  .dl-card h3 .material-icons { color: #1976d2; }
+  .dl-card.primary { background: rgba(25,118,210,0.04); border-color: #1976d2; }
+  .dl-card p { font: 400 13px/1.5 var(--font-sans); color: var(--fg-2); margin: 0; }
+  .range-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: center; }
+  .range-grid input { padding: 8px 10px; border: 1px solid var(--mui-border); border-radius: 4px; font: 400 14px var(--font-sans); font-family: var(--font-mono); text-align: center; }
+  .range-grid .dash { color: var(--fg-3); }
+
+  .summary-card { background: #fff; border-radius: 4px; box-shadow: var(--mui-elev-1); padding: 20px; margin-bottom: 16px; }
+  .summary-card h3 { font: 500 12px var(--font-sans); text-transform: uppercase; letter-spacing: 0.5px; color: var(--fg-2); margin: 0 0 12px; }
+  .sumrow { display: flex; justify-content: space-between; padding: 6px 0; font: 400 13px var(--font-sans); border-bottom: 1px dashed var(--mui-divider); }
+  .sumrow:last-child { border-bottom: none; }
+  .sumrow .v { color: var(--fg-1); font-weight: 500; }
+  .sumrow .k { color: var(--fg-2); }
+
+  .delete-card { background: rgba(237,108,2,0.05); border: 1px solid rgba(237,108,2,0.2); border-radius: 4px; padding: 16px 20px; display: flex; gap: 12px; align-items: flex-start; }
+  .delete-card .material-icons { color: #ed6c02; }
+  .delete-card .t { font: 500 13px var(--font-sans); margin-bottom: 4px; }
+  .delete-card .s { font: 400 12px/1.5 var(--font-sans); color: var(--fg-2); }
+
+  .next-card { background: rgba(151,71,255,0.04); border: 1px solid rgba(151,71,255,0.2); border-radius: 4px; padding: 20px; }
+  .next-card h3 { color: #9747ff; font: 500 14px var(--font-sans); margin: 0 0 12px; }
+  .guide-step { display: flex; gap: 12px; margin-bottom: 12px; }
+  .guide-step:last-child { margin-bottom: 0; }
+  .guide-step .n { width: 24px; height: 24px; border-radius: 50%; background: #9747ff; color: #fff; font: 500 13px/24px var(--font-sans); text-align: center; flex-shrink: 0; }
+  .guide-step .t { font: 500 13px var(--font-sans); }
+  .guide-step .s { font: 400 12px/1.5 var(--font-sans); color: var(--fg-2); }
+</style>
+</head>
+<body class="page-app" data-screen-label="18 Download">
+<div id="header"></div>
+
+<div class="dl-page">
+  <div class="dl-shell">
+
+    <section class="dl-success">
+      <div class="check-circle"><span class="material-icons">check</span></div>
+      <div>
+        <h1>처리가 완료됐어요!</h1>
+        <div class="sub">17건 모두 처리됐습니다. 1분 27초 소요 · 워터마크 적용됨 (MVP1)</div>
+      </div>
+      <div style="margin-left:auto;display:flex;gap:8px;">
+        <span class="mui-chip mui-chip--soft-success">자동 9건</span>
+        <span class="mui-chip mui-chip--soft-success">지정 3건</span>
+        <span class="mui-chip mui-chip--soft-success">마스킹 4건</span>
+      </div>
+    </section>
+
+    <div class="dl-grid">
+      <div class="dl-main">
+        <div class="video-result">
+          <img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=1200&q=80" alt="처리 완료 영상" style="filter:contrast(1.02);">
+          <svg viewBox="0 0 1200 675" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;">
+            <rect x="420" y="180" width="220" height="220" fill="#fafafa"/>
+            <text x="436" y="220" fill="#212121" font-family="Pretendard" font-size="14" font-weight="600">CJ대한통운 송장</text>
+            <text x="436" y="245" fill="#757575" font-family="Pretendard" font-size="12">받는분: 김OO 님</text>
+            <text x="436" y="265" fill="#757575" font-family="Pretendard" font-size="12">서울특별시 ○○구</text>
+            <rect x="700" y="240" width="140" height="160" fill="rgba(189,189,189,0.6)" filter="url(#bf)"/>
+            <defs><filter id="bf"><feGaussianBlur stdDeviation="8"/></filter></defs>
+          </svg>
+          <div class="play"><span class="material-icons">play_arrow</span></div>
+          <div class="wmk">garim · 워터마크</div>
+        </div>
+
+        <div class="dl-options">
+          <div class="dl-card primary">
+            <h3><span class="material-icons">download</span>전체 다운로드</h3>
+            <p>처리된 전체 영상 (MP4, 1920×1080, 2분 14초)</p>
+            <button class="mui-btn mui-btn--contained mui-btn--lg mui-btn--block" style="margin-top:8px;">847 MB 다운로드</button>
+            <span class="caption-k" style="font-size:11px;margin-top:4px;">링크는 30분간 유효합니다. 만료 시 재발급 가능.</span>
+          </div>
+
+          <div class="dl-card">
+            <h3><span class="material-icons">content_cut</span>구간 다운로드</h3>
+            <p>일부 구간만 잘라서 받기</p>
+            <div class="range-grid">
+              <input value="00:30" placeholder="시작">
+              <span class="dash">→</span>
+              <input value="01:45" placeholder="끝">
+            </div>
+            <button class="mui-btn mui-btn--outlined mui-btn--block" style="margin-top:4px;">1분 15초 구간 받기</button>
+          </div>
+        </div>
+      </div>
+
+      <aside>
+        <div class="summary-card">
+          <h3>처리 요약</h3>
+          <div class="sumrow"><span class="k">파일명</span><span class="v" style="font-size:12px;">family_picnic_2026_garim.mp4</span></div>
+          <div class="sumrow"><span class="k">검출 항목</span><span class="v">17건</span></div>
+          <div class="sumrow"><span class="k">치환 완료</span><span class="v">16건</span></div>
+          <div class="sumrow"><span class="k">건너뛰기</span><span class="v">1건</span></div>
+          <div class="sumrow"><span class="k">처리 시간</span><span class="v">1분 27초</span></div>
+          <div class="sumrow"><span class="k">출력 포맷</span><span class="v">MP4 · H.264</span></div>
+          <div class="sumrow"><span class="k">파일 크기</span><span class="v">847 MB</span></div>
+          <div class="sumrow"><span class="k">워터마크</span><span class="v" style="color:#9747ff;">적용됨</span></div>
+        </div>
+
+        <div class="delete-card" style="margin-bottom:16px;">
+          <span class="material-icons">schedule</span>
+          <div>
+            <div class="t">7일 후 자동 삭제 (Free 플랜)</div>
+            <div class="s">2026.05.21 13:42 까지 다운로드 가능. 마이페이지에서 수동 삭제도 가능합니다.</div>
+          </div>
+        </div>
+
+        <!-- SNS-entered guide -->
+        <div class="next-card">
+          <h3>다음 단계 — 인스타에 다시 올리기</h3>
+          <div class="guide-step">
+            <span class="n">1</span>
+            <div><div class="t">결과 영상 다운로드</div><div class="s">위에서 받으세요 ✓</div></div>
+          </div>
+          <div class="guide-step">
+            <span class="n">2</span>
+            <div><div class="t">인스타에서 기존 게시물 삭제</div><div class="s">앱·웹에서 직접 삭제하세요</div></div>
+          </div>
+          <div class="guide-step">
+            <span class="n">3</span>
+            <div><div class="t">새 버전 업로드</div><div class="s">캡션·해시태그 그대로 유지 권장</div></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <div style="margin-top:32px;display:flex;gap:12px;justify-content:center;">
+      <a href="08-upload.html" class="mui-btn mui-btn--outlined">다른 영상 처리</a>
+      <a href="19-dashboard.html" class="mui-btn mui-btn--text">대시보드로</a>
+      <button class="mui-btn mui-btn--text"><span class="material-icons" style="font-size:18px;">share</span>친구 점검 권유</button>
+    </div>
+  </div>
+</div>
+
+<div id="footer"></div>
+
+<script src="garim-chrome.js"></script>
+<script>
+  document.getElementById('header').innerHTML = gh({ variant: 'app', current: 'detect', authed: true });
+  document.getElementById('footer').innerHTML = gf();
+</script>
+</body></html>

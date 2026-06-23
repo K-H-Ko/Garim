@@ -1,0 +1,87 @@
+.lc-page { padding: 48px 32px 80px; max-width: 720px; margin: 0 auto; }
+  .lc-back { display: inline-flex; align-items: center; gap: 6px; color: var(--fg-2); font: 400 13px var(--font-sans); margin-bottom: 16px; }
+  .lc-page h1 { font: 300 36px/1.2 var(--font-sans); margin: 0 0 12px; letter-spacing: -0.5px; }
+  .lc-page .sub { font: 400 16px/1.6 var(--font-sans); color: var(--fg-2); margin: 0 0 32px; }
+  .toggle-card {
+    background: #fff; border-radius: 4px; box-shadow: var(--mui-elev-2);
+    padding: 32px; margin-bottom: 24px;
+    display: flex; align-items: center; gap: 24px;
+  }
+  .big-switch { width: 64px; height: 36px; background: rgba(0,0,0,0.38); border-radius: 18px; position: relative; cursor: pointer; flex-shrink: 0; transition: background 200ms; }
+  .big-switch .knob { position: absolute; top: -2px; left: -2px; width: 40px; height: 40px; background: #fff; border-radius: 50%; box-shadow: var(--mui-elev-3); transition: left 200ms, background 200ms; display: flex; align-items: center; justify-content: center; color: var(--fg-2); }
+  .big-switch.on { background: rgba(25,118,210,0.5); }
+  .big-switch.on .knob { left: 26px; background: #1976d2; color: #fff; }
+  .toggle-card .title { font: 500 22px var(--font-sans); margin-bottom: 4px; }
+  .toggle-card .state { font: 400 14px var(--font-sans); color: var(--fg-2); }
+  .toggle-card .state.on { color: #2e7d32; font-weight: 500; }
+  .info-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  .info-card { padding: 24px; border-radius: 4px; border: 1px solid; }
+  .info-card.on { background: rgba(46,125,50,0.04); border-color: rgba(46,125,50,0.25); }
+  .info-card.off { background: rgba(25,118,210,0.04); border-color: rgba(25,118,210,0.25); }
+  .info-card h3 { font: 500 16px var(--font-sans); margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
+  .info-card.on h3 { color: #1b5e20; }
+  .info-card.off h3 { color: #014361; }
+  .info-card ul { list-style: none; padding: 0; margin: 0; }
+  .info-card li { font: 400 13px/1.6 var(--font-sans); padding-left: 24px; position: relative; margin-bottom: 6px; }
+  .info-card li::before { position: absolute; left: 0; top: 2px; font-family: "Material Icons"; font-size: 16px; }
+  .info-card.on li::before { content: "check_circle"; color: #2e7d32; }
+  .info-card.off li::before { content: "block"; color: #0288d1; }
+  .credit-card {
+    background: linear-gradient(135deg, rgba(151,71,255,0.06), rgba(25,118,210,0.04));
+    border: 1px solid rgba(151,71,255,0.25); border-radius: 4px; padding: 20px;
+    margin-bottom: 24px; display: flex; gap: 16px; align-items: center;
+  }
+  .credit-card .icon-box { width: 48px; height: 48px; border-radius: 4px; background: rgba(151,71,255,0.12); color: #9747ff; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .credit-card h3 { font: 500 15px var(--font-sans); margin: 0; color: #7b1fa2; }
+  .credit-card p { font: 400 13px/1.5 var(--font-sans); color: var(--fg-2); margin: 4px 0 0; }
+  .changelog { background: #fff; border-radius: 4px; box-shadow: var(--mui-elev-1); padding: 24px; }
+  .changelog h3 { font: 500 14px var(--font-sans); margin: 0 0 16px; }
+  .change-row { display: flex; gap: 16px; padding: 8px 0; border-bottom: 1px dashed var(--mui-divider); font: 400 13px var(--font-sans); }
+  .change-row:last-child { border-bottom: none; }
+  .change-row .date { color: var(--fg-2); font-family: var(--font-mono); font-size: 12px; min-width: 140px; }
+  .legal-note {
+    margin-top: 24px; padding: 16px 20px;
+    background: rgba(237,108,2,0.05); border-left: 3px solid #ed6c02;
+    border-radius: 2px; font: 400 13px/1.6 var(--font-sans); color: var(--fg-1);
+  }
+  .legal-note strong { color: #c62828; }
+
+  /* ── 다크 모드 보정 ── 토글 카드 / 변경이력 카드 흰 배경 → 다크 표면색 */
+  :root[data-theme="dark"] .toggle-card,
+  :root[data-theme="dark"] .changelog { background: var(--bg-1); }
+  /* off 상태 knob은 흰색 바탕이므로, 다크에선 X 아이콘을 검정으로(안 보임 방지).
+     on 상태(.big-switch.on .knob)는 흰색 유지를 위해 :not(.on)로 한정 */
+  :root[data-theme="dark"] .big-switch:not(.on) .knob { color: rgba(0,0,0,0.7); }
+
+/* 뒤로가기 링크 아이콘 크기 */
+.lc-back .material-icons {
+  font-size: 18px;
+}
+/* 동의 토글 버튼 — 기본 버튼 스타일 제거 */
+.lc-page .big-switch {
+  border: none;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+}
+.lc-page .big-switch--saving {
+  cursor: wait;
+}
+/* 토글 정보/이력 텍스트 영역 */
+.lc-toggle-info {
+  flex: 1;
+}
+.lc-log-text {
+  flex: 1;
+}
+/* 변경 이력 ON/OFF 상태 강조 */
+.lc-log-state {
+  color: var(--fg-2);
+}
+.lc-log-state--on {
+  color: #2e7d32;
+}
+/* 약관 링크 색상 */
+.lc-terms-link {
+  color: #1976d2;
+}

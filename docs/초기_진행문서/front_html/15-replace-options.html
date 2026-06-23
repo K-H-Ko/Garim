@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>치환 옵션 설정 · Garim</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="garim.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<style>
+  body { background: #f5f5f5; }
+  .opt-page { display: flex; flex-direction: column; min-height: calc(100vh - 64px); }
+  .opt-toolbar { background: #fff; border-bottom: 1px solid var(--mui-divider); padding: 12px 24px; display: flex; align-items: center; gap: 16px; }
+  .opt-toolbar h1 { font: 500 18px var(--font-sans); margin: 0; flex: 1; }
+  .opt-toolbar .meta { font: 400 13px var(--font-sans); color: var(--fg-2); }
+  .opt-grid { flex: 1; display: grid; grid-template-columns: 1fr 420px; gap: 0; }
+
+  /* LEFT — player */
+  .opt-left { background: #1a1a1a; display: flex; flex-direction: column; }
+  .player-wrap { flex: 1; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  .player-box { width: 100%; max-width: 900px; aspect-ratio: 16/9; background: #000; border-radius: 4px; overflow: hidden; position: relative; box-shadow: var(--mui-elev-12); }
+  .player-box img { width: 100%; height: 100%; object-fit: cover; }
+  .player-ctrls { background: #2a2a2a; padding: 16px 24px; display: flex; align-items: center; gap: 16px; }
+  .player-ctrls button { background: transparent; border: none; color: #fff; cursor: pointer; }
+  .player-ctrls .time { font: 500 13px var(--font-sans); color: rgba(255,255,255,0.9); font-variant-numeric: tabular-nums; min-width: 100px; }
+  .player-ctrls .timeline { flex: 1; height: 6px; background: rgba(255,255,255,0.15); border-radius: 3px; position: relative; }
+  .player-ctrls .timeline__fill { width: 22%; background: #fff; }
+  .player-ctrls .timeline__marker { width: 14px; height: 14px; top: -4px; }
+
+  /* RIGHT — options panel */
+  .opt-right { background: #fff; border-left: 1px solid var(--mui-divider); display: flex; flex-direction: column; }
+  .opt-right .head { padding: 16px 20px; border-bottom: 1px solid var(--mui-divider); }
+  .opt-right .head h2 { font: 500 16px var(--font-sans); margin: 0; }
+  .opt-right .head .sub { font: 400 12px var(--font-sans); color: var(--fg-2); margin-top: 4px; }
+
+  .bulk { padding: 12px 20px; background: rgba(25,118,210,0.04); border-bottom: 1px solid var(--mui-divider); display: flex; align-items: center; gap: 8px; }
+  .bulk .label { font: 500 13px var(--font-sans); margin-right: auto; }
+  .bulk button { padding: 4px 10px; border: 1px solid var(--mui-border); border-radius: 4px; background: #fff; font: 500 12px var(--font-sans); cursor: pointer; color: var(--fg-2); }
+  .bulk button.active { background: #1976d2; color: #fff; border-color: #1976d2; }
+
+  .opt-list { flex: 1; overflow-y: auto; padding: 12px; max-height: calc(100vh - 290px); }
+  .opt-card {
+    background: #fff; border: 1px solid var(--mui-border); border-radius: 4px;
+    padding: 14px; margin-bottom: 8px; cursor: pointer;
+    transition: border-color 150ms, box-shadow 150ms;
+  }
+  .opt-card.selected { border-color: #1976d2; box-shadow: 0 0 0 1px #1976d2; }
+  .opt-card__head { display: flex; align-items: center; gap: 12px; }
+  .opt-card__head .thumb { width: 56px; aspect-ratio: 16/9; border-radius: 2px; background: #000; flex-shrink: 0; overflow: hidden; }
+  .opt-card__head .thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .opt-card__head .info { flex: 1; }
+  .opt-card__time { font: 500 12px var(--font-sans); color: #1976d2; font-variant-numeric: tabular-nums; }
+  .opt-card__title { font: 500 13px var(--font-sans); }
+  .opt-card__head .risk { font-size: 11px; padding: 2px 6px; height: 18px; }
+
+  .opt-card__methods { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-top: 10px; }
+  .method-pill {
+    padding: 6px 4px; border: 1px solid var(--mui-border); border-radius: 4px;
+    background: #fff; cursor: pointer;
+    font: 500 11px var(--font-sans); color: var(--fg-2);
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    transition: all 100ms;
+  }
+  .method-pill .material-icons { font-size: 16px; }
+  .method-pill.selected { background: #1976d2; color: #fff; border-color: #1976d2; }
+  .method-pill.selected .material-icons { color: #fff; }
+
+  .opt-card__custom { margin-top: 8px; }
+  .opt-card__custom input { width: 100%; padding: 8px 10px; border: 1px solid var(--mui-border); border-radius: 4px; font: 400 13px var(--font-sans); font-family: var(--font-mono); }
+  .opt-card__custom input.err { border-color: #d32f2f; }
+  .opt-card__custom .helper { font: 400 11px var(--font-sans); color: var(--fg-2); margin-top: 4px; display: flex; justify-content: space-between; }
+  .opt-card__custom .helper .count { font-variant-numeric: tabular-nums; }
+  .opt-card__custom .helper .count.err { color: #d32f2f; }
+
+  .opt-card__mask { margin-top: 8px; display: flex; align-items: center; gap: 12px; }
+  .opt-card__mask .lbl { font: 400 12px var(--font-sans); color: var(--fg-2); }
+  .slider { flex: 1; height: 4px; background: rgba(25,118,210,0.2); border-radius: 2px; position: relative; }
+  .slider .fill { position: absolute; left: 0; top: 0; bottom: 0; background: #1976d2; border-radius: 2px; }
+  .slider .knob { position: absolute; top: 50%; width: 14px; height: 14px; border-radius: 50%; background: #1976d2; transform: translate(-50%, -50%); }
+
+  /* Audio/face options */
+  .global-opts { padding: 12px 20px; border-top: 1px solid var(--mui-divider); background: #fafafa; }
+  .global-opts h3 { font: 500 12px var(--font-sans); text-transform: uppercase; letter-spacing: 0.5px; color: var(--fg-2); margin: 8px 0; }
+  .global-opts .row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+  .global-opts .row .lbl { font: 400 13px var(--font-sans); flex: 1; }
+  .global-opts .seg { display: flex; gap: 4px; }
+  .global-opts .seg button { padding: 4px 8px; border: 1px solid var(--mui-border); background: #fff; border-radius: 4px; font: 500 11px var(--font-sans); cursor: pointer; color: var(--fg-2); }
+  .global-opts .seg button.active { background: #1976d2; color: #fff; border-color: #1976d2; }
+  .global-opts .v2 { opacity: 0.5; pointer-events: none; }
+
+  /* Footer */
+  .opt-footer { background: #fff; border-top: 1px solid var(--mui-divider); padding: 16px 24px; display: flex; align-items: center; gap: 16px; }
+  .opt-footer .est { flex: 1; font: 400 13px var(--font-sans); color: var(--fg-2); }
+  .opt-footer .est strong { color: var(--fg-1); font-size: 14px; }
+
+  .watermark-pill {
+    background: rgba(151,71,255,0.08); border: 1px solid rgba(151,71,255,0.3); border-radius: 4px;
+    padding: 8px 12px; margin: 12px 20px;
+    font: 400 12px/1.5 var(--font-sans); color: var(--fg-1); display: flex; align-items: center; gap: 8px;
+  }
+  .watermark-pill .material-icons { color: #9747ff; font-size: 16px; }
+</style>
+</head>
+<body class="page-app" data-screen-label="15 Replacement options">
+<div id="header"></div>
+
+<div class="opt-page">
+  <div class="opt-toolbar">
+    <a href="10-analysis-report.html" class="gh__icon" style="margin-left:-8px;"><span class="material-icons">arrow_back</span></a>
+    <h1>치환 옵션 설정</h1>
+    <span class="meta">family_picnic_2026.mp4 · 17건</span>
+    <button class="mui-btn mui-btn--text">임시 저장</button>
+  </div>
+
+  <div class="opt-grid">
+    <div class="opt-left">
+      <div class="player-wrap">
+        <div class="player-box">
+          <img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=1200&q=80" alt="">
+          <svg viewBox="0 0 1200 675" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;">
+            <rect x="420" y="180" width="220" height="220" fill="none" stroke="#1976d2" stroke-width="4" rx="2" stroke-dasharray="0"/>
+            <rect x="418" y="158" width="200" height="24" fill="#1976d2"/>
+            <text x="425" y="175" fill="#fff" font-family="Pretendard, sans-serif" font-size="13" font-weight="500">선택됨 · 택배 송장 · 자동</text>
+            <rect x="700" y="240" width="140" height="160" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-dasharray="6 4"/>
+            <rect x="120" y="450" width="180" height="100" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-dasharray="6 4"/>
+          </svg>
+        </div>
+      </div>
+      <div class="player-ctrls">
+        <button><span class="material-icons">play_arrow</span></button>
+        <span class="time">00:11 / 02:14</span>
+        <div class="timeline">
+          <div class="timeline__fill" style="height:100%;position:absolute;top:0;left:0;border-radius:3px;"></div>
+          <div class="timeline__marker" style="left:8%;"></div>
+          <div class="timeline__marker timeline__marker--warning" style="left:22%;"></div>
+          <div class="timeline__marker timeline__marker--warning" style="left:35%;"></div>
+          <div class="timeline__marker" style="left:42%;"></div>
+          <div class="timeline__marker" style="left:58%;"></div>
+          <div class="timeline__marker timeline__marker--info" style="left:71%;"></div>
+          <div class="timeline__marker timeline__marker--warning" style="left:86%;"></div>
+        </div>
+        <button><span class="material-icons">fullscreen</span></button>
+      </div>
+    </div>
+
+    <aside class="opt-right">
+      <div class="head">
+        <h2>17건의 검출 항목</h2>
+        <div class="sub">각 항목에 처리 방식을 선택하세요. 항목을 클릭하면 영상이 해당 시점으로 이동합니다.</div>
+      </div>
+
+      <div class="bulk">
+        <span class="label">일괄 설정:</span>
+        <button class="active">자동 치환</button>
+        <button>마스킹</button>
+        <button>건너뛰기</button>
+      </div>
+
+      <div class="opt-list">
+        <!-- Item 1 — selected, auto -->
+        <div class="opt-card selected" data-card="1">
+          <div class="opt-card__head">
+            <div class="thumb"><img src="https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=200&q=60" alt=""></div>
+            <div class="info">
+              <div class="opt-card__time">00:11</div>
+              <div class="opt-card__title">택배 송장 — 박OO 님, 강남구...</div>
+            </div>
+            <span class="mui-chip mui-chip--error risk">8.4</span>
+          </div>
+          <div class="opt-card__methods">
+            <div class="method-pill selected"><span class="material-icons">auto_awesome</span>자동</div>
+            <div class="method-pill"><span class="material-icons">edit</span>지정</div>
+            <div class="method-pill"><span class="material-icons">blur_on</span>마스킹</div>
+            <div class="method-pill"><span class="material-icons">visibility_off</span>건너뛰기</div>
+          </div>
+          <div style="margin-top:8px;padding:8px 10px;background:rgba(25,118,210,0.04);border-radius:2px;font:400 11px/1.5 var(--font-sans);color:var(--fg-2);">
+            <span class="material-icons" style="font-size:14px;vertical-align:-2px;">info</span>
+            LLM이 형식 정보만 받아 가짜 송장 정보를 생성합니다. 원본은 전송되지 않습니다.
+          </div>
+        </div>
+
+        <!-- Item 2 — custom -->
+        <div class="opt-card" data-card="2">
+          <div class="opt-card__head">
+            <div class="thumb" style="background:linear-gradient(45deg,#424242,#212121);display:flex;align-items:center;justify-content:center;"><span class="material-icons" style="color:#fff;font-size:24px;">directions_car</span></div>
+            <div class="info">
+              <div class="opt-card__time">00:31</div>
+              <div class="opt-card__title">차량 번호판 — "12가 3456"</div>
+            </div>
+            <span class="mui-chip mui-chip--error risk">7.2</span>
+          </div>
+          <div class="opt-card__methods">
+            <div class="method-pill"><span class="material-icons">auto_awesome</span>자동</div>
+            <div class="method-pill selected"><span class="material-icons">edit</span>지정</div>
+            <div class="method-pill"><span class="material-icons">blur_on</span>마스킹</div>
+            <div class="method-pill"><span class="material-icons">visibility_off</span>건너뛰기</div>
+          </div>
+          <div class="opt-card__custom">
+            <input value="98나 7777" maxlength="7">
+            <div class="helper"><span>한국식 7자리 (원본과 동일 길이 필수)</span><span class="count">7/7 ✓</span></div>
+          </div>
+        </div>
+
+        <!-- Item 3 — masking -->
+        <div class="opt-card" data-card="3">
+          <div class="opt-card__head">
+            <div class="thumb"><img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=200&q=60" alt=""></div>
+            <div class="info">
+              <div class="opt-card__time">00:47</div>
+              <div class="opt-card__title">얼굴 — 미등록 인물 3명</div>
+            </div>
+            <span class="mui-chip mui-chip--warning risk">6.1</span>
+          </div>
+          <div class="opt-card__methods">
+            <div class="method-pill"><span class="material-icons">auto_awesome</span>자동</div>
+            <div class="method-pill"><span class="material-icons">edit</span>지정</div>
+            <div class="method-pill selected"><span class="material-icons">blur_on</span>마스킹</div>
+            <div class="method-pill"><span class="material-icons">visibility_off</span>건너뛰기</div>
+          </div>
+          <div class="opt-card__mask">
+            <span class="lbl">강도</span>
+            <div class="slider"><div class="fill" style="width:65%;"></div><div class="knob" style="left:65%;"></div></div>
+            <span class="lbl">중</span>
+          </div>
+        </div>
+
+        <!-- Item 4 — custom too long error -->
+        <div class="opt-card" data-card="4">
+          <div class="opt-card__head">
+            <div class="thumb" style="background:linear-gradient(135deg,#9c27b0,#7b1fa2);display:flex;align-items:center;justify-content:center;"><span class="material-icons" style="color:#fff;font-size:24px;">graphic_eq</span></div>
+            <div class="info">
+              <div class="opt-card__time">01:08</div>
+              <div class="opt-card__title">음성 호칭 — "수민아!"</div>
+            </div>
+            <span class="mui-chip mui-chip--warning risk">5.8</span>
+          </div>
+          <div class="opt-card__methods">
+            <div class="method-pill"><span class="material-icons">auto_awesome</span>자동</div>
+            <div class="method-pill selected"><span class="material-icons">edit</span>지정</div>
+            <div class="method-pill"><span class="material-icons">volume_off</span>음소거</div>
+            <div class="method-pill"><span class="material-icons">visibility_off</span>건너뛰기</div>
+          </div>
+          <div class="opt-card__custom">
+            <input class="err" value="민지야아아" maxlength="10">
+            <div class="helper"><span style="color:#d32f2f;">원본 "수민아!" 4자와 동일해야 합니다</span><span class="count err">5/4</span></div>
+          </div>
+        </div>
+
+        <!-- Item 5 — skip -->
+        <div class="opt-card" data-card="5">
+          <div class="opt-card__head">
+            <div class="thumb" style="background:linear-gradient(135deg,#0288d1,#01579b);display:flex;align-items:center;justify-content:center;"><span class="material-icons" style="color:#fff;font-size:24px;">location_on</span></div>
+            <div class="info">
+              <div class="opt-card__time">EXIF</div>
+              <div class="opt-card__title">EXIF GPS — 좌표 정보</div>
+            </div>
+            <span class="mui-chip mui-chip--info risk">4.2</span>
+          </div>
+          <div class="opt-card__methods">
+            <div class="method-pill selected"><span class="material-icons">delete</span>제거</div>
+            <div class="method-pill"><span class="material-icons">edit</span>변경</div>
+            <div class="method-pill" style="grid-column: span 2; opacity:0.5;"><span class="material-icons">visibility_off</span>건너뛰기 (권장 안 함)</div>
+          </div>
+        </div>
+
+        <div style="padding:12px 8px;text-align:center;font:400 12px var(--font-sans);color:var(--fg-3);">… 12개 항목 더 보기</div>
+      </div>
+
+      <div class="global-opts">
+        <h3>전체 옵션</h3>
+        <div class="row">
+          <span class="lbl">음성 마스킹 방식</span>
+          <div class="seg">
+            <button class="active">삐 1000Hz</button>
+            <button>묵음</button>
+          </div>
+        </div>
+        <div class="row">
+          <span class="lbl">얼굴 마스킹 (전체 적용)</span>
+          <div class="seg">
+            <button class="active">블러</button>
+            <button>모자이크</button>
+            <button>없음</button>
+          </div>
+        </div>
+        <div class="row v2">
+          <span class="lbl">본인 얼굴 화이트리스트</span>
+          <span class="mui-chip">v2 예정</span>
+        </div>
+      </div>
+
+      <div class="watermark-pill">
+        <span class="material-icons">verified</span>
+        <span><strong style="color:#9747ff;font-weight:600;">워터마크 자동 적용 (MVP1)</strong> · 결과 영상 우하단에 작은 식별 워터마크가 표시됩니다 (B-3 정책).</span>
+      </div>
+    </aside>
+  </div>
+
+  <div class="opt-footer">
+    <div class="est">
+      예상 처리 시간 <strong>약 1분 24초</strong> · 자동 9건 · 지정 3건 · 마스킹 4건 · 건너뛰기 1건
+    </div>
+    <a href="10-analysis-report.html" class="mui-btn mui-btn--text">취소</a>
+    <a href="16-preview.html" class="mui-btn mui-btn--contained mui-btn--lg">
+      <span class="material-icons" style="font-size:20px;">visibility</span>
+      미리보기 생성
+    </a>
+  </div>
+</div>
+
+<script src="garim-chrome.js"></script>
+<script>
+  document.getElementById('header').innerHTML = gh({ variant: 'app', current: 'detect', authed: true });
+
+  // Card selection
+  document.querySelectorAll('.opt-card').forEach(card => {
+    card.addEventListener('click', (e) => {
+      // Don't change selection if clicking on inner controls
+      if (e.target.closest('.method-pill, input, .slider, button')) return;
+      document.querySelectorAll('.opt-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+    });
+  });
+
+  // Method pill selection
+  document.querySelectorAll('.opt-card').forEach(card => {
+    card.querySelectorAll('.method-pill').forEach(pill => {
+      pill.addEventListener('click', (e) => {
+        e.stopPropagation();
+        card.querySelectorAll('.method-pill').forEach(p => p.classList.remove('selected'));
+        pill.classList.add('selected');
+      });
+    });
+  });
+
+  // Bulk buttons
+  document.querySelectorAll('.bulk button').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.bulk button').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+    });
+  });
+
+  // Segmented controls
+  document.querySelectorAll('.seg').forEach(seg => {
+    seg.querySelectorAll('button').forEach(b => {
+      b.addEventListener('click', () => {
+        seg.querySelectorAll('button').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+      });
+    });
+  });
+</script>
+</body></html>

@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>처리 진행 · Garim</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="garim.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<style>
+  .pp-page { padding: 32px; }
+  .pp-shell { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 320px; gap: 24px; align-items: flex-start; }
+  .pp-main { background: #fff; border-radius: 4px; box-shadow: var(--mui-elev-1); padding: 40px; }
+  .pp-head { display: flex; align-items: flex-start; gap: 20px; margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--mui-divider); }
+  .pp-head .thumb { width: 120px; aspect-ratio: 16/9; border-radius: 4px; background: #000; overflow: hidden; flex-shrink: 0; position: relative; }
+  .pp-head .thumb img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; }
+  .pp-head .thumb .scan {
+    position: absolute; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, transparent, #1976d2, transparent);
+    box-shadow: 0 0 12px #1976d2;
+    animation: scan 2s linear infinite;
+  }
+  @keyframes scan { 0%{top:0;} 100%{top:100%;} }
+  .pp-head h1 { font: 500 22px var(--font-sans); margin: 0 0 4px; }
+  .pp-head .meta { font: 400 13px var(--font-sans); color: var(--fg-2); }
+  .pp-progress-summary { display: flex; align-items: center; gap: 16px; margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--mui-divider); }
+  .pp-progress-summary .progress { flex: 1; height: 6px; }
+  .pp-progress-summary .pct { font: 500 18px var(--font-sans); color: #1976d2; font-variant-numeric: tabular-nums; min-width: 50px; text-align: right; }
+  .pp-actions { display: flex; gap: 8px; margin-top: 24px; }
+  .sidebar-card { background: #fff; border-radius: 4px; box-shadow: var(--mui-elev-1); padding: 20px; margin-bottom: 16px; }
+  .sidebar-card h3 { font: 500 12px var(--font-sans); text-transform: uppercase; letter-spacing: 0.5px; color: var(--fg-2); margin: 0 0 12px; }
+  .info-row { display: flex; justify-content: space-between; padding: 6px 0; font: 400 13px var(--font-sans); }
+  .info-row .v { color: var(--fg-1); font-weight: 500; }
+  .info-row .k { color: var(--fg-2); }
+</style>
+</head>
+<body class="page-app" data-screen-label="17 Processing">
+<div id="header"></div>
+
+<div class="pp-page">
+  <div class="pp-shell">
+    <div class="pp-main">
+      <div class="pp-head">
+        <div class="thumb">
+          <img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=400&q=60" alt="">
+          <div class="scan"></div>
+        </div>
+        <div style="flex:1;">
+          <h1>처리 중입니다...</h1>
+          <div class="meta">family_picnic_2026.mp4 · 17건 처리 · 자동 9건 / 지정 3건 / 마스킹 4건 / 건너뛰기 1건</div>
+          <div style="margin-top:8px;display:flex;gap:6px;">
+            <span class="mui-chip mui-chip--soft-info">STE 합성</span>
+            <span class="mui-chip mui-chip--soft-info">얼굴 블러</span>
+            <span class="mui-chip mui-chip--soft-info">음성 합성</span>
+            <span class="mui-chip mui-chip--secondary">워터마크</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="vstep">
+        <div class="vstep__item vstep__item--done">
+          <div class="vstep__dot"></div>
+          <div class="vstep__body">
+            <div class="vstep__title">검출 결과 검증 완료</div>
+            <div class="vstep__sub">17건 모두 검증, 거부 콘텐츠 없음</div>
+          </div>
+        </div>
+        <div class="vstep__connector"></div>
+
+        <div class="vstep__item vstep__item--active">
+          <div class="vstep__dot"><span class="num">2</span></div>
+          <div class="vstep__body">
+            <div class="vstep__title">치환 합성 중</div>
+            <div class="vstep__sub" id="step2-sub">STE 텍스트 합성 (8/9건) · 얼굴 블러 (3/3건)</div>
+            <div class="progress" style="margin-top:8px;max-width:400px;"><div class="progress__bar" id="step2-bar" style="width:72%"></div></div>
+          </div>
+        </div>
+        <div class="vstep__connector"></div>
+
+        <div class="vstep__item vstep__item--pending">
+          <div class="vstep__dot"><span class="num">3</span></div>
+          <div class="vstep__body">
+            <div class="vstep__title">워터마크 삽입 대기</div>
+            <div class="vstep__sub">시각적 + 비식별 워터마크 (B-3, 항상 적용)</div>
+          </div>
+        </div>
+        <div class="vstep__connector"></div>
+
+        <div class="vstep__item vstep__item--pending">
+          <div class="vstep__dot"><span class="num">4</span></div>
+          <div class="vstep__body">
+            <div class="vstep__title">재인코딩 대기</div>
+            <div class="vstep__sub">원본 포맷 유지 (MP4)</div>
+          </div>
+        </div>
+        <div class="vstep__connector"></div>
+
+        <div class="vstep__item vstep__item--pending">
+          <div class="vstep__dot"><span class="num">5</span></div>
+          <div class="vstep__body">
+            <div class="vstep__title">완료</div>
+            <div class="vstep__sub">다운로드 페이지로 자동 이동</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pp-progress-summary">
+        <span class="caption-k" style="font-size:13px;">전체 진행</span>
+        <div class="progress"><div class="progress__bar" id="bar" style="width:32%"></div></div>
+        <span class="pct" id="pct">32%</span>
+      </div>
+
+      <div class="caption-k" style="font-size:13px;margin-top:12px;">예상 남은 시간 <strong style="color:var(--fg-1);">약 58초</strong> · 완료 시 자동으로 다운로드 페이지로 이동합니다.</div>
+
+      <div class="pp-actions">
+        <button class="mui-btn mui-btn--outlined">백그라운드 처리 →</button>
+        <button class="mui-btn mui-btn--text" style="color:#d32f2f;">취소</button>
+        <div style="flex:1;"></div>
+        <a href="18-download.html" class="mui-btn mui-btn--contained">데모: 결과 보기 →</a>
+      </div>
+    </div>
+
+    <aside>
+      <div class="sidebar-card">
+        <h3>처리 사양</h3>
+        <div class="info-row"><span class="k">입력</span><span class="v">MP4 · 1920×1080</span></div>
+        <div class="info-row"><span class="k">출력</span><span class="v">MP4 · 1920×1080</span></div>
+        <div class="info-row"><span class="k">길이</span><span class="v">2분 14초</span></div>
+        <div class="info-row"><span class="k">처리 항목</span><span class="v">17건</span></div>
+        <div class="info-row"><span class="k">워터마크</span><span class="v">자동 적용</span></div>
+      </div>
+
+      <div class="sidebar-card" style="background:rgba(151,71,255,0.04);border:1px solid rgba(151,71,255,0.2);">
+        <h3 style="color:#9747ff;">B-3 워터마크 정책</h3>
+        <p style="font:400 13px/1.5 var(--font-sans);color:var(--fg-1);margin:0;">
+          모든 MVP1 결과물에 워터마크가 자동 삽입됩니다. 위변조 의심 신고 시 역추적 가능합니다.
+        </p>
+      </div>
+
+      <div class="sidebar-card" style="background:rgba(25,118,210,0.04);">
+        <h3 style="color:#1976d2;">알림 안내</h3>
+        <div style="font: 400 13px/1.5 var(--font-sans);">
+          페이지를 닫아도 처리는 계속됩니다. 완료되면 이메일·푸시 알림으로 알려드려요.
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div id="footer"></div>
+
+<script src="garim-chrome.js"></script>
+<script>
+  document.getElementById('header').innerHTML = gh({ variant: 'app', current: 'detect', authed: true });
+  document.getElementById('footer').innerHTML = gf();
+
+  let p = 32;
+  const tick = setInterval(() => {
+    p += Math.random() * 2.5;
+    if (p >= 100) {
+      p = 100;
+      document.getElementById('bar').style.width = '100%';
+      document.getElementById('pct').textContent = '100%';
+      clearInterval(tick);
+      setTimeout(() => { window.location.href = '18-download.html'; }, 1200);
+      return;
+    }
+    document.getElementById('bar').style.width = p + '%';
+    document.getElementById('pct').textContent = Math.floor(p) + '%';
+    if (p > 60) {
+      document.getElementById('step2-bar').style.width = Math.min(100, (p - 30) * 1.4) + '%';
+    }
+  }, 900);
+</script>
+</body></html>

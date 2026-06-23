@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>회원가입 · Garim</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="garim.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<style>
+  .auth-card {
+    width: 480px; background: #fff; border-radius: 4px;
+    box-shadow: var(--mui-elev-2); padding: 40px;
+  }
+  .auth-card h1 { font: 500 24px var(--font-sans); margin: 0 0 8px; }
+  .auth-card .sub { font: 400 14px/1.5 var(--font-sans); color: var(--fg-2); margin-bottom: 32px; }
+  .sso-btn {
+    width: 100%; height: 48px; border-radius: 4px;
+    background: #FEE500; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    font: 500 14px var(--font-sans); color: rgba(0,0,0,0.85);
+    letter-spacing: 0.1px;
+  }
+  .sso-btn:hover { background: #fdd835; }
+  .divider-or {
+    display: flex; align-items: center; gap: 16px;
+    margin: 24px 0; color: var(--fg-2); font-size: 12px;
+  }
+  .divider-or::before, .divider-or::after {
+    content: ""; flex: 1; height: 1px; background: var(--mui-divider);
+  }
+  .form-fields { display: flex; flex-direction: column; gap: 16px; }
+  .pwd-wrap { position: relative; }
+  .pwd-wrap .toggle {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    background: transparent; border: none; cursor: pointer; color: var(--fg-2);
+    width: 32px; height: 32px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .pwd-wrap .toggle:hover { background: rgba(0,0,0,0.04); }
+  .strength { display: flex; gap: 4px; margin-top: 8px; }
+  .strength .bar { flex: 1; height: 4px; border-radius: 2px; background: var(--mui-divider); transition: background 200ms; }
+  .strength.s1 .bar:nth-child(1) { background: #d32f2f; }
+  .strength.s2 .bar:nth-child(-n+2) { background: #ed6c02; }
+  .strength.s3 .bar:nth-child(-n+3) { background: #f9a825; }
+  .strength.s4 .bar { background: #2e7d32; }
+  .strength-label { font: 400 12px var(--font-sans); margin-top: 4px; }
+  .consent {
+    margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--mui-divider);
+  }
+  .consent-row { display: flex; align-items: center; gap: 12px; padding: 6px 0; }
+  .consent-row label { font: 400 14px var(--font-sans); flex: 1; cursor: pointer; }
+  .consent-row label .req { color: #d32f2f; font-weight: 500; margin-right: 4px; }
+  .consent-row label .opt { color: var(--fg-2); margin-right: 4px; }
+  .consent-row a { color: #1976d2; font-size: 13px; }
+  .checkbox {
+    width: 18px; height: 18px; border: 2px solid rgba(0,0,0,0.54);
+    border-radius: 2px; flex-shrink: 0; cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: #fff;
+  }
+  .checkbox.checked { background: #1976d2; border-color: #1976d2; }
+  .checkbox.checked::after {
+    content: ""; width: 5px; height: 9px;
+    border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg) translate(-1px, -1px);
+  }
+  .consent-row--all { padding: 8px 0; margin-bottom: 8px; border-bottom: 1px dashed var(--mui-divider); font-weight: 500; }
+  .footer-link { text-align: center; margin-top: 24px; font: 400 14px var(--font-sans); color: var(--fg-2); }
+  .footer-link a { color: #1976d2; font-weight: 500; }
+</style>
+</head>
+<body class="page-auth" data-screen-label="05 Signup">
+<div id="header"></div>
+
+<main class="auth-main">
+  <div class="auth-card">
+    <h1>30초면 가입 끝</h1>
+    <p class="sub">실명·전화번호 받지 않습니다. 이메일 하나면 충분합니다. (B-1 최소 수집 원칙)</p>
+
+    <button class="sso-btn">
+      <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#3C1E1E" d="M12 3C6.5 3 2 6.6 2 11c0 2.9 1.9 5.5 4.8 6.9-.2.7-.7 2.6-.8 3-.1.5.2.5.4.4l3.5-2.4c.7.1 1.4.2 2.1.2 5.5 0 10-3.6 10-8.1S17.5 3 12 3z"/></svg>
+      카카오 계정으로 시작
+    </button>
+
+    <div class="divider-or">또는</div>
+
+    <form id="signup-form" class="form-fields" novalidate>
+      <div class="mui-field" id="f-email">
+        <input type="email" class="mui-input" placeholder="이메일" autocomplete="email" required>
+        <span class="mui-field__helper" id="h-email">로그인에 사용할 이메일을 입력하세요.</span>
+      </div>
+
+      <div class="mui-field" id="f-pwd">
+        <div class="pwd-wrap">
+          <input type="password" class="mui-input" id="pwd" placeholder="비밀번호" autocomplete="new-password" required>
+          <button type="button" class="toggle" id="pwd-toggle" tabindex="-1"><span class="material-icons" style="font-size:20px;">visibility</span></button>
+        </div>
+        <div class="strength" id="strength"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+        <span class="mui-field__helper strength-label" id="h-pwd">영문·숫자·특수문자 포함 8자 이상</span>
+      </div>
+
+      <div class="mui-field" id="f-pwd2">
+        <div class="pwd-wrap">
+          <input type="password" class="mui-input" id="pwd2" placeholder="비밀번호 확인" autocomplete="new-password" required>
+          <button type="button" class="toggle" id="pwd2-toggle" tabindex="-1"><span class="material-icons" style="font-size:20px;">visibility</span></button>
+        </div>
+        <span class="mui-field__helper" id="h-pwd2">위에서 입력한 비밀번호와 동일해야 합니다.</span>
+      </div>
+
+      <div class="consent">
+        <div class="consent-row consent-row--all">
+          <span class="checkbox" id="cb-all" data-c="all"></span>
+          <label for="cb-all">전체 동의 (선택 항목 포함)</label>
+        </div>
+        <div class="consent-row">
+          <span class="checkbox" data-c="age"></span>
+          <label><span class="req">필수</span>만 14세 이상입니다</label>
+        </div>
+        <div class="consent-row">
+          <span class="checkbox" data-c="tos"></span>
+          <label><span class="req">필수</span>이용약관 동의</label>
+          <a href="04-terms.html">전문</a>
+        </div>
+        <div class="consent-row">
+          <span class="checkbox" data-c="privacy"></span>
+          <label><span class="req">필수</span>개인정보처리방침 동의</label>
+          <a href="04-terms.html">전문</a>
+        </div>
+        <div class="consent-row">
+          <span class="checkbox" data-c="marketing"></span>
+          <label><span class="opt">선택</span>마케팅 정보 수신 (이메일)</label>
+        </div>
+        <div class="consent-row">
+          <span class="checkbox" data-c="learning"></span>
+          <label><span class="opt">선택</span>AI 학습 데이터 활용 — 처리량 10% 환원 <span class="mui-chip mui-chip--soft-info" style="margin-left:4px;font-size:11px;height:20px;padding:0 8px;">v1 정식 환원</span></label>
+        </div>
+      </div>
+
+      <button type="submit" class="mui-btn mui-btn--contained mui-btn--lg mui-btn--block" disabled id="submit-btn" style="margin-top:24px;">
+        가입하고 무료 검출 시작
+      </button>
+    </form>
+
+    <div class="footer-link">이미 계정이 있으신가요? <a href="06-login.html">로그인</a></div>
+  </div>
+</main>
+
+<div id="footer"></div>
+
+<script src="garim-chrome.js"></script>
+<script>
+  document.getElementById('header').innerHTML = gh({ variant: 'minimal' });
+  document.getElementById('footer').innerHTML = gf({ minimal: true });
+
+  // Consent checkboxes
+  const consents = { age: false, tos: false, privacy: false, marketing: false, learning: false };
+  const required = ['age', 'tos', 'privacy'];
+  function setConsent(name, val) {
+    consents[name] = val;
+    const cb = document.querySelector(`.checkbox[data-c="${name}"]`);
+    cb.classList.toggle('checked', val);
+  }
+  document.querySelectorAll('.checkbox').forEach(cb => {
+    cb.addEventListener('click', () => {
+      const c = cb.dataset.c;
+      if (c === 'all') {
+        const allChecked = Object.values(consents).every(v => v);
+        const newVal = !allChecked;
+        Object.keys(consents).forEach(k => setConsent(k, newVal));
+        document.querySelector('.checkbox[data-c="all"]').classList.toggle('checked', newVal);
+      } else {
+        setConsent(c, !consents[c]);
+        const all = Object.values(consents).every(v => v);
+        document.querySelector('.checkbox[data-c="all"]').classList.toggle('checked', all);
+      }
+      validate();
+    });
+  });
+
+  // Email validation
+  const emailEl = document.querySelector('#f-email input');
+  const emailHelper = document.getElementById('h-email');
+  const emailField = document.getElementById('f-email');
+  function checkEmail() {
+    const v = emailEl.value.trim();
+    if (!v) return { ok: false, msg: '로그인에 사용할 이메일을 입력하세요.', state: 'neutral' };
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return { ok: false, msg: '올바른 이메일 형식이 아닙니다.', state: 'error' };
+    if (v === 'test@garim.kr') return { ok: false, msg: '이미 가입된 이메일입니다. 로그인해주세요.', state: 'error' };
+    return { ok: true, msg: '사용 가능한 이메일입니다.', state: 'success' };
+  }
+
+  // Password strength
+  const pwd = document.getElementById('pwd');
+  const pwd2 = document.getElementById('pwd2');
+  const strength = document.getElementById('strength');
+  const hPwd = document.getElementById('h-pwd');
+  const hPwd2 = document.getElementById('h-pwd2');
+  function pwdStrength(p) {
+    if (!p) return 0;
+    let s = 0;
+    if (p.length >= 8) s++;
+    if (/[A-Za-z]/.test(p) && /[0-9]/.test(p)) s++;
+    if (/[^A-Za-z0-9]/.test(p)) s++;
+    if (p.length >= 12) s++;
+    return s;
+  }
+  function pwdLabel(s) {
+    return ['약함', '약함', '보통', '강함', '매우 강함'][s];
+  }
+  function checkPwd() {
+    const v = pwd.value;
+    const s = pwdStrength(v);
+    strength.className = 'strength s' + s;
+    if (!v) {
+      hPwd.textContent = '영문·숫자·특수문자 포함 8자 이상';
+      hPwd.className = 'mui-field__helper strength-label';
+      return { ok: false };
+    }
+    if (s < 2) {
+      hPwd.textContent = '비밀번호가 너무 약합니다 (' + pwdLabel(s) + ')';
+      hPwd.className = 'mui-field__helper strength-label mui-field__helper--error';
+      return { ok: false };
+    }
+    hPwd.textContent = pwdLabel(s) + ' — 좋습니다';
+    hPwd.className = 'mui-field__helper strength-label mui-field__helper--success';
+    return { ok: true };
+  }
+  function checkPwd2() {
+    if (!pwd2.value) {
+      hPwd2.textContent = '위에서 입력한 비밀번호와 동일해야 합니다.';
+      hPwd2.className = 'mui-field__helper';
+      return { ok: false };
+    }
+    if (pwd.value !== pwd2.value) {
+      hPwd2.textContent = '비밀번호가 일치하지 않습니다.';
+      hPwd2.className = 'mui-field__helper mui-field__helper--error';
+      return { ok: false };
+    }
+    hPwd2.textContent = '일치합니다.';
+    hPwd2.className = 'mui-field__helper mui-field__helper--success';
+    return { ok: true };
+  }
+
+  function validate() {
+    const eRes = checkEmail();
+    emailHelper.textContent = eRes.msg;
+    emailHelper.className = 'mui-field__helper' + (eRes.state === 'error' ? ' mui-field__helper--error' : eRes.state === 'success' ? ' mui-field__helper--success' : '');
+    emailEl.classList.toggle('mui-input--error', eRes.state === 'error');
+    const pRes = checkPwd();
+    const p2Res = checkPwd2();
+    const allReq = required.every(r => consents[r]);
+    document.getElementById('submit-btn').disabled = !(eRes.ok && pRes.ok && p2Res.ok && allReq);
+  }
+  emailEl.addEventListener('input', validate);
+  emailEl.addEventListener('blur', validate);
+  pwd.addEventListener('input', validate);
+  pwd2.addEventListener('input', validate);
+
+  // Pwd visibility toggles
+  function toggleVis(input, btn) {
+    btn.addEventListener('click', () => {
+      const t = input.type === 'password' ? 'text' : 'password';
+      input.type = t;
+      btn.querySelector('span').textContent = t === 'password' ? 'visibility' : 'visibility_off';
+    });
+  }
+  toggleVis(pwd, document.getElementById('pwd-toggle'));
+  toggleVis(pwd2, document.getElementById('pwd2-toggle'));
+
+  // Submit
+  document.getElementById('signup-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    window.location.href = '08-upload.html';
+  });
+</script>
+</body></html>

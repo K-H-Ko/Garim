@@ -1,0 +1,522 @@
+body {
+  background: #fafafa;
+}
+
+.adm-shell {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: calc(100vh - 64px);
+}
+
+.adm-side {
+  background: #1e1b3a;
+  padding: 16px 8px;
+}
+
+.adm-side .sec {
+  font: 500 10px var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.5);
+  padding: 14px 12px 6px;
+}
+
+.adm-side a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 4px;
+  font: 400 13px var(--font-sans);
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 2px;
+}
+
+.adm-side a:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.adm-side a.active {
+  background: rgba(149, 117, 205, 0.2);
+  color: #b39ddb;
+}
+
+.adm-side a .material-icons {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.adm-side a.active .material-icons {
+  color: #b39ddb;
+}
+
+.adm-main {
+  padding: 24px 28px;
+}
+
+.adm-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.adm-head h1 {
+  font: 500 22px var(--font-sans);
+  margin: 0;
+}
+
+.adm-head .meta {
+  font: 400 12px var(--font-sans);
+  color: var(--fg-2);
+  font-family: var(--font-mono);
+}
+
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  background: rgba(46, 125, 50, 0.1);
+  color: #1b5e20;
+  border-radius: 12px;
+  font: 600 11px var(--font-sans);
+  letter-spacing: 0.5px;
+}
+
+.live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #2e7d32;
+  animation: livepulse 1.4s ease-in-out infinite;
+}
+
+@keyframes livepulse {
+
+  0%,
+  100% {
+    opacity: 0.4
+  }
+
+  50% {
+    opacity: 1
+  }
+}
+
+.metric-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.metric {
+  background: #fff;
+  border-radius: 4px;
+  border: 1px solid var(--mui-border);
+  padding: 14px 16px;
+}
+
+.metric .lbl {
+  font: 400 11px var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--fg-2);
+}
+
+.metric .num {
+  font: 300 26px var(--font-sans);
+  letter-spacing: -0.5px;
+  margin-top: 2px;
+}
+
+.metric.danger .num {
+  color: #d32f2f;
+}
+
+.metric.warn .num {
+  color: #ed6c02;
+}
+
+.metric .delta {
+  font: 400 11px var(--font-sans);
+  color: var(--fg-2);
+  margin-top: 2px;
+}
+
+.adm-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.adm-card {
+  background: #fff;
+  border-radius: 4px;
+  border: 1px solid var(--mui-border);
+}
+
+.adm-card .head {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--mui-divider);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.adm-card .head h3 {
+  font: 500 14px var(--font-sans);
+  margin: 0;
+  flex: 1;
+}
+
+/* 사용자 모니터링 테이블 */
+/* 경과(70px)·마지막활동(130px)·확인(52px) 고정 → 헤더/데이터 항상 정렬 일치 */
+/* 진행률 열만 1fr로 남는 공간 흡수, 현재 작업 열 최대 200px 제한 */
+.mon-row {
+  display: grid;
+  grid-template-columns: 14px minmax(140px, 220px) 64px minmax(100px, 200px) minmax(100px, 1fr) 70px 110px 52px;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--mui-divider);
+  transition: background 80ms;
+  font: 400 13px var(--font-sans);
+}
+
+.mon-row>span:nth-child(4) {
+  padding-left: 8px;
+}
+
+.mon-row>span:nth-child(5) {
+  margin-left: 0;
+}
+
+.mon-row>span:nth-child(6) {
+  padding-left: 0;
+}
+
+.mon-row>span:nth-child(7) {
+  padding-left: 0;
+}
+
+.mon-row:last-child {
+  border-bottom: none;
+}
+
+.mon-row:hover {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.mon-row.selected {
+  background: rgba(25, 118, 210, 0.06);
+}
+
+.adm-shell .mon-row.tbl-head {
+  display: grid;
+  background: #fafafa;
+  font: 500 11px var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--fg-2);
+  cursor: default;
+}
+
+/* 헤더 행은 hover 반응 없음 — 마우스 올려도 배경 변화 제거(라이트/다크 공통) */
+.adm-shell .mon-row.tbl-head:hover {
+  background: #fafafa;
+}
+
+:root[data-theme="dark"] .adm-shell .mon-row.tbl-head,
+:root[data-theme="dark"] .adm-shell .mon-row.tbl-head:hover {
+  background: var(--surface-alt);
+}
+
+/* 헤더 셀 텍스트는 줄바꿈 없이 한 줄 유지(좁은 화면에서 세로로 쪼개짐 방지) */
+.mon-row.tbl-head>span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* @ 이후 줄바꿈 허용 — <wbr> 태그에 의해 도메인만 자연스럽게 내려감 */
+.mon-email {
+  font: 400 13px var(--font-sans);
+  white-space: normal;
+  word-break: break-all;
+  line-height: 1.3;
+}
+
+.mon-uid {
+  font: 400 11px var(--font-mono);
+  color: var(--fg-2);
+  margin-top: 1px;
+  white-space: nowrap;
+}
+
+.mon-filename {
+  font: 400 12px var(--font-sans);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mon-type {
+  font: 400 11px var(--font-sans);
+  color: var(--fg-2);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-top: 1px;
+}
+
+/* 진행률 wrap 최대 너비 제한 → 1fr 열이 넓어져도 바+퍼센트가 좌측에 모임 */
+.mon-progress-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 160px;
+}
+
+.mon-progress-bar {
+  flex: 1;
+  height: 5px;
+  background: #e0e0e0;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.mon-progress-bar>div {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s;
+}
+
+.mon-pct {
+  font: 400 11px var(--font-mono);
+  color: var(--fg-2);
+  white-space: nowrap;
+}
+
+.mon-elapsed {
+  font: 400 12px var(--font-mono);
+  color: var(--fg-2);
+}
+
+.mon-lastseen {
+  font: 400 11px var(--font-sans);
+  color: var(--fg-3);
+  margin-top: 2px;
+}
+
+.mon-view-btn {
+  padding: 4px 10px;
+  border: 1px solid var(--mui-border);
+  border-radius: 4px;
+  background: #fff;
+  font: 500 12px var(--font-sans);
+  color: var(--fg-1);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 80ms, border-color 80ms;
+}
+
+.mon-view-btn:hover {
+  background: #f5f5f5;
+  border-color: #bdbdbd;
+}
+
+.mon-view-btn.active {
+  background: rgba(25, 118, 210, 0.08);
+  border-color: #1976d2;
+  color: #1976d2;
+}
+
+/* 우측 상세 패널 */
+.detail-body {
+  padding: 0;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+.detail-section {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--mui-divider);
+}
+
+.detail-section:last-child {
+  border-bottom: none;
+}
+
+.detail-section h4 {
+  font: 500 14px var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--fg-2);
+  margin: 0 0 10px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 3px 0;
+  font: 400 13px var(--font-sans);
+  gap: 8px;
+}
+
+.detail-row>span:first-child {
+  color: var(--fg-2);
+  flex-shrink: 0;
+}
+
+.detail-row>span:last-child {
+  text-align: right;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.detail-progress {
+  width: 80px;
+  height: 4px;
+  background: #e0e0e0;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.detail-progress>div {
+  height: 100%;
+  border-radius: 2px;
+}
+
+.detail-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* 최근 활동 로그 — 글씨를 약간 줄이고 최대 5줄까지 표시(초과 시 스크롤) */
+.activity-log {
+  font: 400 11px/1.5 var(--font-mono);
+  background: #fafafa;
+  border-radius: 4px;
+  padding: 5px 10px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.activity-log .ts {
+  color: var(--fg-3);
+  margin-right: 5px;
+}
+
+/* ===== 반응형: 창을 좁혔을 때 테이블 컬럼 비율 보정 ===== */
+@media (max-width: 1366px) {
+
+  /* 우측 상세 패널 폭을 줄여 좌측 테이블에 여유 확보 */
+  .adm-grid {
+    grid-template-columns: 1fr 280px;
+  }
+
+  /* 고정 px 컬럼을 유연(minmax) 컬럼으로 전환해 가로 넘침 방지 */
+  .mon-row {
+    grid-template-columns: 12px minmax(110px, 180px) 56px minmax(80px, 160px) minmax(80px, 1fr) 60px 110px 46px;
+    gap: 8px;
+    font-size: 12px;
+  }
+
+  /* 좁은 화면에서는 px 기반 미세 정렬 패딩을 해제 */
+  .mon-row>span:nth-child(4),
+  .mon-row>span:nth-child(5),
+  .mon-row>span:nth-child(6),
+  .mon-row>span:nth-child(7) {
+    padding-left: 0;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 1100px) {
+
+  /* 더 좁아지면 상세 패널을 테이블 아래로 내려 전체 폭 사용 */
+  .adm-grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* 툴바 우측(새로고침) */
+.mon-toolbar-right {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
+.mon-ico-sm {
+  font-size: 16px;
+}
+.mon-ico-15 {
+  font-size: 15px;
+}
+/* 목록 상태 메시지(로딩/에러/빈) */
+.mon-state {
+  padding: 32px 16px;
+  text-align: center;
+  font: 400 13px var(--font-sans);
+  color: var(--fg-2);
+}
+.mon-state--error {
+  color: #d32f2f;
+}
+.mon-state--empty {
+  color: var(--fg-3);
+}
+/* 값 없음(—) 표시 */
+.mon-dash {
+  color: var(--fg-3);
+  font-size: 12px;
+}
+/* 상태 칩 크기 */
+.mon-status-chip {
+  font-size: 11px;
+  height: 20px;
+}
+.mon-chip-sm {
+  font-size: 11px;
+}
+/* 목록 푸터 */
+.mon-footer {
+  padding: 10px 16px;
+  text-align: center;
+  font: 400 12px var(--font-sans);
+  color: var(--fg-2);
+}
+/* 상세 패널 */
+.mon-break {
+  word-break: break-all;
+}
+.mon-progress-inline {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.mon-no-job {
+  color: var(--fg-3);
+  font: 400 12px var(--font-sans);
+  padding: 4px 0;
+}
+.mon-evt-done {
+  color: #2e7d32;
+}
+.mon-evt-error {
+  color: #d32f2f;
+}
+.mon-action-btn {
+  flex: 1;
+}

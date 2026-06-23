@@ -1,0 +1,139 @@
+/*
+코드 설명:
+크레딧 차감 확인 모달(CreditConfirmModal) 전용 스타일. 상세보기 진입 시 크레딧 안내/부족 안내를
+보여주는 오버레이·카드·아이콘·배지·액션 버튼의 라이트/다크 표현을 정의한다.
+*/
+
+.credit-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: overlay-fade-in 150ms ease;
+}
+
+@keyframes overlay-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.credit-modal {
+  background: #fff;
+  border-radius: 12px;
+  padding: 32px 28px 24px;
+  width: 360px;
+  max-width: calc(100vw - 32px);
+  box-shadow: var(--mui-elev-24);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  animation: modal-pop-in 180ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modal-pop-in {
+  from { transform: scale(0.88); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.credit-modal__icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(25, 118, 210, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+/* 아이콘 심볼 크기/색상 (기본 파랑, 부족 시 빨강) */
+.credit-modal__icon .material-icons {
+  font-size: 36px;
+  color: #1976d2;
+}
+
+.credit-modal__icon--danger .material-icons {
+  color: #d32f2f;
+}
+
+.credit-modal__title {
+  font: 600 18px/1.3 var(--font-sans);
+  color: var(--fg-1);
+  margin: 0;
+  text-align: center;
+}
+
+.credit-modal__desc {
+  font: 400 14px/1.6 var(--font-sans);
+  color: var(--fg-2);
+  text-align: center;
+  margin: 4px 0;
+}
+
+/* 설명 내 강조 비용 텍스트 */
+.credit-modal__cost {
+  color: #1976d2;
+}
+
+.credit-modal__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(237, 108, 2, 0.08);
+  color: #ed6c02;
+  font: 600 14px var(--font-sans);
+  padding: 6px 16px;
+  border-radius: 20px;
+  margin: 4px 0;
+}
+
+/* 배지 내 아이콘 크기 */
+.credit-modal__badge .material-icons {
+  font-size: 18px;
+}
+
+/* 크레딧 부족 상태 배지 */
+.credit-modal__badge--danger {
+  background: #ffebee;
+  color: #d32f2f;
+}
+
+.credit-modal__note {
+  font: 400 12px/1.5 var(--font-sans);
+  color: var(--fg-3);
+  text-align: center;
+  margin: 4px 0 8px;
+}
+
+.credit-modal__actions {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.credit-modal__actions .mui-btn {
+  flex: 1;
+  justify-content: center;
+}
+
+/* 액션 버튼 내 아이콘 크기 */
+.credit-modal__actions .mui-btn .material-icons {
+  font-size: 18px;
+}
+
+/* 위험(요금제 이동) 버튼 색상 */
+.credit-modal__btn--danger {
+  background: #d32f2f;
+  color: #fff;
+}
+
+/* Dark Mode */
+:root[data-theme="dark"] .credit-modal {
+  background: var(--bg-1);
+  border-color: var(--mui-border);
+}

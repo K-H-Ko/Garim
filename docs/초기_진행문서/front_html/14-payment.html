@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>결제 · Garim [v1 정식]</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="garim.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<style>
+  .pay-page { padding: 48px 32px; min-height: calc(100vh - 64px); display: flex; align-items: flex-start; justify-content: center; }
+  .pay-shell { max-width: 560px; width: 100%; background: #fff; border-radius: 4px; box-shadow: var(--mui-elev-2); overflow: hidden; }
+  .pay-head { padding: 24px 32px; border-bottom: 1px solid var(--mui-divider); }
+  .pay-head h1 { font: 500 22px var(--font-sans); margin: 0; }
+  .summary { padding: 24px 32px; background: #fafafa; }
+  .summary .row { display: flex; justify-content: space-between; padding: 8px 0; font: 400 14px var(--font-sans); }
+  .summary .row.total { font: 500 18px var(--font-sans); padding-top: 16px; margin-top: 8px; border-top: 1px solid var(--mui-divider); }
+  .summary .row.total .v { color: #1976d2; font-size: 24px; }
+  .pay-disabled { padding: 56px 32px; text-align: center; }
+  .pay-disabled .material-icons { font-size: 64px; color: var(--fg-3); margin-bottom: 16px; }
+  .pay-disabled h2 { font: 500 22px var(--font-sans); margin: 0 0 12px; }
+  .pay-disabled p { font: 400 14px/1.6 var(--font-sans); color: var(--fg-2); max-width: 380px; margin: 0 auto 24px; }
+  .pg-mock { padding: 32px; opacity: 0.5; pointer-events: none; }
+  .pg-mock h3 { font: 500 14px var(--font-sans); color: var(--fg-2); margin: 0 0 12px; }
+  .pg-method { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+  .pg-method button { padding: 16px 8px; border: 1px solid var(--mui-border); background: #fff; border-radius: 4px; cursor: pointer; font: 500 13px var(--font-sans); display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .pg-method button .material-icons { font-size: 24px; color: var(--fg-2); }
+  .pg-method button.active { border-color: #1976d2; background: rgba(25,118,210,0.04); color: #1976d2; }
+  .pg-method button.active .material-icons { color: #1976d2; }
+  .pg-input { width: 100%; padding: 14px; border: 1px solid var(--mui-border); border-radius: 4px; font: 400 16px var(--font-sans); margin-bottom: 8px; }
+  .trust-strip { background: rgba(0,0,0,0.02); padding: 12px 32px; border-top: 1px solid var(--mui-divider); display: flex; align-items: center; gap: 16px; }
+  .trust-strip .trust { display: flex; align-items: center; gap: 6px; font: 400 12px var(--font-sans); color: var(--fg-2); }
+  .trust-strip .material-icons { font-size: 14px; color: #2e7d32; }
+</style>
+</head>
+<body class="page-app" data-screen-label="14 Payment (MVP1 disabled)">
+<div id="header"></div>
+
+<div class="pay-page">
+  <div class="pay-shell">
+    <div class="pay-head">
+      <h1>결제</h1>
+    </div>
+
+    <div class="summary">
+      <div class="row"><span>1회권 (영상 1편 처리)</span><span class="v">2,900원</span></div>
+      <div class="row"><span class="caption-k" style="font-size:13px;">신규 가입 할인</span><span class="v" style="color:#2e7d32;">-500원</span></div>
+      <div class="row total"><span>합계</span><span class="v">2,400원</span></div>
+    </div>
+
+    <div class="pay-disabled">
+      <span class="material-icons">credit_card_off</span>
+      <h2>MVP1 단계에서는 결제가 비활성화되어 있어요</h2>
+      <p>결제 시스템은 v1 정식 출시 시점에 도입됩니다. 현재는 모든 기능을 무료로 이용하세요.</p>
+      <a href="15-replace-options.html" class="mui-btn mui-btn--contained mui-btn--lg">바로 무료 처리하기 →</a>
+    </div>
+
+    <div class="pg-mock">
+      <h3>참고 · v1 정식 출시 후 PG사 결제 UI</h3>
+      <div class="pg-method">
+        <button class="active"><span class="material-icons">credit_card</span>신용/체크카드</button>
+        <button><span class="material-icons">account_balance</span>계좌이체</button>
+        <button><span class="material-icons">payment</span>간편결제</button>
+      </div>
+      <input class="pg-input" placeholder="카드 번호 (PG사 보안 입력)" disabled value="**** **** **** ****">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <input class="pg-input" placeholder="MM/YY" disabled value="--/--">
+        <input class="pg-input" placeholder="CVC" disabled value="***">
+      </div>
+      <div class="caption-k" style="font-size:12px;margin-top:8px;">카드 정보는 PG사(토스페이먼츠)로 직접 전송됩니다. Garim 서버는 카드번호·CVC를 받지 않습니다 (B-1).</div>
+    </div>
+
+    <div class="trust-strip">
+      <span class="trust"><span class="material-icons">lock</span>SSL 256bit</span>
+      <span class="trust"><span class="material-icons">verified</span>PCI DSS Level 1</span>
+      <span class="trust"><span class="material-icons">timer</span>처리 후 즉시 영수증 발급</span>
+    </div>
+  </div>
+</div>
+
+<script src="garim-chrome.js"></script>
+<script>
+  document.getElementById('header').innerHTML = gh({ variant: 'minimal' });
+</script>
+</body></html>

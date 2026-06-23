@@ -1,0 +1,76 @@
+.faq-page { padding: 48px 32px 96px; }
+  .faq-head { max-width: 760px; margin: 0 auto 32px; text-align: center; }
+  .faq-head h1 { font: 300 48px/1.2 var(--font-sans); letter-spacing: -0.5px; margin: 0 0 16px; }
+  .search-bar {
+    max-width: 600px; margin: 0 auto 48px; position: relative;
+    display: flex; align-items: center; background: #fff;
+    border: 1px solid var(--mui-border); border-radius: 4px;
+    padding: 0 16px; box-shadow: var(--mui-elev-1);
+  }
+  .search-bar .material-icons { color: var(--fg-2); margin-right: 12px; }
+  .search-bar input { flex: 1; border: none; outline: none; padding: 14px 0; font: 400 16px var(--font-sans); }
+  .faq-grid { max-width: 1080px; margin: 0 auto; display: grid; grid-template-columns: 220px 1fr; gap: 48px; align-items: flex-start; }
+  .cat-side { position: sticky; top: 96px; }
+  .cat-side h3 { font: 500 11px var(--font-sans); text-transform: uppercase; letter-spacing: 0.6px; color: var(--fg-2); margin: 0 0 8px; padding-left: 12px; }
+  .cat-side a {
+    display: flex; align-items: center; gap: 8px; padding: 8px 12px;
+    font: 400 14px var(--font-sans); color: var(--fg-1); border-radius: 4px;
+  }
+  .cat-side a:hover { background: rgba(0,0,0,0.04); }
+  .cat-side a.active { background: rgba(25,118,210,0.08); color: #1976d2; font-weight: 500; }
+  .cat-side a .count { margin-left: auto; color: var(--fg-3); font-size: 12px; }
+  .faq-list h2 { font: 500 24px var(--font-sans); margin: 0 0 8px; }
+  .faq-list .crumb { font: 400 13px var(--font-sans); color: var(--fg-2); margin-bottom: 24px; }
+  .accordion {
+    background: #fff; border: 1px solid var(--mui-border); border-radius: 4px;
+    margin-bottom: 8px; overflow: hidden;
+  }
+  .accordion summary {
+    list-style: none; padding: 16px 20px; cursor: pointer;
+    display: flex; align-items: center; gap: 12px; user-select: none;
+  }
+  .accordion summary::-webkit-details-marker { display: none; }
+  .accordion summary h4 { font: 500 15px var(--font-sans); margin: 0; flex: 1; }
+  .accordion summary .material-icons { color: var(--fg-2); transition: transform 200ms; }
+  .accordion[open] summary .material-icons { transform: rotate(180deg); }
+  .accordion .answer { padding: 0 20px 20px; font: 400 14px/1.65 var(--font-sans); color: var(--fg-2); }
+  .accordion .feedback { padding: 12px 20px; border-top: 1px solid var(--mui-divider); display: flex; align-items: center; gap: 12px; }
+  .accordion .feedback .caption-k { margin-right: auto; }
+  .accordion .feedback button { padding: 6px 12px; border-radius: 4px; border: 1px solid var(--mui-border); background: #fff; cursor: pointer; font: 500 13px var(--font-sans); color: var(--fg-2); display: inline-flex; align-items: center; gap: 6px; }
+  .accordion .feedback button:hover { background: rgba(0,0,0,0.04); }
+  .contact-card {
+    margin-top: 48px; padding: 32px; background: #fff; border: 1px solid var(--mui-border); border-radius: 4px;
+    display: flex; align-items: center; gap: 24px;
+  }
+  .contact-card h3 { margin: 0 0 4px; font: 500 18px var(--font-sans); }
+  .contact-card p { margin: 0; font: 400 14px/1.5 var(--font-sans); color: var(--fg-2); }
+
+  /* ── 다크 모드 보정 ── 검색바/아코디언/문의카드 흰 배경 → 다크 표면색 */
+  :root[data-theme="dark"] .search-bar,
+  :root[data-theme="dark"] .accordion,
+  :root[data-theme="dark"] .contact-card,
+  :root[data-theme="dark"] .accordion .feedback button { background: var(--bg-1); }
+  :root[data-theme="dark"] .search-bar input { background: transparent; color: var(--fg-1); }
+  /* 검정 음영 호버 → 흰 음영 */
+  :root[data-theme="dark"] .cat-side a:hover,
+  :root[data-theme="dark"] .accordion .feedback button:hover { background: rgba(255,255,255,0.06); }
+
+/* 질문 아이콘 크기 */
+.faq-ico {
+  font-size: 18px;
+}
+/* 문의 카드 아이콘 */
+.faq-contact-ico {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(151, 71, 255, 0.1);
+  color: #9747ff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+/* 문의 카드 본문 */
+.faq-contact-body {
+  flex: 1;
+}

@@ -1,0 +1,459 @@
+body {
+  background: #fafafa;
+}
+
+.adm-shell {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: calc(100vh - 64px);
+}
+
+.adm-side {
+  background: #1e1b3a;
+  padding: 16px 8px;
+}
+
+.adm-side .sec {
+  font: 500 10px var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.5);
+  padding: 14px 12px 6px;
+}
+
+.adm-side a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 4px;
+  font: 400 13px var(--font-sans);
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 2px;
+}
+
+.adm-side a:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.adm-side a.active {
+  background: rgba(149, 117, 205, 0.2);
+  color: #b39ddb;
+}
+
+.adm-side a .material-icons {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.adm-side a.active .material-icons {
+  color: #b39ddb;
+}
+
+.adm-main {
+  padding: 24px 28px;
+}
+
+.adm-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.adm-head h1 {
+  font: 500 22px var(--font-sans);
+  margin: 0;
+}
+
+.tabs-bar {
+  display: flex;
+  gap: 4px;
+  background: #fff;
+  border-radius: 4px;
+  border: 1px solid var(--mui-border);
+  padding: 4px;
+  margin-bottom: 20px;
+  max-width: max-content;
+}
+
+.tab-btn {
+  padding: 8px 16px;
+  border-radius: 4px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font: 500 13px var(--font-sans);
+  color: var(--fg-2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tab-btn.active {
+  background: #1976d2;
+  color: #fff;
+}
+
+.tab-btn .material-icons {
+  font-size: 18px;
+}
+
+.panel {
+  display: none;
+}
+
+.panel.active {
+  display: block;
+}
+
+/* Tab 1: Auto-delete monitor */
+.compliance-row {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+  align-items: stretch;
+}
+
+.adm-card {
+  background: #fff;
+  border-radius: 4px;
+  border: 1px solid var(--mui-border);
+}
+
+.adm-card .head {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--mui-divider);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.adm-card .head h3 {
+  font: 500 14px var(--font-sans);
+  margin: 0;
+  flex: 1;
+}
+
+.adm-card .body {
+  padding: 0 18px 14px;
+}
+
+.policy-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 16px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--mui-divider);
+  align-items: center;
+}
+
+.adm-shell .policy-row.tbl-head {
+  display: grid;
+  background: #fafafa;
+  font: 500 11px var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--fg-2);
+}
+
+.policy-row .data-type {
+  font: 500 13px var(--font-sans);
+}
+
+.policy-row .policy {
+  font: 400 12px var(--font-sans);
+  color: var(--fg-2);
+  font-family: var(--font-mono);
+}
+
+.compliance-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font: 500 12px var(--font-sans);
+  background: #f5f5f5;
+  color: var(--fg-1);
+}
+
+.compliance-pill.ok {
+  background: rgba(46, 125, 50, 0.1);
+  color: #1b5e20;
+}
+
+.compliance-pill.warn {
+  background: rgba(237, 108, 2, 0.1);
+  color: #663c00;
+}
+
+.compliance-pill.err {
+  background: rgba(211, 47, 47, 0.1);
+  color: #b71c1c;
+}
+
+/* Search bar */
+.search-block {
+  background: #fff;
+  border: 1px solid var(--mui-border);
+  border-radius: 4px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.search-block h3 {
+  font: 500 13px var(--font-sans);
+  margin: 0 0 12px;
+}
+
+.search-row {
+  display: flex;
+  gap: 8px;
+}
+
+.search-row input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid var(--mui-border);
+  border-radius: 4px;
+  font: 400 14px var(--font-sans);
+  font-family: var(--font-mono);
+}
+
+.search-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.search-tabs button {
+  padding: 6px 12px;
+  border: 1px solid var(--mui-border);
+  border-radius: 4px;
+  background: #fff;
+  font: 500 12px var(--font-sans);
+  cursor: pointer;
+  color: var(--fg-2);
+}
+
+.search-tabs button.active {
+  background: #1976d2;
+  color: #fff;
+  border-color: #1976d2;
+}
+
+/* Result */
+.result-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.meta-card {
+  background: #fff;
+  border: 1px solid var(--mui-border);
+  border-radius: 4px;
+  padding: 18px;
+}
+
+.meta-card h3 {
+  font: 500 13px var(--font-sans);
+  margin: 0 0 12px;
+}
+
+.meta-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font: 400 13px var(--font-sans);
+  border-bottom: 1px dashed var(--mui-divider);
+}
+
+.meta-row:last-child {
+  border-bottom: none;
+}
+
+.meta-row .k {
+  color: var(--fg-2);
+}
+
+.meta-row .v {
+  color: var(--fg-1);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.deleted-note {
+  background: rgba(151, 71, 255, 0.06);
+  border: 1px solid rgba(151, 71, 255, 0.2);
+  padding: 12px 16px;
+  border-radius: 4px;
+  font: 400 12px/1.5 var(--font-sans);
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.deleted-note .material-icons {
+  color: #9747ff;
+  font-size: 18px;
+}
+
+/* 도넛 차트: 그래프 왼쪽 + 범례 오른쪽, 전체 중앙 정렬 */
+.donut-mini {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+  padding: 16px 0; /* 위아래 균등 여백 */
+}
+
+.donut-mini svg {
+  width: 130px;
+  height: 130px;
+  flex-shrink: 0;
+}
+
+.donut-mini .legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font: 400 12px var(--font-sans);
+}
+
+.donut-mini .legend .row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.donut-mini .legend .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+
+/* 도넛 SVG 텍스트: 다크모드 대응 */
+.donut-text-main {
+  fill: #212121;
+}
+
+.donut-text-sub {
+  fill: #757575;
+}
+
+/* ══ 다크모드 ══ */
+:root[data-theme="dark"] body {
+  background: #121212;
+}
+
+:root[data-theme="dark"] .tabs-bar {
+  background: #1e1e1e;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+:root[data-theme="dark"] .tab-btn {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+:root[data-theme="dark"] .tab-btn.active {
+  background: #1565c0;
+  color: #fff;
+}
+
+:root[data-theme="dark"] .adm-card {
+  background: #1e1e1e;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+:root[data-theme="dark"] .adm-card .head {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:root[data-theme="dark"] .adm-shell .policy-row.tbl-head {
+  background: #2a2a2a;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+:root[data-theme="dark"] .policy-row {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* 준수율 pill 다크모드 */
+:root[data-theme="dark"] .compliance-pill {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+:root[data-theme="dark"] .compliance-pill.ok {
+  background: rgba(46, 125, 50, 0.25);
+  color: #81c784;
+}
+
+:root[data-theme="dark"] .compliance-pill.warn {
+  background: rgba(237, 108, 2, 0.25);
+  color: #ffb74d;
+}
+
+:root[data-theme="dark"] .compliance-pill.err {
+  background: rgba(211, 47, 47, 0.25);
+  color: #ef9a9a;
+}
+
+/* 검색·동의 입력창 다크모드 */
+:root[data-theme="dark"] .search-block {
+  background: #1e1e1e;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+:root[data-theme="dark"] .search-row input {
+  background: #2a2a2a;
+  border-color: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.87);
+}
+
+:root[data-theme="dark"] .search-row input::placeholder {
+  color: rgba(255, 255, 255, 0.38);
+}
+
+:root[data-theme="dark"] .search-tabs button {
+  background: #2a2a2a;
+  border-color: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+:root[data-theme="dark"] .search-tabs button.active {
+  background: #1565c0;
+  border-color: #1565c0;
+  color: #fff;
+}
+
+/* 검색 결과 카드 다크모드 */
+:root[data-theme="dark"] .meta-card {
+  background: #1e1e1e;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+:root[data-theme="dark"] .meta-row {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+:root[data-theme="dark"] .deleted-note {
+  background: rgba(151, 71, 255, 0.12);
+  border-color: rgba(151, 71, 255, 0.3);
+}
+
+/* 도넛 SVG 텍스트 다크모드 */
+:root[data-theme="dark"] .donut-text-main {
+  fill: rgba(255, 255, 255, 0.87);
+}
+
+:root[data-theme="dark"] .donut-text-sub {
+  fill: rgba(255, 255, 255, 0.5);
+}

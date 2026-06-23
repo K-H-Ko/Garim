@@ -1,0 +1,1473 @@
+/* AdminPaymentCheck.css */
+
+.pm-adm-main {
+  padding: 24px;
+  background-color: var(--bg-app);
+}
+
+.pm-content--wide {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.pm-page-head {
+  margin-bottom: 24px;
+}
+
+.pm-page-head h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.pm-page-head p {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* 탭 버튼 스타일 */
+.pm-tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid var(--border-soft);
+  margin-bottom: 24px;
+}
+
+.pm-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pm-tab:hover {
+  color: var(--text-primary);
+}
+
+.pm-tab.active {
+  color: var(--primary-main);
+  border-bottom-color: var(--primary-main);
+}
+
+.pm-tab .material-icons {
+  font-size: 18px;
+}
+
+/* 요약 카드 영역 */
+.pm-metric-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.pm-metric {
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.pm-metric .lbl {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pm-metric .num {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.pm-metric .num small {
+  font-size: 14px;
+  font-weight: 500;
+  margin-left: 2px;
+  color: var(--text-secondary);
+}
+
+.pm-metric .delta {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* 요약 카드 테두리 및 배경 강조 */
+.pm-metric.ok {
+  border-left: 4px solid var(--success-main);
+}
+.pm-metric.err {
+  border-left: 4px solid var(--error-main);
+}
+.pm-metric.info {
+  border-left: 4px solid var(--info-main);
+}
+
+/* 테이블 카드 */
+.pm-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.pm-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border-soft);
+  background: var(--bg-card);
+}
+
+.pm-card-head h2 {
+  margin: 0 0 4px;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.pm-card-head p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+/* 툴바 */
+.pm-toolbar {
+  padding: 20px 16px;
+  border-bottom: 1px solid var(--border-soft);
+  background: var(--bg-card-head);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.pm-toolbar-filters {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  flex: 1;
+}
+
+.pm-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pm-filter-group label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.pm-filter-group select,
+.pm-filter-group input {
+  padding: 8px 12px;
+  font-size: 13px;
+  border: 1px solid var(--border-soft);
+  border-radius: 4px;
+  background: var(--bg-app);
+  color: var(--text-primary);
+  outline: none;
+  min-width: 130px;
+  height: 38px;
+  box-sizing: border-box;
+}
+
+.pm-filter-group select:focus,
+.pm-filter-group input:focus {
+  border-color: var(--primary-main);
+}
+
+/* 검색 조건 인풋 랩 */
+.pm-search-group {
+  flex: 1;
+  min-width: 280px;
+}
+
+.pm-search-input-wrap {
+  display: flex;
+}
+
+.pm-search-input-wrap select {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: none;
+  min-width: 100px;
+  width: 110px;
+}
+
+.pm-search-input-wrap input {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  flex: 1;
+  min-width: 150px;
+}
+
+/* 툴바 액션 버튼 */
+.pm-toolbar-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+.pm-btn-search,
+.pm-btn-reset {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 38px;
+  padding: 0 16px;
+  font-size: 13px;
+  font-weight: 600;
+  box-sizing: border-box;
+}
+
+.pm-btn-search .material-icons {
+  font-size: 16px;
+}
+
+/* 테이블 구성 */
+.pm-data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.pm-data-row {
+  display: grid;
+  grid-template-columns: 1.2fr 1.8fr 1.3fr 2fr 1fr 1fr 1fr 0.8fr;
+  align-items: center;
+  border-bottom: 1px solid var(--border-soft);
+  padding: 14px 16px;
+  font-size: 13px;
+  color: var(--text-primary);
+}
+
+.pm-data-row:last-child {
+  border-bottom: none;
+}
+
+.pm-data-row.pm-data-head {
+  background: var(--bg-card-head);
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-bottom: 2px solid var(--border-soft);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* 각 열 정렬 */
+.pm-data-row > span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 4px;
+}
+
+/* 사용자 & 상품 셀은 왼쪽 정렬 */
+.pm-data-row > .pm-user-cell,
+.pm-data-row > .pm-product-cell {
+  justify-content: flex-start;
+  text-align: left;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* 셀 텍스트 디자인 */
+.pm-date-cell {
+  color: var(--text-secondary);
+}
+
+.pm-user-cell strong {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.pm-user-cell small {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.pm-uuid-cell.mono {
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.pm-product-cell {
+  display: flex;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 8px;
+}
+
+.pm-prod-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.pm-prod-badge.subscription {
+  background: var(--primary-light);
+  color: var(--primary-main);
+}
+
+.pm-prod-badge.credit {
+  background: var(--info-light);
+  color: var(--info-main);
+}
+
+.pm-amount-cell {
+  font-weight: 600;
+}
+
+/* 상태 배지 */
+.pm-status {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 12px;
+  text-align: center;
+  display: inline-block;
+}
+
+.pm-status.success {
+  background-color: var(--success-light);
+  color: var(--success-main);
+}
+
+.pm-status.pending,
+.pm-status.ready {
+  background-color: var(--warning-light);
+  color: var(--warning-main);
+}
+
+.pm-status.canceled,
+.pm-status.refunded {
+  background-color: var(--error-light);
+  color: var(--error-main);
+}
+
+.pm-status.failed {
+  background-color: var(--text-secondary-light);
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+
+/* 상세 버튼 */
+.pm-btn-detail {
+  background: none;
+  border: 1px solid var(--border-soft);
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pm-btn-detail:hover {
+  background: var(--bg-app);
+  border-color: var(--text-secondary);
+}
+
+/* 페이지네이션 */
+.pm-pagination {
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--border-soft);
+  background: var(--bg-card-head);
+}
+
+.pm-pagination .meta {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.pm-pagination-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* limit-select 스타일 */
+.pm-limit-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pm-limit-select {
+  padding: 6px 8px;
+  font-size: 12px;
+  border: 1px solid var(--border-soft);
+  border-radius: 4px;
+  background: var(--bg-app);
+  color: var(--text-primary);
+  outline: none;
+}
+
+.pm-limit-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* 모달 팝업 스타일 */
+.pm-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.pm-modal {
+  background: var(--bg-card);
+  border-radius: 8px;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  animation: pmModalFadeIn 0.3s ease;
+}
+
+@keyframes pmModalFadeIn {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.pm-modal-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-soft);
+  background: var(--bg-card-head);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pm-modal-header h2 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.pm-modal-close {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.pm-modal-body {
+  padding: 20px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.pm-modal-footer {
+  padding: 16px 20px;
+  border-top: 1px solid var(--border-soft);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-card-head);
+}
+
+.pm-refund-confirm {
+  z-index: 1010;
+}
+
+.pm-refund-confirm-dialog {
+  max-width: 480px;
+}
+
+.pm-refund-confirm-text {
+  margin: 0 0 16px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.pm-refund-message {
+  margin-right: auto;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* 디테일 그리드 */
+.pm-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.pm-detail-section {
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
+  padding: 12px;
+  background: var(--bg-card);
+}
+
+.pm-detail-section h3 {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary-main);
+  margin: 0 0 10px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px dashed var(--border-soft);
+  padding-bottom: 6px;
+}
+
+.pm-detail-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.pm-detail-row:last-child {
+  margin-bottom: 0;
+}
+
+.pm-detail-lbl {
+  color: var(--text-secondary);
+}
+
+.pm-detail-val {
+  font-weight: 500;
+  color: var(--text-primary);
+  text-align: right;
+}
+
+.pm-detail-val.mono {
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.pm-detail-val.price {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.pm-refund-availability {
+  display: inline-flex;
+  justify-content: center;
+  min-width: 74px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.pm-refund-availability.ok {
+  background: var(--success-light);
+  color: var(--success-main);
+}
+
+.pm-refund-availability.disabled {
+  background: var(--text-secondary-light);
+  color: var(--text-secondary);
+}
+
+/* 풀 사이즈 섹션 */
+.pm-detail-section--full {
+  grid-column: span 2;
+}
+
+.pm-detail-note {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  background: var(--bg-app);
+  padding: 10px;
+  border-radius: 4px;
+}
+
+/* 환불 버튼 스타일 */
+.pm-btn-refund {
+  background-color: var(--error-main) !important;
+  color: #fff !important;
+}
+
+.pm-btn-refund:hover {
+  background-color: #c62828 !important;
+}
+
+/* v3 mockup refinement */
+.pm-adm-main {
+  min-width: 0;
+  padding: 24px 28px;
+  background: #fafafa;
+}
+
+.pm-content--wide {
+  width: 100%;
+  max-width: none;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.pm-page-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.pm-page-head h1 {
+  margin: 0 0 8px;
+  font: 600 28px var(--font-sans);
+  color: #111827;
+}
+
+.pm-page-head p {
+  margin: 0;
+  font: 400 14px/1.6 var(--font-sans);
+  color: #64748b;
+}
+
+.pm-tabs {
+  display: inline-flex;
+  gap: 0;
+  margin-bottom: 22px;
+  border: 1px solid #d1d5db;
+  border-radius: 5px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.pm-tab {
+  min-width: 86px;
+  height: 32px;
+  justify-content: center;
+  gap: 5px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 0;
+  color: #64748b;
+  font: 700 12px var(--font-sans);
+}
+
+.pm-tab .material-icons {
+  display: none;
+}
+
+.pm-tab.active {
+  background: #1976d2;
+  color: #fff;
+  border: 0;
+}
+
+.pm-metric-row {
+  grid-template-columns: repeat(4, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 26px;
+}
+
+.pm-metric {
+  min-height: 86px;
+  padding: 18px 20px;
+  border: 1px solid #d1d5db;
+  border-left-width: 1px !important;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  box-sizing: border-box;
+}
+
+.pm-metric .lbl {
+  margin-bottom: 8px;
+  color: #64748b;
+  font: 800 11px var(--font-sans);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.pm-metric .num {
+  margin: 0;
+  color: #0f172a;
+  font: 900 24px/1.1 var(--font-sans);
+}
+
+.pm-metric .num small {
+  color: #64748b;
+  font: 700 12px var(--font-sans);
+}
+
+.pm-metric .delta {
+  margin-top: 8px;
+  color: #64748b;
+  font: 600 11px var(--font-sans);
+}
+
+.pm-card {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+}
+
+.pm-card-head {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  padding: 18px 20px;
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.pm-card-head h2 {
+  margin: 0 0 4px;
+  color: #111827;
+  font: 800 15px var(--font-sans);
+}
+
+.pm-card-head p {
+  margin: 0;
+  color: #64748b;
+  font: 400 12px/1.5 var(--font-sans);
+}
+
+.pm-card-title-tools {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.pm-card-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+}
+
+.pm-toolbar {
+  flex: 1 1 auto;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.pm-toolbar-filters {
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  flex: 0 1 auto;
+}
+
+.pm-filter-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0;
+}
+
+.pm-filter-group label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.pm-filter-group select,
+.pm-filter-group input,
+.pm-limit-select {
+  height: 38px;
+  min-width: 0;
+  padding: 0 12px;
+  border: 1px solid #cfd6e1;
+  border-radius: 4px;
+  background: #fff;
+  color: #334155;
+  font: 600 12px var(--font-sans);
+  box-sizing: border-box;
+}
+
+.pm-filter-group select {
+  width: 106px;
+}
+
+.pm-search-group {
+  flex: 0 0 300px;
+  min-width: 300px;
+}
+
+.pm-search-input-wrap {
+  width: 100%;
+}
+
+.pm-search-input-wrap select {
+  width: 112px;
+  border-right: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.pm-search-input-wrap input {
+  width: 188px;
+  min-width: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  font-weight: 500;
+}
+
+.pm-date-range {
+  gap: 6px;
+}
+
+.pm-date-range input {
+  width: 132px;
+  padding: 0 10px;
+  color: #64748b;
+}
+
+.pm-date-range span {
+  color: #94a3b8;
+  font: 700 12px var(--font-sans);
+}
+
+.pm-toolbar-actions {
+  margin: 0;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.pm-btn-search,
+.pm-btn-reset {
+  height: 38px;
+  min-width: 54px;
+  padding: 0 14px;
+  border-radius: 4px;
+  font: 800 12px var(--font-sans);
+}
+
+.pm-btn-search .material-icons {
+  display: none;
+}
+
+.pm-data-row {
+  grid-template-columns: 1.1fr 1.7fr 1.35fr 1.8fr 0.95fr 0.95fr 1fr 78px;
+  min-height: 56px;
+  padding: 0 20px;
+  border-bottom: 1px solid #e5e7eb;
+  color: #0f172a;
+  font: 600 12px var(--font-sans);
+}
+
+.pm-data-row.pm-data-head {
+  min-height: 42px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f8fafc;
+  color: #334155;
+  font: 800 12px var(--font-sans);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.pm-data-row > span {
+  min-width: 0;
+  padding: 10px 8px;
+}
+
+.pm-data-row > span:first-child {
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.pm-data-row:hover:not(.pm-data-head) {
+  background: #f8fbff;
+}
+
+.pm-date-cell,
+.pm-method-cell,
+.pm-uuid-cell.mono {
+  color: #475569;
+  font: 500 11px var(--font-mono);
+}
+
+.pm-user-cell strong,
+.pm-product-cell strong {
+  font: 700 12px var(--font-sans);
+  color: #0f172a;
+}
+
+.pm-user-cell small {
+  color: #64748b;
+  font: 500 11px var(--font-mono);
+}
+
+.pm-product-cell {
+  flex-direction: row !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+  gap: 8px;
+}
+
+.pm-prod-badge {
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 8px;
+  border-radius: 11px;
+  font: 800 10px var(--font-sans);
+}
+
+.pm-status {
+  min-width: 52px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  font: 800 11px var(--font-sans);
+}
+
+.pm-btn-detail {
+  min-width: 52px;
+  height: 30px;
+  padding: 0 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  background: #fff;
+  color: #334155;
+  font: 800 11px var(--font-sans);
+}
+
+.pm-btn-detail:hover {
+  border-color: #1976d2;
+  color: #1976d2;
+  background: #f8fbff;
+}
+
+.pm-pagination {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  min-height: 58px;
+  padding: 0 20px;
+  border-top: 1px solid #e5e7eb;
+  background: #fff;
+}
+
+.pm-pagination .meta,
+.pm-limit-label {
+  color: #64748b;
+  font: 600 12px var(--font-sans);
+}
+
+.pm-pagination .meta {
+  grid-column: 2;
+  justify-self: center;
+}
+
+.pm-pagination-actions {
+  grid-column: 3;
+  justify-self: end;
+}
+
+.pm-limit-select {
+  width: 62px;
+}
+
+.pm-modal-backdrop {
+  background: rgba(15, 23, 42, 0.3);
+}
+
+.pm-modal {
+  max-width: 520px;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.22);
+}
+
+.pm-modal-header {
+  min-height: 62px;
+  padding: 0 24px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #fff;
+}
+
+.pm-modal-header h2 {
+  color: #111827;
+  font: 900 20px var(--font-sans);
+}
+
+.pm-modal-close {
+  width: 34px;
+  height: 34px;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.pm-modal-close:hover {
+  background: #f1f5f9;
+}
+
+.pm-modal-body {
+  padding: 22px 26px;
+}
+
+.pm-detail-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pm-detail-status-line {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  min-height: 32px;
+  color: #64748b;
+  font: 600 12px var(--font-sans);
+}
+
+.pm-detail-kv-row {
+  display: block;
+}
+
+.pm-detail-kv,
+.pm-detail-info-card > div,
+.pm-detail-payment-row > div {
+  min-width: 0;
+}
+
+.pm-detail-kv {
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #fff;
+  gap: 16px;
+}
+
+.pm-detail-info-card {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  padding: 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #f8fafc;
+  overflow: hidden;
+}
+
+.pm-detail-info-card > div {
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  align-items: center;
+  min-height: 68px;
+  padding: 14px 16px;
+  gap: 16px;
+}
+
+.pm-detail-info-card > div + div {
+  border-top: 1px solid #e5e7eb;
+}
+
+.pm-detail-info-card .pm-detail-val,
+.pm-detail-info-card .pm-detail-sub,
+.pm-detail-payment-row .pm-detail-val,
+.pm-detail-payment-row .pm-detail-amount,
+.pm-detail-payment-row .pm-detail-sub {
+  grid-column: 2;
+}
+
+.pm-detail-info-card .pm-detail-sub,
+.pm-detail-payment-row .pm-detail-sub {
+  margin-top: -4px;
+}
+
+.pm-detail-payment-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.pm-detail-payment-row > div {
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  align-items: center;
+  min-height: 66px;
+  padding: 14px 16px;
+  gap: 16px;
+}
+
+.pm-detail-payment-row > div + div {
+  border-top: 1px solid #e5e7eb;
+}
+
+.pm-detail-amount {
+  color: #0f172a;
+  font: 900 24px var(--font-sans);
+}
+
+.pm-detail-sub {
+  display: block;
+  margin-top: 4px;
+  color: #64748b;
+  font: 500 11px/1.4 var(--font-sans);
+}
+
+.pm-detail-result-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pm-detail-result-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  padding: 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.pm-detail-result-grid > div {
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  align-items: center;
+  min-height: 60px;
+  padding: 14px 16px;
+  gap: 16px;
+  min-width: 0;
+}
+
+.pm-detail-result-grid > div + div {
+  border-top: 1px solid #e5e7eb;
+}
+
+.pm-detail-result-grid strong {
+  color: #0f172a;
+  font: 800 13px var(--font-sans);
+}
+
+.pm-detail-result-grid small {
+  color: #64748b;
+  font: 500 11px var(--font-sans);
+  word-break: break-all;
+}
+
+.pm-detail-refund-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.pm-detail-grid {
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.pm-detail-section {
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.pm-detail-section h3 {
+  margin: 0 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e5e7eb;
+  color: #64748b;
+  font: 800 11px var(--font-sans);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.pm-detail-row {
+  align-items: center;
+  min-height: 28px;
+  margin-bottom: 8px;
+  gap: 16px;
+}
+
+.pm-detail-lbl {
+  color: #64748b;
+  font: 800 11px var(--font-sans);
+  align-self: center;
+}
+
+.pm-detail-val {
+  color: #0f172a;
+  font: 700 13px var(--font-sans);
+  word-break: break-word;
+  text-align: left;
+}
+
+.pm-modal-footer {
+  min-height: 64px;
+  padding: 0 24px;
+  border-top: 1px solid #e5e7eb;
+  background: #fff;
+}
+
+.pm-modal-footer .pm-btn-refund {
+  border-color: #d32f2f !important;
+  background: #d32f2f !important;
+  color: #fff !important;
+  opacity: 1;
+  visibility: visible;
+  box-shadow: 0 2px 6px rgba(211, 47, 47, 0.22);
+}
+
+.pm-modal-footer .pm-btn-refund:hover,
+.pm-modal-footer .pm-btn-refund:focus-visible {
+  border-color: #c62828 !important;
+  background: #c62828 !important;
+  color: #fff !important;
+}
+
+.pm-refund-confirm-dialog {
+  max-width: 500px;
+}
+
+@media (max-width: 1180px) {
+  .pm-card-head {
+    grid-template-columns: 1fr;
+  }
+
+  .pm-card-controls {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .pm-toolbar,
+  .pm-toolbar-filters {
+    justify-content: flex-start;
+  }
+}
+
+/* =========================================================
+   다크 모드 보정 (사용자와 동일 중성 톤)
+   v3 mockup에서 하드코딩된 흰/연회색 표면·고정 텍스트색을
+   다크 변수로 교체. 상태 배지/탭 활성 색 등 의미색은 유지.
+   ========================================================= */
+:root[data-theme="dark"] .pm-adm-main { background: var(--bg-2); }
+
+/* 카드/표면/입력/버튼/모달 흰 배경 → 다크 표면색 */
+:root[data-theme="dark"] .pm-metric,
+:root[data-theme="dark"] .pm-card,
+:root[data-theme="dark"] .pm-card-head,
+:root[data-theme="dark"] .pm-tabs,
+:root[data-theme="dark"] .pm-filter-group select,
+:root[data-theme="dark"] .pm-filter-group input,
+:root[data-theme="dark"] .pm-limit-select,
+:root[data-theme="dark"] .pm-btn-detail,
+:root[data-theme="dark"] .pm-modal,
+:root[data-theme="dark"] .pm-modal-header,
+:root[data-theme="dark"] .pm-modal-footer,
+:root[data-theme="dark"] .pm-detail-kv,
+:root[data-theme="dark"] .pm-detail-payment-row,
+:root[data-theme="dark"] .pm-detail-result-grid,
+:root[data-theme="dark"] .pm-detail-refund-line,
+:root[data-theme="dark"] .pm-detail-section,
+:root[data-theme="dark"] .pm-pagination { background: var(--bg-1); }
+
+/* 테이블 헤더/정보 카드/노트 등 보조 표면 */
+:root[data-theme="dark"] .pm-data-row.pm-data-head,
+:root[data-theme="dark"] .pm-detail-info-card,
+:root[data-theme="dark"] .pm-detail-note { background: var(--surface-alt); }
+
+/* 고정 텍스트색 → fg 변수 */
+:root[data-theme="dark"] .pm-page-head h1,
+:root[data-theme="dark"] .pm-metric .num,
+:root[data-theme="dark"] .pm-card-head h2,
+:root[data-theme="dark"] .pm-modal-header h2,
+:root[data-theme="dark"] .pm-data-row,
+:root[data-theme="dark"] .pm-user-cell strong,
+:root[data-theme="dark"] .pm-product-cell strong,
+:root[data-theme="dark"] .pm-detail-amount,
+:root[data-theme="dark"] .pm-detail-result-grid strong,
+:root[data-theme="dark"] .pm-detail-val { color: var(--fg-1); }
+
+:root[data-theme="dark"] .pm-page-head p,
+:root[data-theme="dark"] .pm-metric .lbl,
+:root[data-theme="dark"] .pm-metric .num small,
+:root[data-theme="dark"] .pm-metric .delta,
+:root[data-theme="dark"] .pm-card-head p,
+:root[data-theme="dark"] .pm-filter-group select,
+:root[data-theme="dark"] .pm-filter-group input,
+:root[data-theme="dark"] .pm-limit-select,
+:root[data-theme="dark"] .pm-date-range input,
+:root[data-theme="dark"] .pm-date-range span,
+:root[data-theme="dark"] .pm-data-row.pm-data-head,
+:root[data-theme="dark"] .pm-date-cell,
+:root[data-theme="dark"] .pm-method-cell,
+:root[data-theme="dark"] .pm-uuid-cell.mono,
+:root[data-theme="dark"] .pm-user-cell small,
+:root[data-theme="dark"] .pm-pagination .meta,
+:root[data-theme="dark"] .pm-limit-label,
+:root[data-theme="dark"] .pm-detail-status-line,
+:root[data-theme="dark"] .pm-detail-sub,
+:root[data-theme="dark"] .pm-detail-result-grid small,
+:root[data-theme="dark"] .pm-detail-section h3,
+:root[data-theme="dark"] .pm-detail-lbl,
+:root[data-theme="dark"] .pm-btn-detail { color: var(--fg-2); }
+
+/* 경계선 → divider 변수 */
+:root[data-theme="dark"] .pm-metric,
+:root[data-theme="dark"] .pm-card,
+:root[data-theme="dark"] .pm-card-head,
+:root[data-theme="dark"] .pm-tabs,
+:root[data-theme="dark"] .pm-filter-group select,
+:root[data-theme="dark"] .pm-filter-group input,
+:root[data-theme="dark"] .pm-limit-select,
+:root[data-theme="dark"] .pm-btn-detail,
+:root[data-theme="dark"] .pm-modal-header,
+:root[data-theme="dark"] .pm-modal-footer,
+:root[data-theme="dark"] .pm-data-row,
+:root[data-theme="dark"] .pm-data-row.pm-data-head,
+:root[data-theme="dark"] .pm-pagination,
+:root[data-theme="dark"] .pm-detail-kv,
+:root[data-theme="dark"] .pm-detail-info-card,
+:root[data-theme="dark"] .pm-detail-info-card > div + div,
+:root[data-theme="dark"] .pm-detail-payment-row,
+:root[data-theme="dark"] .pm-detail-payment-row > div + div,
+:root[data-theme="dark"] .pm-detail-result-grid,
+:root[data-theme="dark"] .pm-detail-result-grid > div + div,
+:root[data-theme="dark"] .pm-detail-refund-line,
+:root[data-theme="dark"] .pm-detail-section,
+:root[data-theme="dark"] .pm-detail-section h3 { border-color: var(--mui-divider); }
+
+/* 행/버튼 호버 → 흰 음영 */
+:root[data-theme="dark"] .pm-data-row:hover:not(.pm-data-head),
+:root[data-theme="dark"] .pm-btn-detail:hover,
+:root[data-theme="dark"] .pm-modal-close:hover { background: rgba(255, 255, 255, 0.06); }
+
+/* ── 환불 사유 입력 영역 ── */
+.pm-refund-reason-wrap {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pm-refund-reason-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--mui-divider);
+  border-radius: 6px;
+  background: var(--bg-paper);
+  color: var(--text-primary);
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.pm-refund-reason-input:focus {
+  outline: none;
+  border-color: var(--primary-main);
+}
+
+.pm-char-counter {
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-align: right;
+}
+
+:root[data-theme="dark"] .pm-refund-reason-input {
+  border-color: var(--mui-divider);
+  background: var(--bg-elevated);
+}
+
+/* 목록/모달 상태 메시지(로딩/에러/빈) */
+.pm-loading {
+  padding: 40px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+.pm-error {
+  padding: 40px;
+  text-align: center;
+  color: var(--error-main);
+}
+.pm-empty {
+  padding: 40px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+.pm-modal-loading {
+  padding: 40px 0;
+  text-align: center;
+  color: var(--text-secondary);
+}
+.pm-modal-error {
+  padding: 40px 0;
+  text-align: center;
+  color: var(--error-main);
+}
+/* 환불 사유 필수 표시(*) */
+.pm-required-mark {
+  color: var(--error-main);
+}

@@ -1,0 +1,101 @@
+.dash-page { padding: 32px; max-width: 1200px; margin: 0 auto; }
+  .dash-hero { display: flex; align-items: center; gap: 24px; margin-bottom: 32px; }
+  .dash-hero h1 { font: 300 36px var(--font-sans); margin: 0 0 4px; letter-spacing: -0.5px; }
+  .dash-hero p { font: 400 15px var(--font-sans); color: var(--fg-2); margin: 0; }
+  .dash-hero .cta-stack { margin-left: auto; display: flex; gap: 8px; }
+  .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .stat { background: var(--bg-1); border-radius: 4px; box-shadow: var(--mui-elev-1); padding: 24px; }
+  .stat .lbl { font: 500 12px var(--font-sans); text-transform: uppercase; letter-spacing: 0.5px; color: var(--fg-2); }
+  .stat .num { font: 300 36px var(--font-sans); margin-top: 8px; letter-spacing: -0.5px; }
+  .stat .delta { font: 400 13px var(--font-sans); color: #2e7d32; margin-top: 4px; }
+  .stat .delta.warn { color: #ed6c02; }
+  .stat .ico { float: right; opacity: 0.4; }
+  .stat .ico .material-icons { font-size: 28px; color: #1976d2; }
+
+  .dash-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; align-items: flex-start; }
+  .card-block { background: var(--bg-1); border-radius: 4px; box-shadow: var(--mui-elev-1); padding: 24px; margin-bottom: 16px; }
+  .card-block h2 { font: 500 18px var(--font-sans); margin: 0 0 16px; display: flex; align-items: center; gap: 8px; }
+  .card-block h2 .spacer { flex: 1; }
+  .card-block h2 a { font: 400 13px var(--font-sans); color: #1976d2; }
+
+  .progress-row { display: flex; align-items: center; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--mui-divider); }
+  .progress-row:last-child { border-bottom: none; }
+  .progress-row .thumb { width: 64px; aspect-ratio: 16/9; border-radius: 4px; background: #000; overflow: hidden; flex-shrink: 0; position: relative; }
+  .progress-row .thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .progress-row .body { flex: 1; }
+  .progress-row .name { font: 500 14px var(--font-sans); }
+  .progress-row .meta { font: 400 12px var(--font-sans); color: var(--fg-2); margin-top: 2px; }
+  .progress-row .progress { height: 4px; margin-top: 8px; max-width: 280px; }
+
+  .hist-row { display: flex; align-items: center; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--mui-divider); }
+  .hist-row:last-child { border-bottom: none; }
+  .hist-row .thumb { width: 56px; aspect-ratio: 16/9; border-radius: 4px; overflow: hidden; background: #000; flex-shrink: 0; }
+  .hist-row .thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .hist-row .body { flex: 1; min-width: 0; }
+  .hist-row .name { font: 500 14px var(--font-sans); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .hist-row .meta { font: 400 12px var(--font-sans); color: var(--fg-2); margin-top: 2px; }
+  .hist-row .right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+
+  .sns-widget { background: linear-gradient(135deg, rgba(151,71,255,0.06), rgba(25,118,210,0.04)); border: 1px solid rgba(151,71,255,0.2); }
+  .sns-widget h2 { color: #9747ff; }
+  .sns-widget .big-num { font: 300 48px var(--font-sans); color: #9747ff; line-height: 1; }
+  .sns-widget .desc { font: 400 13px/1.5 var(--font-sans); color: var(--fg-2); margin: 8px 0 16px; }
+
+  .tip-card { background: rgba(25,118,210,0.04); border-radius: 4px; padding: 16px; }
+  .tip-card h3 { font: 500 13px var(--font-sans); margin: 0 0 6px; }
+  .tip-card p { font: 400 12px/1.5 var(--font-sans); color: var(--fg-2); margin: 0; }
+
+@media (max-width: 900px) {
+  .dash-grid { grid-template-columns: 1fr; }
+  .stat-row { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+  .stat-row { grid-template-columns: 1fr; }
+}
+
+.progress-row .actions-group { display: flex; align-items: center; gap: 8px; }
+.progress-row .delete-btn { opacity: 0; transition: opacity 0.2s; color: #d32f2f; background: transparent; border: none; cursor: pointer; padding: 4px; border-radius: 4px; }
+.progress-row .delete-btn:hover { background: rgba(211,47,47,0.1); }
+.progress-row:hover .delete-btn { opacity: 1; }
+
+.btn-download-green { color: #2e7d32 !important; }
+:root[data-theme="dark"] .btn-download-green { color: #81c784 !important; }
+
+/* 아이콘 크기/색상 */
+.db-ico-20 { font-size: 20px; }
+.db-ico-18 { font-size: 18px; }
+.db-ico-purple { color: #9747ff; }
+.db-ico-danger { color: #d32f2f; }
+.db-ico-green { color: #2e7d32; }
+.db-help-ico { font-size: 14px; cursor: help; color: var(--fg-3); }
+/* 통계 단위/크레딧 */
+.db-unit { font-size: 18px; color: var(--fg-3); }
+.db-credit-col { display: flex; flex-direction: column; gap: 4px; }
+.db-credit-sub { font-size: 12px; color: var(--fg-3); font-weight: normal; }
+.db-delta-row { display: flex; align-items: center; gap: 4px; }
+/* 전체 취소 버튼 */
+.db-del-all { color: #d32f2f; border-color: #f4c7c7; }
+/* 빈/로딩 메시지 */
+.db-empty { padding: 24px; text-align: center; color: var(--fg-3); }
+/* 썸네일 */
+.db-thumb { overflow: hidden; position: relative; }
+.db-thumb-fs { overflow: hidden; position: relative; flex-shrink: 0; }
+.db-thumb-img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
+.db-thumb-ico { font-size: 24px; color: var(--fg-2); position: relative; z-index: 1; }
+/* 최근 이력 행 */
+.db-hist-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.db-hist-left { display: flex; align-items: center; gap: 12px; flex: 1; overflow: hidden; }
+.db-chip-partial { flex-shrink: 0; color: #ed6c02; background-color: rgba(237, 108, 2, 0.1); }
+.db-chip-shrink { flex-shrink: 0; }
+.db-hist-body { display: flex; align-items: center; gap: 8px; overflow: hidden; flex-direction: row; }
+.db-hist-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+.db-hist-meta { display: flex; align-items: center; gap: 4px; white-space: nowrap; flex-shrink: 0; margin-top: 0; }
+.db-hist-right { flex-shrink: 0; display: flex; flex-direction: row; gap: 8px; align-items: center; }
+.db-act-icon { padding: 4px 8px; min-width: 0; }
+.db-act-detail { padding: 4px 8px; font-size: 12px; min-width: 0; white-space: nowrap; }
+/* SNS 위젯 */
+.db-big-num { font-size: 28px; color: var(--fg-2); margin: 16px 0; }
+/* 알림 */
+.db-noti-body { font: 400 13px/1.5 var(--font-sans); color: var(--fg-1); }
+.db-noti-time { font: 400 11px/1 var(--font-sans); color: var(--fg-3); margin-top: 4px; }
+.db-noti-empty { font: 400 13px/1.6 var(--font-sans); color: var(--fg-3); padding: 8px 0; }

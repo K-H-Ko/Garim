@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 80" width="100%" height="100%">
+  <defs>
+    <linearGradient id="lensGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#9747ff" />
+      <stop offset="100%" stop-color="#1976d2" />
+    </linearGradient>
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1976d2" />
+      <stop offset="100%" stop-color="#9747ff" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Logo Icon (Left Side) - 60x60 -->
+  <g transform="translate(10, 10) scale(0.6)">
+    <!-- Focus brackets -->
+    <path d="M25 15 L15 15 L15 25" fill="none" stroke="#1976d2" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M75 15 L85 15 L85 25" fill="none" stroke="#1976d2" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M25 85 L15 85 L15 75" fill="none" stroke="#1976d2" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M75 85 L85 85 L85 75" fill="none" stroke="#1976d2" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+    
+    <!-- Outer Eye -->
+    <path d="M15 50 C30 25 70 25 85 50 C70 75 30 75 15 50 Z" fill="none" stroke="url(#lensGrad)" stroke-width="6" stroke-linejoin="round" />
+    
+    <!-- Blocky Pupil -->
+    <rect x="40" y="40" width="20" height="20" fill="#9747ff" rx="4" />
+    <rect x="45" y="45" width="10" height="10" fill="#fff" rx="2" />
+  </g>
+
+  <!-- Garim Text -->
+  <text x="80" y="55" font-family="'Pretendard', system-ui, -apple-system, sans-serif" font-weight="800" font-size="44" fill="url(#textGrad)" letter-spacing="-1.5">Garim</text>
+  
+  <!-- Little AI Sparkle -->
+  <path d="M 225 30 Q 230 30 230 25 Q 230 30 235 30 Q 230 30 230 35 Q 230 30 225 30 Z" fill="#1976d2" />
+  <path d="M 235 20 Q 238 20 238 17 Q 238 20 241 20 Q 238 20 238 23 Q 238 20 235 20 Z" fill="#9747ff" />
+</svg>

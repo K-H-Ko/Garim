@@ -1,0 +1,16 @@
+/*
+코드 설명:
+결제 성공 안내 페이지 전용 스타일. 승인 결과 알림과 주문 요약 카드를 표시한다.
+*/
+.payment-success-alert {
+  margin-bottom: 16px;
+}
+
+.page-payment-success .pay-shell {
+  max-width: 720px;
+}
+
+.payment-success-orderid {
+  font-size: 13px;
+  word-break: break-all;
+}

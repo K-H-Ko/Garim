@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>플랜 선택 · Garim [v1 정식]</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="garim.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<style>
+  .gate-page { padding: 32px; min-height: calc(100vh - 64px); display: flex; align-items: center; justify-content: center; position: relative; }
+  .gate-page::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.3); backdrop-filter: blur(2px); z-index: 0; }
+  .gate-shell { max-width: 1100px; width: 100%; background: #fff; border-radius: 8px; box-shadow: var(--mui-elev-24); position: relative; z-index: 1; overflow: hidden; }
+  .gate-head { padding: 32px 40px 24px; border-bottom: 1px solid var(--mui-divider); }
+  .gate-head h1 { font: 500 28px var(--font-sans); margin: 0 0 4px; }
+  .gate-head .sub { font: 400 14px var(--font-sans); color: var(--fg-2); }
+  .target-file { display: flex; align-items: center; gap: 16px; padding: 20px 40px; background: rgba(25,118,210,0.04); border-bottom: 1px solid var(--mui-divider); }
+  .target-file .thumb { width: 72px; aspect-ratio: 16/9; border-radius: 4px; overflow: hidden; background: #000; }
+  .target-file .thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .target-file h3 { font: 500 16px var(--font-sans); margin: 0 0 4px; }
+  .target-file .meta { font: 400 13px var(--font-sans); color: var(--fg-2); }
+  .gate-body { padding: 32px 40px; }
+  .gate-disabled { display: flex; flex-direction: column; align-items: center; padding: 48px; text-align: center; }
+  .gate-disabled .material-icons { font-size: 64px; color: var(--fg-3); margin-bottom: 16px; }
+  .gate-disabled h2 { font: 500 24px var(--font-sans); margin: 0 0 8px; }
+  .gate-disabled p { font: 400 15px/1.6 var(--font-sans); color: var(--fg-2); max-width: 480px; margin: 0 0 24px; }
+  .preview-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; opacity: 0.5; pointer-events: none; }
+  .preview-card { background: #fff; border: 1px solid var(--mui-border); border-radius: 4px; padding: 24px; }
+  .preview-card h4 { font: 500 16px var(--font-sans); margin: 0 0 8px; }
+  .preview-card .price { font: 300 36px var(--font-sans); margin: 8px 0; }
+  .close-btn { position: absolute; top: 16px; right: 16px; z-index: 2; }
+  .actions-row { display: flex; gap: 12px; justify-content: center; }
+</style>
+</head>
+<body class="page-app" data-screen-label="13 Payment gate (MVP1 disabled)">
+<div id="header"></div>
+
+<div class="gate-page">
+  <a href="10-analysis-report.html" class="gh__icon close-btn" style="background:rgba(0,0,0,0.04);"><span class="material-icons">close</span></a>
+  <div class="gate-shell">
+    <div class="gate-head">
+      <h1>결제 게이트 · 플랜 선택</h1>
+      <div class="sub">처리할 파일을 확인하고 플랜을 선택해주세요.</div>
+    </div>
+
+    <div class="target-file">
+      <div class="thumb"><img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=300&q=60" alt=""></div>
+      <div style="flex:1;">
+        <h3>family_picnic_2026.mp4</h3>
+        <div class="meta">17건 검출됨 · 위험도 8.2/10 · 2분 14초 · 847MB</div>
+      </div>
+      <span class="mui-chip mui-chip--soft-info mui-chip--md">처리 대상</span>
+    </div>
+
+    <div class="gate-body">
+      <div class="gate-disabled">
+        <span class="material-icons">payments</span>
+        <h2>MVP1 단계에서는 결제 없이 이용하실 수 있어요</h2>
+        <p>현재 모든 치환 기능이 무료입니다. 결제 시스템은 v1 정식 출시 시점에 도입됩니다. 지금 바로 처리하러 이동하시겠어요?</p>
+        <div class="actions-row">
+          <a href="10-analysis-report.html" class="mui-btn mui-btn--outlined">← 리포트로 돌아가기</a>
+          <a href="15-replace-options.html" class="mui-btn mui-btn--contained mui-btn--lg">
+            <span class="material-icons" style="font-size:20px;">arrow_forward</span>
+            바로 무료 처리하기
+          </a>
+        </div>
+      </div>
+
+      <div style="margin-top: 48px; padding-top: 32px; border-top: 1px dashed var(--mui-divider);">
+        <div class="caption-k" style="text-align:center; margin-bottom: 16px;">참고 · v1 정식 출시 후 노출될 플랜 옵션</div>
+        <div class="preview-grid">
+          <div class="preview-card">
+            <span class="overline-k">1회권</span>
+            <div class="price">2,900<small style="font-size:14px;">원</small></div>
+            <p class="caption-k" style="font-size:13px;">이번 영상 1편만 처리</p>
+          </div>
+          <div class="preview-card" style="border-color:#1976d2;">
+            <span class="mui-chip mui-chip--primary" style="margin-bottom:8px;">추천</span>
+            <h4>Pro</h4>
+            <div class="price">19,800<small style="font-size:14px;">원/월</small></div>
+            <p class="caption-k" style="font-size:13px;">월 50회 · 우선 처리</p>
+          </div>
+          <div class="preview-card">
+            <span class="overline-k">Studio</span>
+            <div class="price">99,000<small style="font-size:14px;">원/월</small></div>
+            <p class="caption-k" style="font-size:13px;">팀 5인 · 월 500회</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="garim-chrome.js"></script>
+<script>
+  document.getElementById('header').innerHTML = gh({ variant: 'app', current: 'detect', authed: true });
+</script>
+</body></html>

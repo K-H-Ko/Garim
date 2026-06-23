@@ -1,0 +1,229 @@
+.upload-page {
+  flex: 1;
+  padding: 32px 32px 64px;
+}
+
+.upload-head {
+  max-width: 1100px;
+  margin: 0 auto 24px;
+}
+
+.upload-head h1 {
+  font: 500 28px var(--font-sans);
+  margin: 0 0 4px;
+  letter-spacing: -0.25px;
+}
+
+.upload-head .sub {
+  font: 400 14px var(--font-sans);
+  color: var(--fg-2);
+}
+
+.upload-banner {
+  max-width: 1100px;
+  margin: 0 auto 24px;
+}
+
+.upload-grid {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.dropzone-card {
+  background: #ffffff;
+  border-radius: 4px;
+  box-shadow: var(--mui-elev-1);
+  padding: 24px;
+}
+
+.dropzone-card .dropzone {
+  padding: 64px 32px;
+  cursor: pointer;
+}
+
+.dropzone-card .dropzone--selected {
+  border-color: #1976d2;
+  background: rgba(25, 118, 210, 0.02);
+}
+
+.upload-input {
+  display: none;
+}
+
+.dropzone-card .dropzone h2 {
+  font: 500 22px var(--font-sans);
+  margin: 0 0 8px;
+}
+
+.dropzone-card .dropzone p {
+  font: 400 14px/1.5 var(--font-sans);
+  color: var(--fg-2);
+  margin: 0 0 16px;
+}
+
+.file-types {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.file-types .mui-chip {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.or-sample {
+  text-align: center;
+  margin-top: 24px;
+  font: 400 13px var(--font-sans);
+  color: var(--fg-2);
+}
+
+.or-sample a {
+  color: #1976d2;
+  font-weight: 500;
+}
+
+.sidebar-card {
+  background: #ffffff;
+  border-radius: 4px;
+  box-shadow: var(--mui-elev-1);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.sidebar-card h3 {
+  font: 500 14px var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--fg-2);
+  margin: 0 0 12px;
+}
+
+.spec-row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 6px 0;
+  font: 400 13px var(--font-sans);
+  border-bottom: 1px dashed var(--mui-divider);
+}
+
+.spec-row:last-child {
+  border-bottom: none;
+}
+
+.spec-row .v {
+  color: var(--fg-1);
+  font-weight: 500;
+  text-align: left;
+}
+
+.spec-row .k {
+  color: var(--fg-2);
+  flex-shrink: 0;
+  width: 90px;
+  margin-right: 16px;
+  white-space: nowrap;
+}
+
+.spec-group {
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--mui-divider);
+}
+
+.spec-group .spec-row {
+  padding: 0;
+  border-bottom: none;
+}
+
+.plan-info {
+  font-size: 11px;
+  color: var(--fg-2);
+  font-weight: 400;
+  margin-top: 4px;
+  line-height: 1.3;
+  display: block;
+}
+
+.queue-card {
+  background: rgba(151, 71, 255, 0.04);
+  border: 1px solid rgba(151, 71, 255, 0.2);
+}
+
+.queue-card h3 {
+  color: #9747ff;
+}
+
+.queue-num {
+  font: 300 36px var(--font-sans);
+  color: #9747ff;
+  line-height: 1;
+}
+
+.progress-state {
+  display: none;
+}
+
+.progress-state.show {
+  display: block;
+}
+
+.progress-state .file-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+}
+
+.progress-state .file-info .material-icons {
+  font-size: 40px;
+  color: #1976d2;
+}
+
+.progress-state .file-info .name {
+  font: 500 15px var(--font-sans);
+}
+
+.progress-state .file-info .meta {
+  font: 400 12px var(--font-sans);
+  color: var(--fg-2);
+}
+
+/* ── 다크 모드 보정 ── 흰 카드 표면 → 다크 표면색 */
+:root[data-theme="dark"] .dropzone-card,
+:root[data-theme="dark"] .sidebar-card {
+  background: var(--bg-1);
+}
+
+/* 파일 형식 칩 — 라이트의 검정 음영을 흰 음영으로 */
+:root[data-theme="dark"] .file-types .mui-chip {
+  background: rgba(255, 255, 255, 0.08);
+}
+/* 선택 파일 정보 영역 */
+.up-file-info {
+  flex: 1;
+}
+/* 업로드 진행 바 여백 + 부드러운 전환 */
+.up-progress {
+  margin: 16px 0 4px;
+}
+.up-progress .progress__bar {
+  transition: width 0.3s ease;
+}
+/* 진행률 퍼센트 텍스트 */
+.up-progress-pct {
+  font: 400 11px var(--font-sans);
+  color: var(--fg-2);
+  text-align: right;
+}
+/* 처리 안내 문구 */
+.up-guide-text {
+  font: 400 13px/1.5 var(--font-sans);
+  color: var(--fg-2);
+}

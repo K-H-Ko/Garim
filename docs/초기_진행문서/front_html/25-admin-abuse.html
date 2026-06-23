@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>어뷰징 모니터링 · Garim Admin</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="garim.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<style>
+  body { background: #fafafa; }
+  .adm-shell { display: grid; grid-template-columns: 220px 1fr; min-height: calc(100vh - 64px); }
+  .adm-side { background: #212121; padding: 16px 8px; }
+  .adm-side .sec { font: 500 10px var(--font-sans); text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.5); padding: 14px 12px 6px; }
+  .adm-side a { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 4px; font: 400 13px var(--font-sans); color: rgba(255,255,255,0.85); margin-bottom: 2px; }
+  .adm-side a:hover { background: rgba(255,255,255,0.06); }
+  .adm-side a.active { background: rgba(25,118,210,0.15); color: #42a5f5; }
+  .adm-side a .material-icons { font-size: 18px; color: rgba(255,255,255,0.5); }
+  .adm-side a.active .material-icons { color: #42a5f5; }
+  .adm-main { padding: 24px 28px; }
+  .adm-head { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+  .adm-head h1 { font: 500 22px var(--font-sans); margin: 0; }
+  .adm-head .meta { font: 400 12px var(--font-sans); color: var(--fg-2); font-family: var(--font-mono); }
+
+  .metric-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+  .metric { background: #fff; border-radius: 4px; border: 1px solid var(--mui-border); padding: 14px 16px; }
+  .metric .lbl { font: 400 11px var(--font-sans); text-transform: uppercase; letter-spacing: 0.5px; color: var(--fg-2); }
+  .metric .num { font: 300 26px var(--font-sans); letter-spacing: -0.5px; margin-top: 2px; }
+  .metric.danger .num { color: #d32f2f; }
+  .metric.warn .num { color: #ed6c02; }
+  .metric .delta { font: 400 11px var(--font-sans); color: var(--fg-2); margin-top: 2px; }
+
+  .adm-grid { display: grid; grid-template-columns: 1fr 360px; gap: 16px; align-items: flex-start; }
+  .adm-card { background: #fff; border-radius: 4px; border: 1px solid var(--mui-border); }
+  .adm-card .head { padding: 12px 16px; border-bottom: 1px solid var(--mui-divider); display: flex; align-items: center; gap: 12px; }
+  .adm-card .head h3 { font: 500 14px var(--font-sans); margin: 0; flex: 1; }
+  .adm-card .body { padding: 0; }
+
+  .susp-row { display: grid; grid-template-columns: 32px 1fr 110px 100px 130px 100px 100px; gap: 12px; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--mui-divider); cursor: pointer; transition: background 100ms; }
+  .susp-row:hover { background: rgba(0,0,0,0.02); }
+  .susp-row.selected { background: rgba(25,118,210,0.06); }
+  .susp-row.head { background: #fafafa; font: 500 11px var(--font-sans); text-transform: uppercase; letter-spacing: 0.5px; color: var(--fg-2); cursor: default; }
+  .susp-row .uid { font-family: var(--font-mono); font-size: 12px; color: var(--fg-2); }
+  .susp-row .trigger { font: 500 12px var(--font-sans); }
+  .susp-row .action { font: 400 12px var(--font-sans); }
+  .susp-row .severity-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  .log-detail { padding: 16px; max-height: 600px; overflow-y: auto; }
+  .log-detail h4 { font: 500 13px var(--font-sans); margin: 0 0 8px; }
+  .log-detail .meta-row { display: flex; justify-content: space-between; padding: 4px 0; font: 400 12px var(--font-sans); }
+  .log-detail .meta-row .k { color: var(--fg-2); }
+  .log-detail .meta-row .v { font-family: var(--font-mono); }
+  .timeline-log { font: 400 12px/1.5 var(--font-sans); font-family: var(--font-mono); background: #fafafa; padding: 12px; border-radius: 4px; margin: 12px 0; max-height: 220px; overflow-y: auto; }
+  .timeline-log .ts { color: var(--fg-3); }
+  .timeline-log .err { color: #d32f2f; }
+  .reason-input { width: 100%; padding: 10px; border: 1px solid var(--mui-border); border-radius: 4px; font: 400 13px var(--font-sans); resize: vertical; min-height: 60px; }
+  .reason-actions { display: flex; gap: 8px; margin-top: 12px; }
+</style>
+</head>
+<body data-screen-label="25 Admin abuse">
+<div id="header"></div>
+
+<div class="adm-shell">
+  <aside class="adm-side">
+    <div class="sec">운영</div>
+    <a href="25-admin-abuse.html" class="active"><span class="material-icons">shield</span>어뷰징 모니터링</a>
+    <a href="26-admin-queue.html"><span class="material-icons">queue</span>처리 큐</a>
+    <a href="27-admin-compliance.html"><span class="material-icons">verified_user</span>컴플라이언스</a>
+    <div class="sec">시스템</div>
+    <a href="#"><span class="material-icons">people</span>사용자</a>
+    <a href="#"><span class="material-icons">analytics</span>분석</a>
+    <a href="#"><span class="material-icons">tune</span>정책 설정</a>
+  </aside>
+
+  <main class="adm-main">
+    <div class="adm-head">
+      <h1>어뷰징 모니터링</h1>
+      <span class="meta">admin.garim.kr · 실시간 · 마지막 갱신 방금 전</span>
+      <div style="margin-left:auto;display:flex;gap:8px;">
+        <button class="mui-btn mui-btn--outlined mui-btn--sm"><span class="material-icons" style="font-size:16px;">refresh</span>새로고침</button>
+        <button class="mui-btn mui-btn--outlined mui-btn--sm"><span class="material-icons" style="font-size:16px;">tune</span>임계값 설정</button>
+      </div>
+    </div>
+
+    <div class="metric-row">
+      <div class="metric danger">
+        <div class="lbl">자동 차단 (24h)</div>
+        <div class="num">128</div>
+        <div class="delta">+34 (전일 대비 +36%)</div>
+      </div>
+      <div class="metric warn">
+        <div class="lbl">수동 검토 대기</div>
+        <div class="num">7</div>
+        <div class="delta">평균 응답 12분</div>
+      </div>
+      <div class="metric">
+        <div class="lbl">차단 해제 (7d)</div>
+        <div class="num">42</div>
+        <div class="delta">오탐률 24%</div>
+      </div>
+      <div class="metric">
+        <div class="lbl">평균 트리거 점수</div>
+        <div class="num">6.4<small style="font-size:14px;color:var(--fg-2);">/10</small></div>
+        <div class="delta">정상 범위</div>
+      </div>
+    </div>
+
+    <div class="adm-grid">
+      <div class="adm-card">
+        <div class="head">
+          <h3>의심 활동 — 최근 50건</h3>
+          <span class="mui-chip mui-chip--soft-error">자동 차단 12</span>
+          <span class="mui-chip mui-chip--soft-warning">검토 대기 7</span>
+          <span class="mui-chip mui-chip--soft-info">정상화 31</span>
+          <div style="flex:1;"></div>
+          <button class="mui-btn mui-btn--text mui-btn--sm">필터 ▾</button>
+        </div>
+
+        <div class="susp-row head">
+          <span></span>
+          <span>사용자 (해시)</span>
+          <span>IP</span>
+          <span>트리거</span>
+          <span>점수·시간</span>
+          <span>조치</span>
+          <span></span>
+        </div>
+
+        <div class="susp-row selected">
+          <span class="severity-dot" style="background:#d32f2f;"></span>
+          <span class="uid">u_3f4a8b21...</span>
+          <span class="uid">211.45.***</span>
+          <span class="trigger">rate_limit</span>
+          <span>
+            <strong style="color:#d32f2f;">9.2</strong> · 2분 전
+            <div class="caption-k" style="font-size:11px;">15초당 12회 시도</div>
+          </span>
+          <span class="action"><span class="mui-chip mui-chip--soft-error" style="height:20px;font-size:10px;">자동 차단</span></span>
+          <span><button class="mui-btn mui-btn--text mui-btn--sm">상세 →</button></span>
+        </div>
+
+        <div class="susp-row">
+          <span class="severity-dot" style="background:#ed6c02;"></span>
+          <span class="uid">u_91c2e7f4...</span>
+          <span class="uid">110.45.***</span>
+          <span class="trigger">multi_account</span>
+          <span>
+            <strong style="color:#ed6c02;">7.4</strong> · 8분 전
+            <div class="caption-k" style="font-size:11px;">동일 디바이스 5계정</div>
+          </span>
+          <span class="action"><span class="mui-chip mui-chip--soft-warning" style="height:20px;font-size:10px;">검토 대기</span></span>
+          <span><button class="mui-btn mui-btn--text mui-btn--sm">상세 →</button></span>
+        </div>
+
+        <div class="susp-row">
+          <span class="severity-dot" style="background:#ed6c02;"></span>
+          <span class="uid">u_a05e9c33...</span>
+          <span class="uid">175.118.***</span>
+          <span class="trigger">bot_signature</span>
+          <span>
+            <strong style="color:#ed6c02;">7.0</strong> · 14분 전
+            <div class="caption-k" style="font-size:11px;">User-Agent 누락</div>
+          </span>
+          <span class="action"><span class="mui-chip mui-chip--soft-warning" style="height:20px;font-size:10px;">검토 대기</span></span>
+          <span><button class="mui-btn mui-btn--text mui-btn--sm">상세 →</button></span>
+        </div>
+
+        <div class="susp-row">
+          <span class="severity-dot" style="background:#d32f2f;"></span>
+          <span class="uid">u_5b9d12a8...</span>
+          <span class="uid">203.227.***</span>
+          <span class="trigger">concurrent_jobs</span>
+          <span>
+            <strong style="color:#d32f2f;">8.6</strong> · 22분 전
+            <div class="caption-k" style="font-size:11px;">동시 12건 업로드</div>
+          </span>
+          <span class="action"><span class="mui-chip mui-chip--soft-error" style="height:20px;font-size:10px;">자동 차단</span></span>
+          <span><button class="mui-btn mui-btn--text mui-btn--sm">상세 →</button></span>
+        </div>
+
+        <div class="susp-row">
+          <span class="severity-dot" style="background:#ed6c02;"></span>
+          <span class="uid">u_2e7e1f99...</span>
+          <span class="uid">59.10.***</span>
+          <span class="trigger">repeat_pattern</span>
+          <span>
+            <strong style="color:#ed6c02;">6.8</strong> · 31분 전
+            <div class="caption-k" style="font-size:11px;">동일 해시 8회</div>
+          </span>
+          <span class="action"><span class="mui-chip mui-chip--soft-warning" style="height:20px;font-size:10px;">검토 대기</span></span>
+          <span><button class="mui-btn mui-btn--text mui-btn--sm">상세 →</button></span>
+        </div>
+
+        <div class="susp-row">
+          <span class="severity-dot" style="background:#2e7d32;"></span>
+          <span class="uid">u_88a4b3c1...</span>
+          <span class="uid">121.190.***</span>
+          <span class="trigger">rate_limit</span>
+          <span>
+            <strong>4.2</strong> · 1시간 전
+            <div class="caption-k" style="font-size:11px;">정상화 (해제됨)</div>
+          </span>
+          <span class="action"><span class="mui-chip mui-chip--soft-success" style="height:20px;font-size:10px;">정상</span></span>
+          <span><button class="mui-btn mui-btn--text mui-btn--sm">이력 →</button></span>
+        </div>
+
+        <div style="padding:12px 16px;text-align:center;color:var(--fg-2);font:400 12px var(--font-sans);">… 44건 더 보기</div>
+      </div>
+
+      <aside class="adm-card">
+        <div class="head">
+          <h3>활동 상세 — u_3f4a8b21</h3>
+          <span class="mui-chip mui-chip--soft-error">자동 차단됨</span>
+        </div>
+        <div class="log-detail">
+          <h4>식별 정보</h4>
+          <div class="meta-row"><span class="k">사용자 해시</span><span class="v">u_3f4a8b21c9e74a82</span></div>
+          <div class="meta-row"><span class="k">디바이스 핑거</span><span class="v">d_91e2f3a4b5</span></div>
+          <div class="meta-row"><span class="k">IP</span><span class="v">211.45.***.***</span></div>
+          <div class="meta-row"><span class="k">국가</span><span class="v">KR · 서울</span></div>
+          <div class="meta-row"><span class="k">User-Agent</span><span class="v" style="font-size:11px;">curl/7.88.1</span></div>
+          <div class="meta-row"><span class="k">계정 생성</span><span class="v">8분 전</span></div>
+
+          <h4 style="margin-top:16px;">트리거된 룰</h4>
+          <div class="meta-row"><span class="k">룰 ID</span><span class="v">rate_limit_v2.1</span></div>
+          <div class="meta-row"><span class="k">임계값</span><span class="v">10회/60초</span></div>
+          <div class="meta-row"><span class="k">실측</span><span class="v" style="color:#d32f2f;">12회/15초</span></div>
+          <div class="meta-row"><span class="k">자동 조치</span><span class="v">30분 차단</span></div>
+
+          <h4 style="margin-top:16px;">최근 15분 로그</h4>
+          <div class="timeline-log">
+            <div><span class="ts">14:42:18</span> POST /api/upload → 200</div>
+            <div><span class="ts">14:42:19</span> POST /api/upload → 200</div>
+            <div><span class="ts">14:42:20</span> POST /api/upload → 200</div>
+            <div><span class="ts">14:42:21</span> POST /api/upload → 200</div>
+            <div><span class="ts">14:42:22</span> POST /api/upload → 200</div>
+            <div><span class="ts">14:42:23</span> POST /api/upload → 200</div>
+            <div><span class="ts">14:42:24</span> POST /api/upload → 200</div>
+            <div><span class="ts">14:42:25</span> POST /api/upload → 200</div>
+            <div><span class="ts">14:42:26</span> POST /api/upload → 200</div>
+            <div><span class="ts">14:42:27</span> POST /api/upload → 200</div>
+            <div><span class="ts">14:42:28</span> POST /api/upload → 200</div>
+            <div><span class="ts">14:42:29</span> POST /api/upload → 200</div>
+            <div class="err"><span class="ts">14:42:30</span> → AUTOBLOCK rate_limit_v2.1 (12/15s)</div>
+            <div><span class="ts">14:42:31</span> GET /api/me → 429</div>
+          </div>
+
+          <h4 style="margin-top:8px;">관리자 액션</h4>
+          <textarea class="reason-input" placeholder="조치 사유를 입력하세요 (감사 로그에 기록)"></textarea>
+          <div class="reason-actions">
+            <button class="mui-btn mui-btn--outlined" style="flex:1;color:#2e7d32;border-color:rgba(46,125,50,0.5);">차단 해제</button>
+            <button class="mui-btn mui-btn--outlined" style="flex:1;color:#ed6c02;border-color:rgba(237,108,2,0.5);">잠금 연장</button>
+            <button class="mui-btn mui-btn--contained" style="flex:1;background:#d32f2f;">영구 차단</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+
+<script src="garim-chrome.js"></script>
+<script>
+  document.getElementById('header').innerHTML = gh({ admin: true });
+</script>
+</body></html>

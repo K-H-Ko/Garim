@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 28" width="96" height="28">
+  <circle cx="11" cy="14" r="9" fill="#1976d2"></circle>
+  <circle cx="11" cy="14" r="3.6" fill="#9747ff"></circle>
+  <text x="28" y="20" font-family="Pretendard, -apple-system, sans-serif" font-size="18" font-weight="700" fill="#212121" letter-spacing="-0.3">Garim</text>
+</svg>

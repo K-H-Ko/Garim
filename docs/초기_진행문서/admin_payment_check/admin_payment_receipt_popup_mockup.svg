@@ -1,0 +1,245 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
+  <title id="title">GARIM 관리자 결제 영수증 열기 화면 목업</title>
+  <desc id="desc">사용자 결제 확인 화면에서 영수증 열기 버튼을 눌렀을 때 결제 영수증 팝업이 열리는 예상 화면</desc>
+  <defs>
+    <style>
+      .bg { fill: #fafafa; }
+      .side { fill: #1e1b3a; }
+      .side-text { fill: rgba(255,255,255,0.86); font: 500 14px 'Pretendard','Noto Sans KR',Arial,sans-serif; }
+      .side-section { fill: rgba(255,255,255,0.5); font: 700 11px 'Pretendard','Noto Sans KR',Arial,sans-serif; letter-spacing: 1px; }
+      .active-fill { fill: rgba(149,117,205,0.22); }
+      .active-text { fill: #c4b5fd; font: 700 14px 'Pretendard','Noto Sans KR',Arial,sans-serif; }
+      .title { fill: #111827; font: 700 24px 'Pretendard','Noto Sans KR',Arial,sans-serif; }
+      .subtitle { fill: #64748b; font: 400 13px 'Pretendard','Noto Sans KR',Arial,sans-serif; }
+      .tabs-bg { fill: #fff; stroke: #d1d5db; stroke-width: 1; }
+      .tab-active { fill: #1976d2; }
+      .tab-active-text { fill: #fff; font: 700 12px 'Pretendard','Noto Sans KR',Arial,sans-serif; }
+      .tab-text { fill: #64748b; font: 600 12px 'Pretendard','Noto Sans KR',Arial,sans-serif; }
+      .card { fill: #fff; stroke: #d1d5db; stroke-width: 1; }
+      .card-title { fill: #111827; font: 800 15px 'Pretendard','Noto Sans KR',Arial,sans-serif; }
+      .card-sub { fill: #64748b; font: 400 12px 'Pretendard','Noto Sans KR',Arial,sans-serif; }
+      .metric-label { fill: #64748b; font: 700 11px 'Pretendard','Noto Sans KR',Arial,sans-serif; }
+      .metric-num { fill: #0f172a; font: 900 24px 'Pretendard','Noto Sans KR',Arial,sans-serif; }
+      .metric-sub { fill: #64748b; font: 600 11px 'Pretendard','Noto Sans KR',Arial,sans-serif; }
+      .btn { fill: #1976d2; }
+      .btn-text { fill: #fff; font: 800 12px 'Pretendard','Noto Sans KR',Arial,sans-serif; }
+      .input { fill: #fff; stroke: #cfd6e1; stroke-width: 1; }
+      .input-text { fill: #94a3b8; font: 500 12px 'Pretendard','Noto Sans KR',Arial,sans-serif; }
+      .select-text { fill: #334155; font: 600 12px 'Pretendard','Noto Sans KR',Arial,sans-serif; }
+      .th { fill: #334155; font: 800 12px 'Pretendard','Noto Sans KR',Arial,sans-serif; }
+      .td { fill: #0f172a; font: 600 12px 'Pretendard','Noto Sans KR',Arial,sans-serif; }
+      .td-muted { fill: #64748b; font: 500 11px 'Pretendard','Noto Sans KR',Arial,sans-serif; }
+      .line { stroke: #e5e7eb; stroke-width: 1; }
+      .head-row { fill: #f8fafc; }
+      .chip { font: 800 11px 'Pretendard','Noto Sans KR',Arial,sans-serif; }
+      .outline { fill: #fff; stroke: #cbd5e1; stroke-width: 1; }
+      .outline-text { fill: #334155; font: 700 11px 'Pretendard','Noto Sans KR',Arial,sans-serif; }
+      .receipt-title { fill: #111827; font: 900 22px 'Pretendard','Noto Sans KR',Arial,sans-serif; }
+      .receipt-label { fill: #64748b; font: 800 11px 'Pretendard','Noto Sans KR',Arial,sans-serif; }
+      .receipt-value { fill: #0f172a; font: 700 13px 'Pretendard','Noto Sans KR',Arial,sans-serif; }
+      .receipt-small { fill: #64748b; font: 500 11px 'Pretendard','Noto Sans KR',Arial,sans-serif; }
+      .receipt-amount { fill: #0f172a; font: 900 30px 'Pretendard','Noto Sans KR',Arial,sans-serif; }
+    </style>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="18" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <rect class="bg" width="1440" height="900"/>
+
+  <rect class="side" x="0" y="0" width="236" height="900"/>
+  <circle cx="34" cy="36" r="12" fill="#1976d2"/>
+  <circle cx="43" cy="36" r="12" fill="#7c3aed"/>
+  <text x="64" y="42" class="side-text" style="font-size:18px;font-weight:900">Garim Admin</text>
+
+  <text x="20" y="92" class="side-section">운영</text>
+  <text x="52" y="126" class="side-text">사용자 모니터링</text>
+  <text x="24" y="127" fill="rgba(255,255,255,.55)" style="font:18px Arial">○</text>
+  <text x="52" y="164" class="side-text">처리 현황</text>
+  <text x="24" y="165" fill="rgba(255,255,255,.55)" style="font:18px Arial">○</text>
+  <text x="52" y="202" class="side-text">컴플라이언스</text>
+  <text x="24" y="203" fill="rgba(255,255,255,.55)" style="font:18px Arial">○</text>
+
+  <text x="20" y="256" class="side-section">시스템</text>
+  <text x="52" y="290" class="side-text">사용자</text>
+  <text x="24" y="291" fill="rgba(255,255,255,.55)" style="font:18px Arial">○</text>
+  <text x="52" y="328" class="side-text">분석</text>
+  <text x="24" y="329" fill="rgba(255,255,255,.55)" style="font:18px Arial">○</text>
+  <text x="52" y="366" class="side-text">정책 및 상품 관리</text>
+  <text x="24" y="367" fill="rgba(255,255,255,.55)" style="font:18px Arial">○</text>
+  <rect class="active-fill" x="10" y="386" width="216" height="42" rx="6"/>
+  <text x="52" y="413" class="active-text">사용자 결제 확인</text>
+  <text x="24" y="414" fill="#c4b5fd" style="font:18px Arial">●</text>
+
+  <g transform="translate(236 0)">
+    <rect x="0" y="0" width="1204" height="900" fill="#fafafa"/>
+
+    <text x="24" y="48" class="title">사용자 결제 확인</text>
+    <text x="24" y="74" class="subtitle">사용자 결제 내역, 구독 상태, 크레딧 충전 이력을 검색하고 확인합니다.</text>
+
+    <g transform="translate(24 104)">
+      <rect class="tabs-bg" x="0" y="0" width="174" height="32" rx="4"/>
+      <rect class="tab-active" x="2" y="2" width="72" height="28" rx="3"/>
+      <text x="17" y="21" class="tab-active-text">결제 내역</text>
+      <text x="92" y="21" class="tab-text">환불/취소</text>
+    </g>
+
+    <g transform="translate(24 158)">
+      <rect class="card" x="0" y="0" width="268" height="86" rx="6"/>
+      <text x="22" y="28" class="metric-label">오늘 결제 금액</text>
+      <text x="22" y="61" class="metric-num">₩428,000</text>
+      <text x="170" y="60" class="metric-sub">+12.4%</text>
+
+      <rect class="card" x="288" y="0" width="268" height="86" rx="6"/>
+      <text x="310" y="28" class="metric-label">승인 완료</text>
+      <text x="310" y="61" class="metric-num">38건</text>
+      <text x="386" y="60" class="metric-sub">구독 18 · 크레딧 20</text>
+
+      <rect class="card" x="576" y="0" width="268" height="86" rx="6"/>
+      <text x="598" y="28" class="metric-label">환불/취소</text>
+      <text x="598" y="61" class="metric-num">3건</text>
+      <text x="674" y="60" class="metric-sub">확인 필요 1건</text>
+
+      <rect class="card" x="864" y="0" width="292" height="86" rx="6"/>
+      <text x="886" y="28" class="metric-label">크레딧 충전</text>
+      <text x="886" y="61" class="metric-num">12,400개</text>
+      <text x="1012" y="60" class="metric-sub">이번 달 누적</text>
+    </g>
+
+    <g transform="translate(24 276)">
+      <rect class="card" x="0" y="0" width="1156" height="546" rx="6"/>
+      <text x="18" y="30" class="card-title">결제 내역</text>
+      <text x="18" y="52" class="card-sub">이메일, 주문번호, 결제 키, 상품명, 상태 기준으로 조회합니다.</text>
+
+      <rect class="input" x="430" y="18" width="96" height="34" rx="4"/>
+      <text x="461" y="40" class="select-text">전체 상품</text>
+      <text x="507" y="40" fill="#475569" style="font:12px Arial">⌄</text>
+
+      <rect class="input" x="536" y="18" width="96" height="34" rx="4"/>
+      <text x="568" y="40" class="select-text">전체 상태</text>
+      <text x="613" y="40" fill="#475569" style="font:12px Arial">⌄</text>
+
+      <rect class="input" x="642" y="18" width="210" height="34" rx="4"/>
+      <text x="664" y="40" class="input-text">이메일, 주문번호, 결제 키 검색</text>
+
+      <rect class="input" x="862" y="18" width="148" height="34" rx="4"/>
+      <text x="889" y="40" class="select-text">2026.06.01 - 06.08</text>
+
+      <rect class="input" x="1020" y="18" width="58" height="34" rx="4"/>
+      <text x="1041" y="40" class="select-text">20</text>
+      <text x="1061" y="40" fill="#475569" style="font:12px Arial">⌄</text>
+
+      <rect class="btn" x="1088" y="18" width="50" height="34" rx="4"/>
+      <text x="1101" y="40" class="btn-text">검색</text>
+
+      <line class="line" x1="0" x2="1156" y1="72" y2="72"/>
+      <rect class="head-row" x="0" y="73" width="1156" height="42"/>
+      <text x="22" y="99" class="th">결제일</text>
+      <text x="146" y="99" class="th">사용자</text>
+      <text x="332" y="99" class="th">상품</text>
+      <text x="506" y="99" class="th">금액</text>
+      <text x="632" y="99" class="th">상태</text>
+      <text x="758" y="99" class="th">결제수단</text>
+      <text x="984" y="99" class="th">관리</text>
+
+      <g transform="translate(0 115)">
+        <rect x="0" y="0" width="1156" height="55" fill="#eaf4ff"/>
+        <text x="22" y="23" class="td">2026.06.08</text>
+        <text x="22" y="41" class="td-muted">14:22</text>
+        <text x="146" y="23" class="td">kim@garm.kr</text>
+        <text x="146" y="41" class="td-muted">usr_92ad</text>
+        <text x="332" y="23" class="td">Pro 구독</text>
+        <text x="332" y="41" class="td-muted">subscription</text>
+        <text x="506" y="32" class="td">₩2,900</text>
+        <rect x="626" y="15" width="56" height="24" rx="12" fill="#dcfce7"/>
+        <text x="645" y="31" class="chip" fill="#15803d">승인</text>
+        <text x="758" y="32" class="td">카드</text>
+        <rect class="outline" x="980" y="13" width="56" height="28" rx="4"/>
+        <text x="996" y="32" class="outline-text">상세</text>
+        <rect x="1046" y="13" width="74" height="28" rx="4" fill="#1976d2"/>
+        <text x="1063" y="32" class="btn-text">영수증</text>
+      </g>
+
+      <g transform="translate(0 170)">
+        <line class="line" x1="0" x2="1156" y1="0" y2="0"/>
+        <text x="22" y="34" class="td">2026.06.08</text>
+        <text x="22" y="52" class="td-muted">13:10</text>
+        <text x="146" y="34" class="td">lee@example.com</text>
+        <text x="146" y="52" class="td-muted">usr_72fa</text>
+        <text x="332" y="34" class="td">500 Credits</text>
+        <text x="332" y="52" class="td-muted">credit</text>
+        <text x="506" y="43" class="td">₩20,000</text>
+        <rect x="626" y="26" width="56" height="24" rx="12" fill="#dcfce7"/>
+        <text x="645" y="42" class="chip" fill="#15803d">승인</text>
+        <text x="758" y="43" class="td">간편결제</text>
+        <rect class="outline" x="980" y="24" width="56" height="28" rx="4"/>
+        <text x="996" y="43" class="outline-text">상세</text>
+      </g>
+
+      <line class="line" x1="0" x2="1156" y1="450" y2="450"/>
+      <text x="18" y="497" class="td-muted">1-20 / 126</text>
+      <rect class="outline" x="990" y="472" width="64" height="30" rx="4"/>
+      <text x="1011" y="492" class="outline-text">이전</text>
+      <rect class="outline" x="1064" y="472" width="64" height="30" rx="4"/>
+      <text x="1085" y="492" class="outline-text">다음</text>
+    </g>
+
+    <rect x="0" y="0" width="1204" height="900" fill="#0f172a" opacity="0.28"/>
+
+    <g transform="translate(462 80)" filter="url(#shadow)">
+      <rect x="0" y="0" width="674" height="740" rx="10" fill="#fff"/>
+      <rect x="0" y="0" width="674" height="62" rx="10" fill="#fff"/>
+      <line class="line" x1="0" x2="674" y1="62" y2="62"/>
+      <text x="28" y="39" class="receipt-title">영수증</text>
+      <text x="566" y="38" class="receipt-small">Toss Payments</text>
+      <text x="628" y="39" fill="#64748b" style="font:24px Arial">×</text>
+
+      <g transform="translate(28 88)">
+        <rect x="0" y="0" width="618" height="104" rx="8" fill="#f8fafc" stroke="#e5e7eb"/>
+        <text x="24" y="32" class="receipt-label">결제 완료</text>
+        <text x="24" y="72" class="receipt-amount">₩2,900</text>
+        <rect x="502" y="28" width="80" height="28" rx="14" fill="#dcfce7"/>
+        <text x="528" y="47" class="chip" fill="#15803d">승인</text>
+        <text x="464" y="76" class="receipt-small">2026.06.08 14:22</text>
+      </g>
+
+      <g transform="translate(28 224)">
+        <text x="0" y="0" class="receipt-label">주문 정보</text>
+        <line class="line" x1="0" x2="618" y1="22" y2="22"/>
+        <text x="0" y="54" class="receipt-small">주문번호</text>
+        <text x="164" y="54" class="receipt-value">ord_20260608_1422</text>
+        <text x="0" y="92" class="receipt-small">주문명</text>
+        <text x="164" y="92" class="receipt-value">GARIM Pro 구독</text>
+        <text x="0" y="130" class="receipt-small">구매자</text>
+        <text x="164" y="130" class="receipt-value">kim@garm.kr</text>
+      </g>
+
+      <g transform="translate(28 398)">
+        <text x="0" y="0" class="receipt-label">결제 정보</text>
+        <line class="line" x1="0" x2="618" y1="22" y2="22"/>
+        <text x="0" y="54" class="receipt-small">결제 수단</text>
+        <text x="164" y="54" class="receipt-value">카드</text>
+        <text x="0" y="92" class="receipt-small">결제 키</text>
+        <text x="164" y="92" class="receipt-value">pay_8fb2...91ac</text>
+        <text x="0" y="130" class="receipt-small">승인번호</text>
+        <text x="164" y="130" class="receipt-value">A202606081422</text>
+        <text x="0" y="168" class="receipt-small">영수증 URL</text>
+        <text x="164" y="168" fill="#1976d2" style="font:700 13px 'Pretendard','Noto Sans KR',Arial,sans-serif">https://dashboard.tosspayments.com/receipt/...</text>
+      </g>
+
+      <g transform="translate(28 608)">
+        <rect x="0" y="0" width="618" height="1" fill="#e5e7eb"/>
+        <rect class="outline" x="0" y="26" width="110" height="38" rx="5"/>
+        <text x="31" y="50" class="outline-text">새 창 열기</text>
+        <rect class="outline" x="120" y="26" width="110" height="38" rx="5"/>
+        <text x="151" y="50" class="outline-text">URL 복사</text>
+        <rect class="outline" x="240" y="26" width="110" height="38" rx="5"/>
+        <text x="275" y="50" class="outline-text">인쇄</text>
+        <rect x="492" y="26" width="126" height="38" rx="5" fill="#1976d2"/>
+        <text x="534" y="50" class="btn-text">닫기</text>
+      </g>
+
+      <text x="28" y="714" class="receipt-small">실제 영수증은 PG사 제공 URL을 새 창으로 열고, 관리자 화면에는 핵심 결제 정보만 요약 표시합니다.</text>
+    </g>
+  </g>
+</svg>

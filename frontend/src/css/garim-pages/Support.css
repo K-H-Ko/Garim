@@ -1,0 +1,140 @@
+.report-page {
+  /* Existing page uses this class in other places, keeping scoped to .support-page */
+}
+
+.support-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 48px 32px;
+}
+
+.support-header {
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.support-header h1 {
+  font: 500 36px var(--font-sans);
+  color: var(--fg-1);
+  margin: 0 0 12px;
+  letter-spacing: -0.5px;
+}
+
+.support-header p {
+  font: 400 16px/1.6 var(--font-sans);
+  color: var(--fg-2);
+  margin: 0;
+}
+
+.support-container {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.support-form {
+  background: var(--bg-1);
+  border: 1px solid var(--mui-border);
+  border-radius: 8px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font: 500 14px var(--font-sans);
+  color: var(--fg-1);
+}
+
+.support-input,
+.support-textarea {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--surface-1);
+  border: 1px solid var(--mui-border);
+  border-radius: 4px;
+  font: 400 14px/1.5 var(--font-sans);
+  color: var(--fg-1);
+  outline: none;
+  transition: border-color 150ms;
+  box-sizing: border-box;
+}
+
+.support-input:focus,
+.support-textarea:focus {
+  border-color: var(--primary);
+}
+
+.support-textarea {
+  resize: vertical;
+}
+
+.support-submit-btn {
+  padding: 12px;
+  font-size: 16px;
+  margin-top: 8px;
+}
+
+.support-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sidebar-card {
+  background: var(--bg-1);
+  border: 1px solid var(--mui-border);
+  border-radius: 8px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.sidebar-card .card-icon {
+  font-size: 32px;
+  color: var(--primary);
+}
+
+.sidebar-card h3 {
+  font: 600 16px var(--font-sans);
+  color: var(--fg-1);
+  margin: 0;
+}
+
+.sidebar-card p {
+  font: 400 14px/1.5 var(--font-sans);
+  color: var(--fg-2);
+  margin: 0;
+}
+
+/* Dark mode overrides (implicit if variables are used, but adding safety nets if needed) */
+:root[data-theme="dark"] .support-form,
+:root[data-theme="dark"] .sidebar-card {
+  background: var(--surface-1);
+}
+:root[data-theme="dark"] .support-input,
+:root[data-theme="dark"] .support-textarea {
+  background: var(--bg-1);
+}
+
+@media (max-width: 768px) {
+  .support-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* FAQ 이동 버튼 — 카드 폭 가득 */
+.support-faq-btn {
+  width: 100%;
+  justify-content: center;
+}

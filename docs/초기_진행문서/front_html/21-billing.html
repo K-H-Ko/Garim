@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>결제·구독 관리 · Garim [v1 정식]</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="garim.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<style>
+  .billing-page { padding: 48px 32px; max-width: 900px; margin: 0 auto; }
+  .billing-page h1 { font: 500 28px var(--font-sans); margin: 0 0 24px; }
+  .empty-state {
+    background: #fff; border-radius: 4px; box-shadow: var(--mui-elev-1);
+    padding: 64px 32px; text-align: center;
+  }
+  .empty-state .material-icons { font-size: 72px; color: var(--fg-3); margin-bottom: 16px; }
+  .empty-state h2 { font: 500 24px var(--font-sans); margin: 0 0 12px; }
+  .empty-state p { font: 400 15px/1.6 var(--font-sans); color: var(--fg-2); max-width: 480px; margin: 0 auto 24px; }
+  .preview-area { margin-top: 48px; opacity: 0.5; pointer-events: none; }
+  .preview-area .caption-k { text-align: center; margin-bottom: 16px; }
+  .plan-card { background: #fff; border-radius: 4px; box-shadow: var(--mui-elev-1); padding: 24px; margin-bottom: 16px; display: flex; align-items: center; gap: 24px; }
+  .plan-card .info h3 { font: 500 18px var(--font-sans); margin: 0 0 4px; }
+  .plan-card .info p { font: 400 13px var(--font-sans); color: var(--fg-2); margin: 0; }
+  .plan-card .price { font: 300 32px var(--font-sans); color: #1976d2; margin-left: auto; }
+  .table-card { background: #fff; border-radius: 4px; box-shadow: var(--mui-elev-1); padding: 24px; }
+  .table-card h3 { font: 500 16px var(--font-sans); margin: 0 0 16px; }
+  table.bills { width: 100%; border-collapse: collapse; }
+  table.bills th, table.bills td { padding: 12px; text-align: left; font: 400 13px var(--font-sans); border-bottom: 1px solid var(--mui-divider); }
+  table.bills th { font-weight: 500; color: var(--fg-2); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+</style>
+</head>
+<body class="page-app" data-screen-label="21 Billing (MVP1 disabled)">
+<div id="header"></div>
+
+<div class="billing-page">
+  <h1>결제·구독 관리</h1>
+
+  <div class="empty-state">
+    <span class="material-icons">payments</span>
+    <h2>MVP1 단계에서는 결제 관리가 아직 활성화되지 않았어요</h2>
+    <p>결제 시스템은 v1 정식 출시 시점에 도입됩니다. 현재는 모든 기능을 무료로 이용하실 수 있어요.</p>
+    <a href="19-dashboard.html" class="mui-btn mui-btn--contained">대시보드로 돌아가기</a>
+  </div>
+
+  <div class="preview-area">
+    <div class="caption-k">참고 · v1 정식 출시 후 노출될 결제·구독 관리 UI</div>
+
+    <div class="plan-card">
+      <span class="mui-chip mui-chip--primary mui-chip--md">현재 플랜</span>
+      <div class="info">
+        <h3>Pro 월간</h3>
+        <p>다음 결제일 2026.06.14 · 잔여 27/50회</p>
+      </div>
+      <div class="price">19,800<small style="font-size:13px;color:var(--fg-2);">원/월</small></div>
+    </div>
+
+    <div class="table-card">
+      <h3>결제 내역</h3>
+      <table class="bills">
+        <thead><tr><th>날짜</th><th>상품</th><th>금액</th><th>영수증</th></tr></thead>
+        <tbody>
+          <tr><td>2026.05.14</td><td>Pro 월간</td><td>19,800원</td><td><a style="color:#1976d2;">PDF</a></td></tr>
+          <tr><td>2026.04.14</td><td>Pro 월간</td><td>19,800원</td><td><a style="color:#1976d2;">PDF</a></td></tr>
+          <tr><td>2026.03.14</td><td>Pro 월간</td><td>19,800원</td><td><a style="color:#1976d2;">PDF</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div id="footer"></div>
+
+<script src="garim-chrome.js"></script>
+<script>
+  document.getElementById('header').innerHTML = gh({ variant: 'app', current: '', authed: true });
+  document.getElementById('footer').innerHTML = gf();
+</script>
+</body></html>

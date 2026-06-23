@@ -1,0 +1,878 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Garim(가림): 개인정보 보호 시스템</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg-color: #f8fafc;
+        --text-main: #0f172a;
+        --text-muted: #64748b;
+        --primary: #3b82f6;
+        --primary-dark: #1e40af;
+        --accent: #10b981;
+        --card-bg: #ffffff;
+        --border: #e2e8f0;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Noto Sans KR", sans-serif;
+      }
+
+      body {
+        background-color: #1e293b;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      /* Slide Container */
+      #presentation-container {
+        width: 1280px;
+        height: 720px;
+        background-color: var(--bg-color);
+        position: relative;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+
+      .slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        padding: 60px 80px;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.4s ease-in-out;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .slide.active {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      /* Typography */
+      h1 {
+        font-size: 3.5rem;
+        font-weight: 900;
+        color: var(--text-main);
+        margin-bottom: 20px;
+        letter-spacing: -1px;
+      }
+      h2 {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--text-main);
+        margin-bottom: 40px;
+        border-bottom: 3px solid var(--primary);
+        padding-bottom: 15px;
+        display: inline-block;
+      }
+      h3 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-dark);
+        margin-bottom: 15px;
+      }
+      p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        color: var(--text-main);
+        margin-bottom: 15px;
+      }
+      ul {
+        margin-left: 20px;
+        margin-bottom: 20px;
+      }
+      li {
+        font-size: 1.1rem;
+        line-height: 1.7;
+        color: var(--text-main);
+        margin-bottom: 8px;
+      }
+      .highlight {
+        color: var(--primary);
+        font-weight: 700;
+      }
+      .badge {
+        display: inline-block;
+        padding: 4px 10px;
+        background: var(--primary);
+        color: white;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      /* Slide 1 Specifics */
+      .slide-title {
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: linear-gradient(135deg, #0f172a, #1e40af);
+        color: white;
+      }
+      .slide-title h1 {
+        color: white;
+        font-size: 4.5rem;
+        margin-bottom: 10px;
+      }
+      .slide-title .subtitle {
+        font-size: 1.8rem;
+        font-weight: 300;
+        color: #cbd5e1;
+        margin-bottom: 30px;
+      }
+      .slide-title .slogan {
+        font-size: 1.4rem;
+        font-weight: 500;
+        color: #60a5fa;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 15px 30px;
+        border-radius: 50px;
+      }
+
+      /* Layout Grids */
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+      }
+      .grid-3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 30px;
+      }
+
+      /* Cards */
+      .card {
+        background: var(--card-bg);
+        padding: 15px 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--border);
+      }
+      .card.dark {
+        background: #0f172a;
+        color: white;
+        border: none;
+      }
+      .card.dark h3 {
+        color: #60a5fa;
+      }
+      .card.dark p,
+      .card.dark li {
+        color: #cbd5e1;
+      }
+
+      /* Tables */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      }
+      th,
+      td {
+        padding: 14px 16px;
+        text-align: left;
+        border-bottom: 1px solid var(--border);
+      }
+      th {
+        background-color: #f1f5f9;
+        font-weight: 700;
+        color: var(--text-main);
+      }
+      tr:last-child td {
+        border-bottom: none;
+      }
+      .table-highlight {
+        background-color: #eff6ff;
+        border: 2px solid var(--primary);
+      }
+      .table-highlight td {
+        font-weight: 500;
+        color: var(--primary-dark);
+      }
+
+      /* Bottom Alert / Note */
+      .bottom-note {
+        margin-top: auto;
+        background: #fee2e2;
+        border-left: 4px solid #ef4444;
+        padding: 20px 20px;
+        font-weight: 500;
+        color: #991b1b;
+        border-radius: 4px;
+      }
+      .bottom-success {
+        background: #dcfce7;
+        border-left: 4px solid #10b981;
+        padding: 15px 20px;
+        font-weight: 500;
+        color: #166534;
+        border-radius: 4px;
+      }
+
+      /* Controls */
+      .controls {
+        position: absolute;
+        bottom: 20px;
+        right: 30px;
+        display: flex;
+        gap: 10px;
+        z-index: 100;
+      }
+      .btn {
+        background: rgba(0, 0, 0, 0.1);
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.2rem;
+        transition: background 0.2s;
+      }
+      .btn:hover {
+        background: rgba(0, 0, 0, 0.2);
+      }
+      .page-num {
+        position: absolute;
+        bottom: 30px;
+        left: 40px;
+        font-size: 1rem;
+        color: var(--text-muted);
+        font-weight: 500;
+      }
+
+      /* Progress Bar */
+      .progress-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: #e2e8f0;
+        z-index: 100;
+      }
+      .progress-bar {
+        height: 100%;
+        background: var(--primary);
+        width: 0%;
+        transition: width 0.3s ease;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="presentation-container">
+      <div class="progress-container">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+
+      <div class="slide slide-title active" id="slide-1">
+        <div style="margin-bottom: 20px">
+          <img
+            src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2360a5fa' width='80' height='80'><path d='M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z'/></svg>"
+            alt="shield"
+          />
+        </div>
+        <h1>Garim(가림)</h1>
+        <div class="subtitle">개인정보 보호 시스템 : 완벽한 디지털 방패</div>
+        <div class="slogan">
+          가장 확실한 정보만 찾아내어, 가장 완벽하게 보호합니다.
+        </div>
+      </div>
+
+      <div class="slide" id="slide-2">
+        <h2>시장의 위기: 치명적인 정보 유출 사례</h2>
+        <p style="font-size: 1.3rem; margin-bottom: 30px">
+          "모든 인플루언서와 연예인, 콘텐츠를 다루는 모두가 타겟입니다."
+        </p>
+
+        <div class="grid-3">
+          <div class="card">
+            <span class="badge" style="background: #f59e0b">영상/이미지</span>
+            <h3>라이브 방송의 함정</h3>
+            <p class="highlight">(2025.10 발생)</p>
+            <p>
+              구독자 80만 명의 유명 브이로그 유튜버 A씨. 언박싱 라이브 중 뒤쪽
+              모니터 유리에 0.1초간 반사된
+              <strong>택배 송장(이름, 집주소)</strong>이 유포되어 심각한 스토킹
+              피해 및 방송 중단 발생.
+            </p>
+          </div>
+          <div class="card">
+            <span class="badge" style="background: #ef4444">오디오/음성</span>
+            <h3>의도치 않은 소리 지문</h3>
+            <p class="highlight">(2025.05 발생)</p>
+            <p>
+              대형 게임 스트리머 B씨 야외 방송 중, 지인과 통화하는 소리(STT)가
+              마이크에 수음. <strong>특정 아파트 동/호수</strong>가 그대로
+              송출되어 주거지 노출 소동 발생.
+            </p>
+          </div>
+          <div class="card">
+            <span class="badge" style="background: #8b5cf6">문서</span>
+            <h3>보이지 않는 메타데이터</h3>
+            <p class="highlight">(2025.11 발생)</p>
+            <p>
+              프리랜서 디자이너 C씨의 포트폴리오 PDF 업로드. 화면엔 없었으나
+              <strong>파일 속성(메타데이터)</strong>에 이전 고객 실명/계약
+              금액이 남아 계약 파기 및 소송 발생.
+            </p>
+          </div>
+        </div>
+
+        <div class="bottom-note">
+          <strong>문제의 본질:</strong> 기존의 '검은색 박스'나 퀄리티를 해치는
+          '투박한 블러' 처리는 영상의 몰입도를 깨뜨리며, 음성 노출이나 숨겨진
+          파일 속성은 방어하지 못합니다.
+        </div>
+      </div>
+
+      <div class="slide" id="slide-3">
+        <h2>타겟 고객</h2>
+        <p style="font-size: 1.3rem; margin-bottom: 30px">
+          "가장 민감한 고객부터, 가장 보편적인 대중까지 포괄하는 보안 인프라"
+        </p>
+
+        <div class="grid-2">
+          <div
+            class="card"
+            style="
+              border-top: 5px solid var(--primary);
+              box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            "
+          >
+            <h3 style="font-size: 1.8rem; margin-bottom: 10px">🎯 메인 타겟</h3>
+            <p class="highlight" style="font-size: 1.2rem; margin-bottom: 15px">
+              유명 인플루언서, 크리에이터, 연예인, 블로거
+            </p>
+            <ul>
+              <li>
+                콘텐츠를 통해 <strong>일상을 수익으로 연결</strong>하지만,
+                스토킹과 사생활 침해 위험에 가장 크게 노출된 집단
+              </li>
+              <li>
+                화질 저하나 어색한 편집(검은 박스)을 극도로 기피하여
+                <strong>'자연스러운 치환'</strong> 기술에 대한 지불 의사가 가장
+                높은 층
+              </li>
+              <li>프리미엄 구독(Pro 플랜) 매출의 핵심 견인층</li>
+            </ul>
+          </div>
+          <div
+            class="card"
+            style="
+              border-top: 5px solid var(--accent);
+              box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            "
+          >
+            <h3
+              style="
+                font-size: 1.8rem;
+                margin-bottom: 10px;
+                color: var(--accent);
+              "
+            >
+              👥 서브 타겟
+            </h3>
+            <p
+              class="highlight"
+              style="font-size: 1.2rem; margin-bottom: 15px; color: #059669"
+            >
+              개인정보 보호가 필요한 모든 일반 사용자
+            </p>
+            <ul>
+              <li>
+                SNS(인스타그램, 틱톡 등)에 일상 사진과 짧은 영상을 공유하는 대중
+              </li>
+              <li>
+                당근마켓, 중고나라 등 중고 거래 시
+                <strong>영수증, 택배상자, 보증서</strong> 등을 자주 업로드하는
+                일반인
+              </li>
+              <li>
+                무료 분석 및 Basic 플랜을 통해 서비스의 대중적 확산을 이끄는
+                기반
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" id="slide-4">
+        <h2>현존 서비스 비교: 왜 Garim 인가?</h2>
+        <p>"기존의 어떤 서비스도 일상 콘텐츠의 맥락을 이해하지 못합니다."</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>카테고리</th>
+              <th>대표 서비스</th>
+              <th>지원 파일 (확장자)</th>
+              <th>주요 한계점</th>
+              <th>Garim 압도적 차별성</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>메타데이터 툴</td>
+              <td>ExifTool 등</td>
+              <td><strong>이미지/영상</strong> (JPG, MP4)</td>
+              <td>GPS 등 바이너리 값만 수정.<br />화면 속 글자 지우기 불가.</td>
+              <td>
+                <strong>시각/음성 직접 분석:</strong> 숨은 값 + 화면 속
+                글자/음성 탐지.
+              </td>
+            </tr>
+            <tr>
+              <td>기업용 DLP</td>
+              <td>MS Purview</td>
+              <td><strong>문서</strong> (PDF, DOCX)</td>
+              <td>사내망 기밀문서 전용.<br />개인 영상/오디오 처리 불가.</td>
+              <td>
+                <strong>B2C 특화:</strong> 일상 영상, 사진, 문서, 오디오 전 영역
+                통합.
+              </td>
+            </tr>
+            <tr>
+              <td>신원 인증</td>
+              <td>Jumio 등</td>
+              <td><strong>이미지/문서</strong> (JPG, PDF)</td>
+              <td>정보 '추출' 목적</td>
+              <td><strong>역추적 방어:</strong> 가짜 데이터로 치환.</td>
+            </tr>
+            <tr>
+              <td>영상 편집기</td>
+              <td>플랫폼 모자이크</td>
+              <td><strong>영상</strong></td>
+              <td>수동 지정, 투박한 블러만 가능.</td>
+              <td><strong>자동 치환 & 스마트 블러</strong></td>
+            </tr>
+            <tr class="table-highlight">
+              <td>🛡️ Garim</td>
+              <td>본 프로젝트</td>
+              <td>영상, 이미지, 문서, 오디오</td>
+              <td>-</td>
+              <td>
+                <strong>올인원(All-in-One) 엔진:</strong> 탐지부터 보호까지
+                원클릭 자동화.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="slide" id="slide-5">
+        <h2>솔루션: 지능형 탐지와 감쪽같은 보호</h2>
+        <p style="font-size: 1.3rem; margin-bottom: 10px">
+          "지우는 것이 아니라, 존재한 적 없던 것처럼 재구성합니다."
+        </p>
+
+        <div class="grid-2">
+          <div>
+            <div class="card" style="margin-bottom: 10px">
+              <h3>1. AI 정밀 분석 (오디오 포함)</h3>
+              <p>
+                영상 속 텍스트는 물론, 오디오를 텍스트로 변환(STT)하여 실수로
+                노출된 전화번호나 개인정보까지 완벽히 잡아냅니다.
+              </p>
+            </div>
+            <div class="card" style="margin-bottom: 10px">
+              <h3>2. 가짜 데이터 치환</h3>
+              <p>
+                원본의 폰트와 조명을 유지한 채 가짜 정보로 교체합니다.<br /><span
+                  class="highlight"
+                  >예: 010-1234-5678 ➡️ 010-9876-5432</span
+                >
+              </p>
+            </div>
+            <div class="card">
+              <h3>3. 블러 예외 처리</h3>
+              <p>
+                영상 텍스트가 심하게 흔들려 가짜 데이터 합성이 어색할 경우, 가장
+                잘 어울리는 자연스러운 블러로 자동 전환합니다.
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="card dark"
+            style="
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+            "
+          >
+            <h3>직관적인 UI 워크플로우</h3>
+            <ul style="margin-top: 20px">
+              <li>
+                <strong>Step 1:</strong> 분석 페이지에서 검출된 영역 박스 직접
+                확인
+              </li>
+              <li><strong>Step 2:</strong> 보안 처리 샘플 및 가이드 확인</li>
+              <li>
+                <strong>Step 3:</strong> 하단
+                <span class="badge" style="background: var(--accent)"
+                  >보안 처리 요청</span
+                >
+                버튼 클릭 한 번으로 즉시 해결!
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" id="slide-6">
+        <h2>서비스 정책: 경험은 무료, 가치는 유료</h2>
+        <p style="font-size: 1.3rem; margin-bottom: 30px">
+          "모든 파일의 위험 분석은 100% 무료입니다."
+        </p>
+
+        <div class="grid-3">
+          <div class="card" style="border-top: 5px solid var(--text-muted)">
+            <h3 style="color: var(--text-muted); font-size: 2rem">FREE</h3>
+            <p style="font-weight: bold; margin-top: 15px">
+              위험 분석: 횟수 제한 없이 전면 무료!
+            </p>
+            <p style="font-size: 0.95rem; color: #666">
+              (내 파일의 위험 요소를 확인하는 단계)
+            </p>
+            <hr
+              style="
+                margin: 20px 0;
+                border: none;
+                border-top: 1px solid var(--border);
+              "
+            />
+            <ul>
+              <li>최초 10개 파일 보안 처리 무료 제공</li>
+              <li>영상은 1개당 2회 차감</li>
+              <li>
+                단일 파일 용량 <span class="highlight">200MB 이하</span> 제한
+              </li>
+            </ul>
+          </div>
+
+          <div
+            class="card"
+            style="
+              border-top: 5px solid var(--primary);
+              transform: scale(1.05);
+              box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <h3 style="font-size: 2rem">Basic</h3>
+            <h4
+              style="font-size: 1.5rem; color: var(--text-main); margin: 10px 0"
+            >
+              월 4,900원
+            </h4>
+            <hr
+              style="
+                margin: 20px 0;
+                border: none;
+                border-top: 1px solid var(--border);
+              "
+            />
+            <ul>
+              <li>월 정해진 보안 처리 횟수 제공</li>
+              <li>
+                단일 파일 용량 <span class="highlight">500MB 이하</span> 제한
+              </li>
+              <li>일반 사진, 짧은 영상, 문서용 최적화</li>
+            </ul>
+          </div>
+
+          <div class="card dark" style="border-top: 5px solid var(--accent)">
+            <h3 style="color: var(--accent); font-size: 2rem">Pro</h3>
+            <h4 style="font-size: 1.5rem; color: white; margin: 10px 0">
+              월 9,900원
+            </h4>
+            <hr
+              style="
+                margin: 20px 0;
+                border: none;
+                border-top: 1px solid #334155;
+              "
+            />
+            <ul>
+              <li>넉넉한 보안 처리 횟수 제공</li>
+              <li>
+                단일 파일 용량
+                <span style="color: var(--accent); font-weight: bold"
+                  >2GB 이하</span
+                >
+                지원
+              </li>
+              <li>고화질 브이로그, 대용량 오디오용 최적화</li>
+            </ul>
+            <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 20px">
+              ※ 향후 업데이트를 통해 2GB 초과 엔터프라이즈급 지원 예정
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" id="slide-7">
+        <h2>핵심 기술 명세: AI가 파일을 지키는 방법</h2>
+
+        <div
+          class="bottom-success"
+          style="margin-bottom: 20px; margin-top: 0; padding: 12px 20px"
+        >
+          <strong>보호 범위:</strong> 풍경/건물을 통째로 가리는 비현실적 기술이
+          아닙니다. 도용되어 피해를 주는
+          <strong>정확한 개인정보(텍스트/음성)</strong>만을 핀포인트로 탐지하여
+          방어합니다.
+        </div>
+
+        <div class="grid-2" style="gap: 20px">
+          <div class="card" style="padding: 15px 20px">
+            <h3 style="font-size: 1.3rem">👁️ 시각 엔진 (Vision & STE)</h3>
+            <p
+              style="
+                font-size: 0.95rem;
+                color: var(--text-muted);
+                margin-bottom: 12px;
+              "
+            >
+              사진/영상 속 글자를 지우고 원래 폰트로 가짜 정보를 합성합니다.
+            </p>
+            <ul style="font-size: 1rem; margin-bottom: 0">
+              <li>
+                <strong>탐지 :</strong>
+                <span class="highlight">YOLOv11 + SAM 2</span>로 영상 내 객체와
+                송장 등의 픽셀 영역을 분리
+              </li>
+              <li>
+                <strong>인식 (OCR):</strong>
+                <span class="highlight">EasyOCR</span>을 통해 텍스트 값 추출
+              </li>
+              <li>
+                <strong>치환 :</strong>
+                <span class="highlight">STE(Scene Text Editing)</span> 및
+                Inpainting 모델로 원본의 폰트, 조명, 기울기를 계산하여 감쪽같이
+                가짜 텍스트 합성
+              </li>
+            </ul>
+          </div>
+          <div class="card" style="padding: 15px 20px">
+            <h3 style="font-size: 1.3rem">🎧 음성 엔진 (Audio Redaction)</h3>
+            <p
+              style="
+                font-size: 0.95rem;
+                color: var(--text-muted);
+                margin-bottom: 12px;
+              "
+            >
+              실수로 말한 개인정보를 묵음이나 삐- 소리로 1ms 단위로 덮습니다.
+            </p>
+            <ul style="font-size: 1rem; margin-bottom: 0">
+              <li>
+                <strong>듣기 (STT):</strong>
+                <span class="highlight">OpenAI Whisper</span>를 통해 음성을
+                텍스트로 변환
+              </li>
+              <li>
+                <strong>분석 (NER):</strong>
+                <span class="highlight">KoELECTRA (파인튜닝)</span> 모델이
+                문맥을 파악해 전화번호, 주소 등 개체명 식별
+              </li>
+              <li>
+                <strong>추적/합성:</strong>
+                <span class="highlight">Forced Alignment</span> 기술로 파형과
+                텍스트의 좌표를 동기화하여 특정 구간만 정밀 필터링
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card dark" style="margin-top: 15px; padding: 15px 20px">
+          <h3 style="font-size: 1.3rem">
+            🔒 웹 서비스 철통 보안 (Zero-Data Prompting)
+          </h3>
+          <p style="font-size: 1rem; margin-bottom: 0">
+            진짜 정보를 LLM 서버로 절대 전송하지 않습니다. 로컬 엔진에서
+            <strong>"이런 형식의 가짜 번호 하나 만들어줘"</strong>라는 익명
+            요청(Faker 라이브러리 연동)만 주고받아, 처리 중 정보 유출 확률을
+            원천 차단합니다.
+          </p>
+        </div>
+      </div>
+
+      <div class="slide" id="slide-8">
+        <h2>확장성: 일상을 넘어 비즈니스로</h2>
+        <p style="font-size: 1.3rem; margin-bottom: 30px">
+          "사용자의 공유 습관을 바꾸지 않고 스며드는 보안"<br />
+          <span style="font-size: 1rem; color: var(--text-muted)"
+            >(해당 내용은 개발 이후 확장 가능성에 대한 설명 입니다.)</span
+          >
+        </p>
+
+        <div class="grid-2">
+          <div class="card">
+            <span class="badge" style="background: var(--primary)"
+              >Mobile App</span
+            >
+            <h3>Garim App 연동</h3>
+            <ul>
+              <li>
+                <strong>앱 내 공유:</strong> 앱 안에서 카톡/메일로 보낼 때 유료
+                사용자는
+                <span class="highlight">자동 보안 처리 완료 후 전송</span> (무료
+                사용자는 분석만).
+              </li>
+              <li>
+                <strong>백그라운드 알림 (향후):</strong> 일반 카톡에서 사진 전송
+                시 앱이 감지하여 "잠깐! 쿠폰 노출!" 푸시 알림 발생. 터치 시
+                앱으로 연동되어 안전 처리 후 전송.
+              </li>
+            </ul>
+          </div>
+          <div class="card">
+            <span class="badge" style="background: #0f172a"
+              >Enterprise B2B</span
+            >
+            <h3>기업용 보안 확장</h3>
+            <ul>
+              <li>
+                특정 기업의
+                <strong>기밀 데이터, 소프트웨어 키 값, 할인 쿠폰 번호</strong>
+                등을 전용으로 학습.
+              </li>
+              <li>
+                내부 직원이 외부로 문서를 보낼 때 중요 정보를 자동 마스킹 및
+                치환하는 B2B 보안 게이트웨이 솔루션.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" id="slide-9">
+        <div
+          style="
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            text-align: center;
+          "
+        >
+          <h2 style="border: none; font-size: 3rem; margin-bottom: 20px">
+            디지털 신뢰의 표준
+          </h2>
+          <p
+            style="
+              font-size: 1.8rem;
+              color: var(--primary);
+              font-weight: 700;
+              margin-bottom: 40px;
+            "
+          >
+            "콘텐츠의 가치는 보존하고, 개인의 안전은 완벽하게 지킵니다."
+          </p>
+          <div
+            style="
+              background: #f1f5f9;
+              padding: 30px;
+              border-radius: 12px;
+              max-width: 800px;
+            "
+          >
+            <p style="font-size: 1.2rem">
+              Garim 은 크리에이터와 일반 사용자 모두가 정보 유출의 두려움
+              없이<br />
+              안전하게 기록하고 공유할 수 있는 필수
+              <strong>보안 인프라</strong>이자,<br />
+              웹 3.0 시대의 표준 데이터 게이트웨이가 될 것입니다.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-num" id="page-num">1 / 9</div>
+      <div class="controls">
+        <button class="btn" onclick="prevSlide()">◀</button>
+        <button class="btn" onclick="nextSlide()">▶</button>
+      </div>
+    </div>
+
+    <script>
+      let currentSlide = 0;
+      const slides = document.querySelectorAll(".slide");
+      const progressBar = document.getElementById("progress-bar");
+      const pageNum = document.getElementById("page-num");
+
+      function updateSlide() {
+        slides.forEach((slide, index) => {
+          if (index === currentSlide) {
+            slide.classList.add("active");
+          } else {
+            slide.classList.remove("active");
+          }
+        });
+
+        // Update progress
+        const progress = (currentSlide / (slides.length - 1)) * 100;
+        progressBar.style.width = `${progress}%`;
+
+        // Update page number
+        pageNum.innerText = `${currentSlide + 1} / ${slides.length}`;
+      }
+
+      function nextSlide() {
+        if (currentSlide < slides.length - 1) {
+          currentSlide++;
+          updateSlide();
+        }
+      }
+
+      function prevSlide() {
+        if (currentSlide > 0) {
+          currentSlide--;
+          updateSlide();
+        }
+      }
+
+      // Keyboard navigation
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowRight" || e.key === "Space") {
+          nextSlide();
+        } else if (e.key === "ArrowLeft") {
+          prevSlide();
+        }
+      });
+
+      // Init
+      updateSlide();
+    </script>
+  </body>
+</html>

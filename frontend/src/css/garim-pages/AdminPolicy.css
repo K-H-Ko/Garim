@@ -1,0 +1,675 @@
+body { background: #fafafa; }
+.adm-shell { display: grid; grid-template-columns: 220px 1fr; min-height: calc(100vh - 64px); }
+.adm-side { background: #1e1b3a; padding: 16px 8px; }
+.adm-side .sec { font: 500 10px var(--font-sans); text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.5); padding: 14px 12px 6px; }
+.adm-side a { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 4px; font: 400 13px var(--font-sans); color: rgba(255,255,255,0.85); margin-bottom: 2px; }
+.adm-side a:hover { background: rgba(255,255,255,0.06); }
+.adm-side a.active { background: rgba(149,117,205,0.2); color: #b39ddb; }
+.adm-side a .material-icons { font-size: 18px; color: rgba(255,255,255,0.5); }
+.adm-side a.active .material-icons { color: #b39ddb; }
+
+.pol-adm-main {
+  padding: 24px 28px;
+  background: #fafafa;
+  min-width: 0;
+}
+.pol-content {
+  width: 100%;
+  max-width: none;
+  padding: 0;
+  box-sizing: border-box;
+}
+.pol-content--wide { max-width: none; }
+.pol-page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; margin-bottom: 20px; }
+.pol-page-head h1 { font: 500 28px var(--font-sans); margin: 0 0 8px; color: var(--fg-1); }
+.pol-page-head p { font: 400 14px/1.6 var(--font-sans); margin: 0; color: var(--fg-2); }
+.pol-page-head .mui-btn .material-icons { font-size: 18px; }
+.pol-message { margin-bottom: 16px; }
+
+/* 탭 – mockup 스타일 (underline + 아이콘) */
+.pol-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--mui-divider); background: transparent; margin-bottom: 20px; }
+.pol-tab { display: inline-flex; align-items: center; gap: 6px; border: none; background: transparent; padding: 10px 20px; font: 500 13px var(--font-sans); color: var(--fg-2); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color 0.15s, border-color 0.15s; white-space: nowrap; }
+.pol-tab .material-icons { font-size: 17px; color: inherit; line-height: 1; font-family: "Material Icons"; font-weight: normal; font-style: normal; letter-spacing: normal; text-transform: none; white-space: nowrap; direction: ltr; -webkit-font-smoothing: antialiased; }
+.pol-tab:hover { color: #1976d2; }
+.pol-tab.active { color: #1976d2; border-bottom-color: #1976d2; font-weight: 600; }
+
+
+.pol-manager { display: grid; grid-template-columns: minmax(520px, 1fr) 390px 300px; gap: 20px; align-items: flex-start; }
+.pol-list-panel,
+.pol-edit-panel,
+.pol-preview-panel { background: #fff; border: 1px solid var(--mui-divider); border-radius: 6px; box-shadow: var(--mui-elev-1); overflow: hidden; }
+.pol-edit-panel--credit { border-top-color: rgba(0, 137, 123, 0.4); }
+.pol-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 18px 20px; border-bottom: 1px solid var(--mui-divider); }
+.pol-toolbar h2 { font: 500 18px var(--font-sans); margin: 0 0 4px; }
+.pol-toolbar p { font: 400 12px/1.5 var(--font-sans); margin: 0; color: var(--fg-2); }
+.pol-toolbar-actions { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 8px; }
+.pol-add-btn { height: 38px; white-space: nowrap; }
+.pol-add-btn .material-icons { font-size: 18px; }
+.pol-search { width: clamp(260px, 28vw, 420px); height: 38px; display: flex; align-items: center; gap: 8px; padding: 0 10px; border: 1px solid var(--mui-border); border-radius: 4px; background: #fff; }
+.pol-search .material-icons { font-size: 18px; color: var(--fg-3); }
+.pol-search input { width: 100%; border: 0; outline: 0; font: 400 13px var(--font-sans); color: var(--fg-1); }
+
+.pol-data-table { width: 100%; }
+/* 구독 플랜: 플랜명(2fr) | 상태 | 월 결제 금액 | 월 제공 크레딧 | 최대 파일 크기 | 결과 보존 기간 | 작업(90px) */
+.pol-data-table--subscription .pol-data-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 90px; gap: 0; align-items: center; padding: 0 20px; border-bottom: 1px solid var(--mui-divider); cursor: pointer; min-height: 56px; }
+/* 크레딧 플랜: 플랜명(2fr) | 상태 | 결제 방식 | 결제 금액 | 제공 크레딧 | 보너스 크레딧 | 유효 기간 | 작업(90px) */
+.pol-data-table--credit .pol-data-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 1fr 90px; gap: 0; align-items: center; padding: 0 20px; border-bottom: 1px solid var(--mui-divider); cursor: pointer; min-height: 56px; }
+.pol-data-row:hover { background: rgba(25,118,210,0.03); }
+.pol-data-row.selected { background: rgba(25,118,210,0.07); }
+/* 헤더 */
+.pol-data-head { background: #fafafa; color: var(--fg-2); cursor: default; font: 500 11px var(--font-sans); text-transform: uppercase; letter-spacing: 0.4px; min-height: 40px; }
+.pol-data-head span { display: flex; align-items: center; justify-content: center; height: 100%; padding: 0 8px; text-align: center; }
+.pol-data-head span:first-child { justify-content: flex-start; }
+.pol-data-head span:last-child { justify-content: center; }
+/* 데이터 셀 */
+.pol-data-row span { min-width: 0; font: 400 13px var(--font-sans); color: var(--fg-1); display: flex; align-items: center; justify-content: center; text-align: center; padding: 10px 8px; }
+.pol-data-row span:first-child { justify-content: flex-start; text-align: left; padding-left: 0; }
+.pol-data-row strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 500 13px var(--font-sans); }
+.pol-data-row small { display: block; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 400 11px var(--font-sans); color: var(--fg-2); }
+.pol-empty { padding: 28px 20px; text-align: center; color: var(--fg-2); font: 400 13px var(--font-sans); }
+
+/* 배지 (테이블 행 내부) */
+.pol-badge { display: inline-flex; align-items: center; height: 18px; padding: 0 7px; border-radius: 9px; font: 600 10px var(--font-sans); margin-left: 6px; vertical-align: middle; background: #e8eaf6; color: #3949ab; }
+.pol-badge.mui-chip--primary { background: #e3f2fd; color: #1565c0; }
+.pol-badge.mui-chip--secondary { background: #f3e5f5; color: #6a1b9a; }
+.pol-badge.mui-chip--soft-warning { background: #fff8e1; color: #e65100; }
+.pol-badge.mui-chip--soft-info { background: #e1f5fe; color: #01579b; }
+.pol-badge.mui-chip--soft-success { background: #e8f5e9; color: #1b5e20; }
+.pol-badge.mui-chip--soft-error { background: #fce4ec; color: #880e4f; }
+.pol-badge.mui-chip--warning { background: #ff6f00; color: #fff; }
+.pol-badge.mui-chip--success { background: #2e7d32; color: #fff; }
+.pol-badge.mui-chip--info { background: #01579b; color: #fff; }
+.pol-badge.mui-chip--error { background: #b71c1c; color: #fff; }
+
+/* 플랜명 셀: 이름+배지 한 줄 / 코드 아래줄 */
+.pol-name-cell { display: flex !important; flex-direction: column; gap: 3px; min-width: 0; justify-content: center !important; align-items: flex-start !important; text-align: left !important; }
+.pol-name-row { display: flex; align-items: center; gap: 6px; flex-wrap: nowrap; min-width: 0; }
+.pol-name-row strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 500 13px var(--font-sans); }
+
+.pol-row-actions { display: flex !important; align-items: center; justify-content: center; gap: 4px; width: 100%; }
+
+/* 아이콘 전용 버튼 */
+.pol-icon-btn { width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--mui-border); border-radius: 6px; background: #fff; color: var(--fg-2); cursor: pointer; transition: background 0.15s, border-color 0.15s, color 0.15s; flex-shrink: 0; }
+.pol-icon-btn .material-icons { font-size: 17px; display: inline-flex; line-height: 1; font-family: "Material Icons"; font-weight: normal; font-style: normal; letter-spacing: normal; text-transform: none; white-space: nowrap; word-wrap: normal; direction: ltr; -webkit-font-smoothing: antialiased; color: inherit; }
+.pol-icon-btn--edit:hover { background: rgba(25,118,210,0.06); border-color: rgba(25,118,210,0.5); color: #1976d2; }
+.pol-icon-btn--delete:hover { background: #fdeded; border-color: rgba(211,47,47,0.4); color: #c62828; }
+.pol-status { display: inline-flex; height: 24px; align-items: center; padding: 0 9px; border-radius: 12px; font: 500 12px var(--font-sans); background: #edf7ed; color: #1e4620; }
+.pol-status.inactive { background: #fff4e5; color: #663c00; }
+.pol-status.deleted { background: #fdeded; color: #5f2120; }
+
+.pol-card-head { padding: 16px 20px; border-bottom: 1px solid var(--mui-divider); }
+.pol-list-panel .pol-card-head {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  padding: 18px 20px;
+  background: #fff;
+  border-bottom: 1px solid var(--mui-divider);
+}
+.pol-list-panel .pol-card-head h2 {
+  margin: 0 0 4px;
+  color: #111827;
+  font: 800 15px var(--font-sans);
+}
+.pol-list-panel .pol-card-head p {
+  margin: 0;
+  color: #64748b;
+  font: 400 12px/1.5 var(--font-sans);
+}
+.pol-card-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+}
+.pol-card-title-tools {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.pol-card-head .pol-toolbar {
+  display: flex;
+  flex: 1 1 auto;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.pol-card-head h3 { font: 500 16px var(--font-sans); margin: 0; }
+.pol-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 16px 20px; }
+.pol-form-section { border-top: 1px solid var(--mui-divider); }
+.pol-form-section h4 { margin: 0; padding: 14px 20px 0; font: 500 13px var(--font-sans); color: var(--fg-1); }
+.pol-field { display: flex; flex-direction: column; gap: 6px; }
+.pol-field--full { grid-column: 1 / -1; }
+.pol-field span { font: 500 12px var(--font-sans); color: var(--fg-2); }
+.pol-input { width: 100%; min-width: 0; padding: 9px 10px; border: 1px solid var(--mui-border); border-radius: 4px; font: 400 14px var(--font-sans); outline: none; background: #fff; color: var(--fg-1); }
+.pol-input:focus { border-color: #1976d2; }
+.pol-textarea { min-height: 84px; resize: vertical; line-height: 1.5; }
+.pol-switch-wrap { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.pol-switch-wrap input[type="checkbox"] { width: 16px; height: 16px; accent-color: #1976d2; cursor: pointer; }
+.pol-switch-wrap--field { min-height: 38px; padding-top: 18px; }
+.pol-switch-wrap--field span { font: 500 13px var(--font-sans); color: var(--fg-1); }
+.pol-save-bar { display: flex; gap: 8px; justify-content: flex-end; padding: 16px 20px 20px; border-top: 1px solid var(--mui-divider); }
+
+.pol-preview-panel { position: sticky; top: 84px; }
+.pol-preview-panel--credit { border-top-color: rgba(0, 137, 123, 0.4); }
+.pol-preview-body { padding: 28px 20px; background: #fafafa; }
+.pol-price-preview {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 320px;
+  min-height: 440px;
+  padding: 32px 28px;
+  background: rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 12px 32px 0 rgba(31, 38, 135, 0.04), 
+              0 4px 12px 0 rgba(0, 0, 0, 0.02),
+              inset 0 1px 0 0 rgba(255, 255, 255, 0.8) !important;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+.pol-price-preview:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px 0 rgba(31, 38, 135, 0.08),
+              0 8px 16px 0 rgba(0, 0, 0, 0.03);
+  border-color: rgba(99, 102, 241, 0.45) !important;
+}
+
+/* Chip Badge styling in Preview */
+.pol-price-preview .price-card__badge {
+  position: absolute;
+  left: 24px;
+  top: -12px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Plan Title */
+.pol-price-preview .overline-k {
+  text-transform: uppercase;
+  letter-spacing: 1.8px;
+  font: 700 13px var(--font-sans);
+  color: #4f46e5;
+  margin-top: 4px;
+}
+
+/* Plan Price */
+.price-card__price {
+  font: 800 38px var(--font-sans) !important;
+  color: #0f172a;
+  line-height: 1.1;
+  display: flex;
+  align-items: baseline;
+}
+.price-card__price small {
+  font: 600 16px var(--font-sans) !important;
+  color: #64748b;
+  margin-left: 4px;
+}
+
+/* 미리보기 — 연 결제 파생 금액 라인 */
+.pol-preview-yearly {
+  margin: 6px 0 2px;
+  font: 600 13px var(--font-sans);
+  color: #b08d57;
+}
+.pol-preview-yearly span {
+  font-weight: 400;
+  color: var(--fg-3);
+}
+
+/* 구독 목록 — 월 결제 금액 셀 + 연 결제 파생 보조 표기 */
+.pol-price-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.pol-price-cell .pol-subprice {
+  font: 400 11.5px var(--font-sans);
+  color: var(--fg-3);
+}
+
+/* Description text */
+.pol-price-preview .caption-k {
+  margin: 0 0 4px;
+  font: 400 13.5px/1.6 var(--font-sans);
+  color: #475569;
+}
+
+/* Feats list styling */
+.price-card__feats {
+  margin: 8px 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.price-card__feats li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font: 500 13px var(--font-sans);
+  color: #334155;
+  background: rgba(255, 255, 255, 0.45);
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  transition: all 0.2s;
+}
+.price-card__feats li:hover {
+  background: rgba(255, 255, 255, 0.85);
+  transform: translateX(2px);
+}
+.price-card__feats .material-icons {
+  font-size: 14px;
+  color: #10b981;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(16, 185, 129, 0.1);
+  padding: 4px;
+  border-radius: 50%;
+}
+
+/* CTA button inside preview */
+.pol-price-preview button {
+  margin-top: auto;
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+  height: 44px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+  cursor: default;
+}
+.pol-price-preview button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+}
+
+/* ── Glassmorphism for Credit Preview ── */
+.pol-credit-preview {
+  display: flex;
+  flex-direction: column;
+  width: 320px;
+  min-height: 260px;
+  padding: 32px 28px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 12px 32px 0 rgba(31, 38, 135, 0.04), 
+              0 4px 12px 0 rgba(0, 0, 0, 0.02),
+              inset 0 1px 0 0 rgba(255, 255, 255, 0.8) !important;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+.pol-credit-preview:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px 0 rgba(31, 38, 135, 0.08),
+              0 8px 16px 0 rgba(0, 0, 0, 0.03);
+  border-color: rgba(13, 148, 136, 0.45) !important;
+}
+
+.pol-credit-preview__title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.pol-credit-preview__title .material-icons {
+  color: #0d9488;
+  font-size: 20px;
+  background: rgba(13, 148, 136, 0.1);
+  padding: 6px;
+  border-radius: 50%;
+}
+.pol-credit-preview__title h3 {
+  margin: 0;
+  font: 700 20px var(--font-sans);
+  color: #0f172a;
+}
+
+.pol-credit-preview__price {
+  font: 800 36px var(--font-sans);
+  color: #0f172a;
+  margin: 16px 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+}
+.pol-credit-preview__price small {
+  font: 600 16px var(--font-sans);
+  color: #64748b;
+  margin-left: 4px;
+}
+
+.pol-credit-preview p {
+  flex: 1;
+  margin: 0 0 20px;
+  color: #475569;
+  font: 500 14px/1.5 var(--font-sans);
+}
+
+.pol-credit-preview button {
+  background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+  height: 44px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25);
+  cursor: default;
+}
+.pol-credit-preview button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(13, 148, 136, 0.35);
+}
+
+/* ── 목록 전용 레이아웃 (모달 사용 시) ── */
+.pol-manager--list-only { display: block; }
+.pol-manager--list-only .pol-list-panel { width: 100%; }
+
+/* ── 모달 ── */
+.pol-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.pol-modal {
+  position: relative;
+  width: 100%;
+  max-width: 960px;
+  max-height: calc(100vh - 48px);
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.22);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.pol-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--mui-divider);
+  flex-shrink: 0;
+}
+.pol-modal-header h2 {
+  margin: 0;
+  font: 600 18px var(--font-sans);
+  color: var(--fg-1);
+}
+.pol-modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  color: var(--fg-2);
+  transition: background 0.15s;
+}
+.pol-modal-close:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--fg-1);
+}
+.pol-modal-close .material-icons { font-size: 20px; }
+
+.pol-modal-body {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 0;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.pol-modal-form-col {
+  overflow-y: auto;
+  border-right: 1px solid var(--mui-divider);
+}
+
+.pol-modal-preview-col {
+  overflow-y: auto;
+  background: linear-gradient(135deg, #f5f3ff 0%, #e0f2fe 100%);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  gap: 16px;
+}
+
+.pol-edit-panel--modal {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.pol-preview-panel--modal {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.pol-preview-panel--modal .pol-card-head {
+  border-bottom: none;
+  padding: 0 0 4px;
+  background: transparent;
+  text-align: center;
+}
+.pol-preview-panel--modal .pol-card-head h3 {
+  font: 700 13px var(--font-sans);
+  color: #4f46e5;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin: 0;
+}
+.pol-preview-panel--modal .pol-preview-body {
+  padding: 0;
+  background: transparent;
+}
+
+@media (max-width: 1100px) {
+  .adm-shell { grid-template-columns: 1fr; }
+  .adm-side { display: flex; gap: 4px; overflow-x: auto; }
+  .adm-side .sec { display: none; }
+  .adm-side a { white-space: nowrap; }
+  .pol-adm-main { padding: 24px 16px; }
+  .pol-manager { grid-template-columns: 1fr; }
+  .pol-preview-panel { position: static; }
+}
+
+@media (max-width: 760px) {
+  .pol-page-head,
+  .pol-toolbar { flex-direction: column; align-items: stretch; }
+  .pol-toolbar-actions { flex-direction: column; align-items: stretch; }
+  .pol-add-btn { width: 100%; }
+  .pol-search { width: 100%; min-width: 0; }
+  .pol-status-select,
+  .pol-limit-select { width: 100%; }
+  .pol-limit-label { text-align: left; }
+  .pol-pagination { flex-direction: column; align-items: stretch; }
+  .pol-pagination-actions { justify-content: flex-end; }
+  .pol-data-row,
+  .pol-data-table--subscription .pol-data-row,
+  .pol-data-table--credit .pol-data-row { grid-template-columns: minmax(130px, 1fr) 80px 80px 80px; }
+  .pol-data-table--subscription .pol-data-row span:nth-child(n+5),
+  .pol-data-table--credit .pol-data-row span:nth-child(n+5) { display: none; }
+  .pol-form-grid { grid-template-columns: 1fr; }
+
+  /* 모달 반응형 */
+  .pol-modal-body { grid-template-columns: 1fr; }
+  .pol-modal-form-col { border-right: none; border-bottom: 1px solid var(--mui-divider); }
+  .pol-modal-preview-col { padding: 16px; }
+}
+
+.pol-status-select {
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--mui-border);
+  border-radius: 4px;
+  background: #fff;
+  font: 400 13px var(--font-sans);
+  color: var(--fg-1);
+  outline: none;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.pol-status-select:focus {
+  border-color: #1976d2;
+}
+
+.pol-limit-select {
+  height: 38px;
+  padding: 0 10px;
+  border: 1px solid var(--mui-border);
+  border-radius: 4px;
+  background: #fff;
+  font: 400 13px var(--font-sans);
+  color: var(--fg-1);
+  outline: none;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.pol-limit-select:focus { border-color: #1976d2; }
+.pol-limit-label {
+  white-space: nowrap;
+  font: 400 12px var(--font-sans);
+  color: var(--fg-2);
+}
+
+.pol-pagination {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  min-height: 58px;
+  padding: 0 20px;
+  border-top: 1px solid var(--mui-divider);
+  background: #fff;
+  align-items: center;
+  gap: 12px;
+}
+.pol-pagination .meta {
+  grid-column: 2;
+  justify-self: center;
+  color: #64748b;
+  font: 600 12px var(--font-sans);
+  font-family: var(--font-mono);
+}
+.pol-pagination-actions {
+  grid-column: 3;
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* =========================================================
+   다크 모드 보정 (사용자 화면과 동일한 중성 톤)
+   - 네이비 사이드바(.adm-side)는 라이트/다크 공통 디자인이라 유지
+   - 흰 표면/밝은 회색 배경 → 다크 표면 변수로 교체
+   - 미리보기 글래스 카드의 밝은 흰색/고정 텍스트색 → 다크 톤
+   ========================================================= */
+:root[data-theme="dark"] body { background: var(--bg-2); }
+:root[data-theme="dark"] .pol-adm-main { background: var(--bg-2); }
+
+/* 패널/카드/입력/모달 등 흰 표면 → 다크 표면색 */
+:root[data-theme="dark"] .pol-list-panel,
+:root[data-theme="dark"] .pol-edit-panel,
+:root[data-theme="dark"] .pol-preview-panel,
+:root[data-theme="dark"] .pol-list-panel .pol-card-head,
+:root[data-theme="dark"] .pol-icon-btn,
+:root[data-theme="dark"] .pol-modal,
+:root[data-theme="dark"] .pol-search,
+:root[data-theme="dark"] .pol-input,
+:root[data-theme="dark"] .pol-status-select,
+:root[data-theme="dark"] .pol-limit-select,
+:root[data-theme="dark"] .pol-pagination { background: var(--bg-1); }
+
+/* 보조 회색 배경(테이블 헤더/미리보기 영역) → 다크 보조 표면 */
+:root[data-theme="dark"] .pol-data-head,
+:root[data-theme="dark"] .pol-preview-body { background: var(--surface-alt); }
+
+/* 카드 헤더 고정 텍스트색 → 변수 */
+:root[data-theme="dark"] .pol-list-panel .pol-card-head h2 { color: var(--fg-1); }
+:root[data-theme="dark"] .pol-list-panel .pol-card-head p,
+:root[data-theme="dark"] .pol-pagination .meta { color: var(--fg-2); }
+
+/* 상태 배지(사용중/미사용/삭제) — 라이트 파스텔이 다크에서 흰색처럼 보이므로
+   반투명 틴트 + 밝은 글자색으로 교체 */
+:root[data-theme="dark"] .pol-status { background: rgba(46,125,50,0.22); color: #bce0bd; }
+:root[data-theme="dark"] .pol-status.inactive { background: rgba(237,108,2,0.22); color: #f3cda0; }
+:root[data-theme="dark"] .pol-status.deleted { background: rgba(211,47,47,0.22); color: #f1b7b5; }
+
+/* 행 호버/선택 강조 — 약하게 밝은 음영 */
+:root[data-theme="dark"] .pol-data-row:hover { background: rgba(255,255,255,0.04); }
+:root[data-theme="dark"] .pol-data-row.selected { background: rgba(25,118,210,0.18); }
+:root[data-theme="dark"] .pol-modal-close:hover { background: rgba(255,255,255,0.08); }
+
+/* ── 미리보기(글래스) 카드 다크 보정 ── */
+:root[data-theme="dark"] .pol-modal-preview-col {
+  background: linear-gradient(135deg, #1a1a1d 0%, #141417 100%);
+}
+:root[data-theme="dark"] .pol-price-preview,
+:root[data-theme="dark"] .pol-credit-preview {
+  background: rgba(255,255,255,0.05) !important;
+  border-color: var(--mui-border) !important;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.4) !important;
+}
+/* 미리보기 내부 고정 텍스트색 → 변수 */
+:root[data-theme="dark"] .price-card__price,
+:root[data-theme="dark"] .pol-credit-preview__title h3,
+:root[data-theme="dark"] .pol-credit-preview__price { color: var(--fg-1); }
+:root[data-theme="dark"] .price-card__price small,
+:root[data-theme="dark"] .pol-credit-preview__price small,
+:root[data-theme="dark"] .pol-price-preview .caption-k,
+:root[data-theme="dark"] .pol-credit-preview p { color: var(--fg-2); }
+:root[data-theme="dark"] .pol-price-preview .overline-k,
+:root[data-theme="dark"] .pol-preview-panel--modal .pol-card-head h3 { color: #a5b4fc; }
+/* 특징 li — 흰 반투명 박스 → 다크 반투명 */
+:root[data-theme="dark"] .price-card__feats li {
+  background: rgba(255,255,255,0.05);
+  border-color: var(--mui-border);
+  color: var(--fg-1);
+}
+:root[data-theme="dark"] .price-card__feats li:hover { background: rgba(255,255,255,0.1); }

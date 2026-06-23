@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>SNS 연결 (Instagram) · Garim</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="garim.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<style>
+  .sns-page { padding: 48px 32px 80px; }
+  .sns-shell { max-width: 720px; margin: 0 auto; }
+  .sns-head { text-align: center; margin-bottom: 40px; }
+  .sns-head h1 { font: 300 40px/1.2 var(--font-sans); letter-spacing: -0.5px; margin: 16px 0 12px; }
+  .sns-head .sub { font: 400 16px/1.6 var(--font-sans); color: var(--fg-2); }
+  .oauth-card { background: #fff; border-radius: 4px; box-shadow: var(--mui-elev-2); padding: 40px; margin-bottom: 24px; }
+  .flow-steps { display: flex; gap: 0; margin-bottom: 32px; }
+  .flow-step { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 0 8px; position: relative; }
+  .flow-step .icon-box { width: 48px; height: 48px; border-radius: 50%; background: rgba(0,0,0,0.06); display: inline-flex; align-items: center; justify-content: center; color: var(--fg-2); }
+  .flow-step.active .icon-box { background: rgba(25,118,210,0.1); color: #1976d2; }
+  .flow-step h4 { font: 500 13px var(--font-sans); margin: 0; text-align: center; }
+  .flow-step:not(:last-child)::after { content: ""; position: absolute; top: 24px; right: -50%; left: 50%; height: 2px; background: var(--mui-divider); z-index: -1; }
+  .perm-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  .perm-card { padding: 20px; border-radius: 4px; border: 1px solid; }
+  .perm-card h3 { font: 500 16px var(--font-sans); margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
+  .perm-card ul { list-style: none; padding: 0; margin: 0; }
+  .perm-card li { font: 400 13px/1.6 var(--font-sans); padding-left: 20px; position: relative; margin-bottom: 6px; }
+  .perm-card li::before { position: absolute; left: 0; top: 2px; font-family: "Material Icons"; font-size: 14px; }
+  .perm-card.do { background: rgba(46,125,50,0.04); border-color: rgba(46,125,50,0.25); }
+  .perm-card.do h3 { color: #1b5e20; }
+  .perm-card.do li::before { content: "check"; color: #2e7d32; }
+  .perm-card.dont { background: rgba(211,47,47,0.03); border-color: rgba(211,47,47,0.25); }
+  .perm-card.dont h3 { color: #c62828; }
+  .perm-card.dont li::before { content: "close"; color: #d32f2f; }
+  .meta-btn {
+    width: 100%; height: 56px; border-radius: 6px;
+    background: linear-gradient(90deg, #1877F2 0%, #166FE5 100%);
+    color: #fff; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    font: 600 16px var(--font-sans); letter-spacing: 0.2px;
+    transition: filter 150ms;
+  }
+  .meta-btn:hover { filter: brightness(1.1); }
+  .meta-btn svg { width: 24px; height: 24px; }
+  .trust-row { display: flex; align-items: center; gap: 16px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--mui-divider); }
+  .trust-row .trust { display: flex; align-items: center; gap: 6px; font: 400 12px var(--font-sans); color: var(--fg-2); }
+  .trust-row .material-icons { font-size: 16px; color: #2e7d32; }
+  .biz-note { padding: 12px 16px; background: rgba(237,108,2,0.05); border-left: 3px solid #ed6c02; border-radius: 2px; font: 400 13px/1.5 var(--font-sans); margin-bottom: 16px; }
+  .faq-mini { background: #fff; border-radius: 4px; box-shadow: var(--mui-elev-1); }
+  .faq-mini details { border-bottom: 1px solid var(--mui-divider); }
+  .faq-mini details:last-child { border-bottom: none; }
+  .faq-mini summary { padding: 16px 20px; cursor: pointer; font: 500 14px var(--font-sans); display: flex; align-items: center; gap: 12px; }
+  .faq-mini summary::-webkit-details-marker { display: none; }
+  .faq-mini summary::after { content: "expand_more"; font-family: "Material Icons"; margin-left: auto; transition: transform 200ms; color: var(--fg-2); }
+  .faq-mini details[open] summary::after { transform: rotate(180deg); }
+  .faq-mini .ans { padding: 0 20px 16px 52px; font: 400 13px/1.6 var(--font-sans); color: var(--fg-2); }
+</style>
+</head>
+<body class="page-app" data-screen-label="11 SNS connect">
+<div id="header"></div>
+
+<div class="sns-page">
+  <div class="sns-shell">
+    <div class="sns-head">
+      <span class="mui-chip mui-chip--secondary mui-chip--md">셀프 점검 · Instagram</span>
+      <h1>내 디지털 발자국,<br>한번 들여다볼까요?</h1>
+      <p class="sub">내 인스타 게시물 중에 개인정보가 노출된 것이 있는지 안전하게 점검합니다. Garim이 게시·삭제·수정을 하는 일은 절대 없습니다.</p>
+    </div>
+
+    <div class="oauth-card">
+      <div class="flow-steps">
+        <div class="flow-step active">
+          <div class="icon-box"><svg width="20" height="20" viewBox="0 0 96 28"><circle cx="11" cy="14" r="9" fill="#1976d2"/><circle cx="11" cy="14" r="3.6" fill="#9747ff"/></svg></div>
+          <h4>Garim</h4>
+        </div>
+        <div class="flow-step">
+          <div class="icon-box"><svg width="20" height="20" viewBox="0 0 24 24"><path fill="#1877F2" d="M12 2C6.5 2 2 6.5 2 12c0 5 3.7 9.1 8.4 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.3v7C18.3 21.1 22 17 22 12c0-5.5-4.5-10-10-10z"/></svg></div>
+          <h4>Facebook 인증</h4>
+        </div>
+        <div class="flow-step">
+          <div class="icon-box"><span class="material-icons" style="font-size:22px;">check_circle</span></div>
+          <h4>권한 동의</h4>
+        </div>
+        <div class="flow-step">
+          <div class="icon-box"><span class="material-icons" style="font-size:22px;">summarize</span></div>
+          <h4>결과 보기</h4>
+        </div>
+      </div>
+
+      <div class="perm-cards">
+        <div class="perm-card do">
+          <h3><span class="material-icons">visibility</span>보는 정보</h3>
+          <ul>
+            <li>게시물 썸네일·미디어 파일</li>
+            <li>게시 일자·캡션·위치 태그</li>
+            <li>기본 프로필 (사용자명·사진)</li>
+          </ul>
+        </div>
+        <div class="perm-card dont">
+          <h3><span class="material-icons">block</span>하지 않는 일</h3>
+          <ul>
+            <li>비밀번호 저장 (OAuth 토큰만)</li>
+            <li>DM·팔로워 목록 접근</li>
+            <li>게시·삭제·수정·댓글</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="biz-note">
+        <strong>비즈니스·크리에이터 계정만 지원됩니다.</strong> Instagram Graph API 제한 사항입니다.
+        개인 계정은 <a href="#" style="color:#1976d2;">계정 전환 가이드</a>를 참고하세요.
+      </div>
+
+      <button class="meta-btn">
+        <svg viewBox="0 0 24 24"><path fill="#fff" d="M12 2C6.5 2 2 6.5 2 12c0 5 3.7 9.1 8.4 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.3v7C18.3 21.1 22 17 22 12c0-5.5-4.5-10-10-10z"/></svg>
+        Facebook 계정으로 Instagram 연결
+      </button>
+
+      <div class="trust-row">
+        <span class="trust"><span class="material-icons">lock</span>OAuth 2.0 표준</span>
+        <span class="trust"><span class="material-icons">verified</span>토큰 기반 인증</span>
+        <span class="trust"><span class="material-icons">timer</span>언제든 연결 해제 가능</span>
+      </div>
+    </div>
+
+    <div class="faq-mini">
+      <details open>
+        <summary>토큰은 어디에 저장되나요?</summary>
+        <div class="ans">암호화된 형태로 Garim 서버에 저장되며, 본인 인스타 점검 외 용도로 사용되지 않습니다. 마이페이지에서 언제든 연결을 해제하면 토큰이 즉시 폐기됩니다.</div>
+      </details>
+      <details>
+        <summary>점검 결과 영상은 자동으로 다시 올라가나요?</summary>
+        <div class="ans">아니요. Garim은 인스타에 게시·삭제·수정을 하지 않습니다 (B-2 권한 정책). 결과 영상을 다운로드 받으신 후, 직접 기존 게시물을 삭제하고 새 버전을 업로드하시면 됩니다.</div>
+      </details>
+      <details>
+        <summary>v2 "정기 자동 스캔" 기능은 무엇인가요?</summary>
+        <div class="ans">v2에서는 일정 주기로 새 게시물을 자동 스캔해 위험을 알려드립니다. MVP1·v1 정식에서는 수동 점검만 제공됩니다.</div>
+      </details>
+    </div>
+
+    <div style="text-align:center;margin-top:24px;">
+      <a href="08-upload.html" class="mui-btn mui-btn--text">대신 내 파일을 직접 검사하기 →</a>
+    </div>
+  </div>
+</div>
+
+<div id="footer"></div>
+
+<script src="garim-chrome.js"></script>
+<script>
+  document.getElementById('header').innerHTML = gh({ variant: 'app', current: 'sns', authed: true });
+  document.getElementById('footer').innerHTML = gf();
+  document.querySelector('.meta-btn').addEventListener('click', () => {
+    setTimeout(() => { window.location.href = '12-sns-results.html'; }, 400);
+  });
+</script>
+</body></html>

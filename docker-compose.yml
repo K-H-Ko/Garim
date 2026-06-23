@@ -1,0 +1,105 @@
+version: "3.8"
+
+services:
+  final_db:
+    image: pgvector/pgvector:pg16
+    container_name: final_db
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      # [기본 경로] 아래 경로를 사용합니다.
+      - "./backend/docker/database/init:/docker-entrypoint-initdb.d"
+      - "./backend/docker/database/postgre_data:/var/lib/postgresql/data"
+
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - garim_network
+
+  final_redis:
+    image: redis:7
+    container_name: final_redis
+    restart: always
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - garim_network
+
+  final_backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: final_backend
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - "./backend:/app"
+      - "./output_file:/output_file"
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      final_db:
+        condition: service_healthy
+      final_redis:
+        condition: service_healthy
+    networks:
+      - garim_network
+
+  final_frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: final_frontend
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - "./frontend:/app"
+      - "/app/node_modules"
+    command: npm run dev -- --host 0.0.0.0 --port 3000
+    depends_on:
+      - final_backend
+    networks:
+      - garim_network
+
+  final_nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: final_nginx
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - final_frontend
+      - final_backend
+    networks:
+      - garim_network
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared_tunnel
+    restart: always
+    env_file:
+      - .env
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
+    depends_on:
+      - final_nginx
+    networks:
+      - garim_network
+
+networks:
+  garim_network:
+    driver: bridge

@@ -1,0 +1,101 @@
+/*
+코드 설명:
+가림바 비교 슬라이더(ComparisonSlider) 전용 스타일. 원본/마스킹 두 레이어를 겹쳐 두고
+드래그 핸들·그립·라벨 배지로 좌우 비교를 표현한다. 이미지/영상 모드 공통.
+*/
+
+.cs-container {
+  position: relative;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 6px;
+  background: transparent;
+  cursor: ew-resize;
+  user-select: none;
+  box-shadow: var(--mui-elev-12);
+}
+
+.cs-layer.cs-original {
+  position: relative;
+}
+
+.cs-layer.cs-masked {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* 마스킹 영상은 하단 원본 컨트롤바만 쓰도록 포인터 이벤트 차단 */
+.cs-masked video {
+  pointer-events: none;
+}
+
+.cs-layer img,
+.cs-layer video {
+  max-width: 100%;
+  max-height: 70vh;
+  display: block;
+}
+
+/* 핸들 — 가림바 세로선 */
+.cs-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: #3d3d3d;
+  transform: translateX(-50%);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3);
+  cursor: ew-resize;
+  z-index: 10;
+  touch-action: none;
+}
+
+/* 핸들 원형 그립 */
+.cs-grip {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #3d3d3d;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 그립 아이콘 */
+.cs-grip .material-icons {
+  font-size: 20px;
+  color: #fff;
+}
+
+/* 원본 / 마스킹 라벨 배지 */
+.cs-badge {
+  position: absolute;
+  top: 14px;
+  padding: 5px 12px;
+  border-radius: 4px;
+  font: 600 11px var(--font-sans);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.cs-badge--before {
+  left: 14px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+}
+
+.cs-badge--after {
+  right: 14px;
+  background: rgba(46, 125, 50, 0.9);
+  color: #fff;
+}
