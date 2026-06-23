@@ -24,7 +24,7 @@
 ## 시연 영상
 
 <video controls width="100%">
-  <source src="https://github.com/K-H-Ko/Garim/raw/main/docs/%EC%8B%9C%EC%97%B0%EC%98%81%EC%83%81_%EB%94%A5%EB%9F%AC%EB%8B%9D_%EA%B8%B0%EB%B0%98_%EA%B0%9C%EC%9D%B8%EC%A0%95%EB%B3%B4_doxing_%EB%B0%A9%EC%A7%80_%ED%94%8C%EB%9E%AB%ED%8F%BC.mp4" type="video/mp4">
+  <source src="https://github.com/user-attachments/assets/95dd289d-0984-4c00-9621-78ddd9936eae" type="video/mp4">
 </video>
 
 ## 💡 개발 배경 및 목적
