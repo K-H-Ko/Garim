@@ -49,17 +49,15 @@ async def lifespan(_app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000",
-                   "http://127.0.0.1:3000",
-                   "http://192.168.0.8:3000",  # 김민영
-                   "http://192.168.0.20:3000", # 고관홍
-                   "http://192.168.0.64:3000", # 강사님
-                   "http://192.168.0.65:3000", # 오세덕
-                   "http://192.168.45.4:3000", # 오세덕
-                   "http://192.168.0.26:3000", # 임정은
-                   "http://garim.shop",
-                   "http://www.garim.shop"
-                   ],
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://garim.shop",
+        "http://www.garim.shop",
+        "https://garim.shop",
+        "https://www.garim.shop"
+    ],
+    allow_origin_regex=r"^https?://(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+)(:\d+)?$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
