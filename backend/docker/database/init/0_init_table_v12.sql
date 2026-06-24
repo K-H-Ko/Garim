@@ -454,6 +454,8 @@ COMMENT ON COLUMN credit_plans.updated_at IS 'Last update timestamp';
 CREATE TABLE IF NOT EXISTS user_credit_balances (
     user_id uuid NOT NULL REFERENCES users(user_id),
     balance integer NOT NULL DEFAULT 0,
+    free_balance integer NOT NULL DEFAULT 0,
+    pending_ai_refund_usage integer NOT NULL DEFAULT 0,
     updated_at timestamp NOT NULL DEFAULT now(),
     CONSTRAINT pk_user_credit_balances PRIMARY KEY (user_id),
     CONSTRAINT ck_user_credit_balances_non_negative CHECK (balance >= 0)
