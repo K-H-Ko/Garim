@@ -22,7 +22,7 @@
 ---
 
 ## 시연 영상
-https://github.com/user-attachments/assets/9fdc3233-0e97-42b6-979c-363f096d64ae
+<video controls><source src="https://github.com/user-attachments/assets/9fdc3233-0e97-42b6-979c-363f096d64ae" type="video/mp4"></video>
 
 ---
 ## 💡 개발 배경 및 목적
@@ -84,7 +84,7 @@ graph TD
 ## 📂 프로젝트 폴더 구조
 
 ```text
-프로젝트명/
+[프로젝트 최상위 폴더]/
 ├── frontend/               # React 프론트엔드 (Vite, TailwindCSS)
 │   ├── dist/               # Vite 빌드 도구 압축결과물 (배포용 파일)
 │   ├── public/             # 정적 파일 (파비콘 등) 보관 폴더
@@ -122,6 +122,8 @@ graph TD
 ├── colab/                  # Colab 전용 GPU 워커 스크립트 (STT, Inpainting 마스킹)
 ├── nginx/                  # Nginx 리버스 프록시 설정 (dev.conf, prod.conf)
 ├── docs/                   # 프로젝트 문서 (아키텍처, 기획, API 명세, DB 설계도 등)
+├── output_files/           # 결과 파일 저장
+│   └── support             # 사용자 AI 미탐/오탐 발생시 문의 파일 저장
 └── docker-compose.yml      # 통합 서버 구동을 위한 도커 컴포즈 파일
 ```
 
@@ -175,7 +177,7 @@ _(상세한 코랩 환경 세팅 및 파이프라인 파일 업로드 방법은 
 
 > ⚠️ **주의사항**: Docker 파일 바인드 마운트 버그 방지를 위해, 프로젝트 폴더는 가상 네트워크 드라이브(Google Drive 등)가 아닌 실제 로컬 디스크(`C:\` 또는 `D:\`)에 위치해야 합니다.
 
-1. **가상환경 설정** (선택사항이나, 패키지 충돌로인한 방지차원으로 가상환경 추천!!)
+1. **가상환경 설정** (선택사항)
 
    ```bash
    # Anaconda 설치 확인 및 가상환경 설정
