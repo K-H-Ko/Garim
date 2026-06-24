@@ -84,7 +84,7 @@ graph TD
 ## 📂 프로젝트 폴더 구조
 
 ```text
-Human_Final_PJ-main/
+프로젝트명/
 ├── frontend/               # React 프론트엔드 (Vite, TailwindCSS)
 │   ├── dist/               # Vite 빌드 도구 압축결과물 (배포용 파일)
 │   ├── public/             # 정적 파일 (파비콘 등) 보관 폴더
