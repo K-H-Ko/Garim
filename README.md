@@ -22,7 +22,7 @@
 ---
 
 ## 시연 영상
-<video controls><source src="https://github.com/user-attachments/assets/9fdc3233-0e97-42b6-979c-363f096d64ae" type="video/mp4"></video>
+https://github.com/user-attachments/assets/9fdc3233-0e97-42b6-979c-363f096d64ae
 
 ---
 ## 💡 개발 배경 및 목적
