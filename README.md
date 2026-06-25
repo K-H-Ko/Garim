@@ -167,6 +167,20 @@ STT 분석에 사용되는 AI 모델은 용량이 **3GB 이상**에 달하는 La
    ```
 5. 세팅이 완료된 후 코랩 환경에서 구글 드라이브에 있는 `garim_colab_worker.py` 코드를 붙여넣고 실행하면, 하드코딩된 경로(`/content/drive/MyDrive/final_PJ_model/`)를 통해 파이프라인과 대용량 모델을 자동으로 연결하여 **대기 시간 0초 만에 즉시 AI 분석을 시작**합니다.
 
+```
+# 코랩 실행 코드
+
+from google.colab import drive
+drive.mount('/content/drive')
+import subprocess
+subprocess.run(["pip", "install", "-q", "requests"], check=True)
+print("✅ 설치 완료")
+
+# 드라이브에 있는 워커 파일을 그대로 실행
+# (파일 안에서 파이프라인 로드 + run_loop() 자동 실행됨)
+%run /content/drive/MyDrive/final_PJ_model/garim_colab_worker.py
+```
+
 _(상세한 코랩 환경 세팅 및 파이프라인 파일 업로드 방법은 `colab/COLAB_WORKER_RUNBOOK.md` 문서를 꼼꼼히 참조해 주세요.)_
 
 ---
